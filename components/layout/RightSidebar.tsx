@@ -1,13 +1,22 @@
-// components/layout/RightSidebar.tsx - Update to include table of contents
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import TableOfContents from '../blog/TableOfContents';
 
-export default function RightSidebar({ recentPosts, tags, toc = null }) {
+interface RightSidebarProps {
+  recentPosts?: any[];
+  tags?: string[];
+  toc?: any[] | null;
+}
+
+export default function RightSidebar({
+  recentPosts,
+  tags,
+  toc = null,
+}: RightSidebarProps) {
   const router = useRouter();
   const isPostPage = router.pathname.startsWith('/blog/') && router.pathname !== '/blog';
 
-  // Use props if available (server-rendered), otherwise use mock data
+  // Use props if available (server-rendered), otherwise use defaults.
   const posts = recentPosts || [];
   const tagList = tags || [];
 
@@ -29,10 +38,7 @@ export default function RightSidebar({ recentPosts, tags, toc = null }) {
           <ul className="space-y-3">
             {posts.map(post => (
               <li key={post.slug} className="transition-transform hover:translate-x-1">
-                <Link 
-                  href={`/blog/${post.slug}`} 
-                  className="text-gray-400 hover:text-primary text-sm"
-                >
+                <Link href={`/blog/${post.slug}`} className="text-gray-400 hover:text-primary text-sm">
                   <i className="fas fa-angle-right mr-2 text-primary/70"></i>
                   {post.title}
                 </Link>
@@ -43,7 +49,7 @@ export default function RightSidebar({ recentPosts, tags, toc = null }) {
           <p className="text-gray-500 text-sm">No recent posts yet.</p>
         )}
       </div>
-      
+
       {/* Popular tags */}
       <div>
         <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-700 text-white">
@@ -52,7 +58,7 @@ export default function RightSidebar({ recentPosts, tags, toc = null }) {
         {tagList.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {tagList.map(tag => (
-              <Link 
+              <Link
                 key={tag}
                 href={`/blog/tag/${tag}`}
                 className="inline-block bg-primary/20 hover:bg-primary/30 text-primary text-xs px-3 py-1 rounded-full transition-colors"
