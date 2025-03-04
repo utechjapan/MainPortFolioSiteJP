@@ -8,7 +8,19 @@ import { useState } from 'react';
 import SearchBar from '../../components/ui/SearchBar';
 import { siteConfig } from '../../lib/siteConfig';
 
-export default function BlogIndex({ posts, recentPosts, tags }) {
+interface BlogIndexProps {
+  posts: {
+    slug: string;
+    frontMatter: any;
+  }[];
+  recentPosts: {
+    slug: string;
+    title: string;
+  }[];
+  tags: string[];
+}
+
+export default function BlogIndex({ posts, recentPosts, tags }: BlogIndexProps) {
   const [activeTag, setActiveTag] = useState('all');
   
   // Filter posts by tag
@@ -82,7 +94,7 @@ export async function getStaticProps() {
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount = {};
+  const tagCount: { [key: string]: number } = {};
   
   // Count tag occurrences
   allTags.forEach(tag => {
