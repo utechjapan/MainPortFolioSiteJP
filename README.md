@@ -2,7 +2,7 @@
 
 A modern, customizable blog and portfolio website built with Next.js, Tailwind CSS, and MDX. Perfect for tech enthusiasts, developers, and creators who want to share their knowledge and showcase their projects.
 
-![Show Image](./public/images/placeholder.jpg)
+![Show Image](./public/images/TemplateSample.jpg)
 
 ## Features
 
@@ -419,10 +419,12 @@ Summarize what the reader should have learned and suggest next steps.
 
 *Remember to create the appropriate image files referenced in your post and place them in the `public/images` directory.*
 
----
 
-Enjoy customizing your UTechLab template!
+```
+---
 
 ## Support
 
 If you need help, please open an issue or contact [chikara.inohara@utechjapan.net](mailto:your-email@example.com).
+
+Enjoy customizing your UTechLab template!
