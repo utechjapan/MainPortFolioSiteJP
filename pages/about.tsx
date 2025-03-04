@@ -7,7 +7,7 @@ import { siteConfig } from '../lib/siteConfig';
 
 export default function About() {
   return (
-    <Layout rightSidebar={false}>
+    <Layout rightSidebar={false} toc={null}>
       <Head>
         <title>About | {siteConfig.title}</title>
         <meta name="description" content="Learn more about our mission and values" />
