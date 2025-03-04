@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-100;
+  }
+  
+  ::selection {
+    @apply bg-primary/30 text-gray-900 dark:text-white;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white;
+  }
+  
+  .btn-outline {
+    @apply border border-primary text-primary hover:bg-primary hover:text-white;
+  }
+}
+
+/* Smooth transitions for dark mode */
+.transition-theme {
+  @apply transition-colors duration-300;
+}
+
+/* Padding for fixed mobile header */
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+  }
+}
+
+/* Top bar styles */
+.top-bar {
+  @apply fixed top-0 left-0 right-0 z-50 bg-dark-bg border-b border-gray-700 py-3 px-4 flex justify-between items-center;
+}
+
+/* Code block styling */
+pre {
+  @apply relative bg-gray-800 rounded-lg overflow-x-auto my-6;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(138, 99, 210, 0.5) transparent;
+}
+
+pre::-webkit-scrollbar {
+  @apply h-2;
+}
+
+pre::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+pre::-webkit-scrollbar-thumb {
+  @apply bg-primary/30 rounded-full;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/50;
+}
+
+pre > code {
+  @apply font-mono text-sm;
+}
+
+/* Prism theme customization */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  @apply text-gray-400;
+}
+
+.token.punctuation {
+  @apply text-gray-300;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  @apply text-red-300;
+}
+
+.token.boolean,
+.token.number {
+  @apply text-amber-300;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  @apply text-green-300;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+  @apply text-blue-300;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+  @apply text-yellow-200;
+}
+
+.token.keyword {
+  @apply text-pink-300;
+}
+
+.token.regex,
+.token.important {
+  @apply text-red-400;
+}
+
+.token.important,
+.token.bold {
+  @apply font-bold;
+}
+
+/* FIX: Removed the @apply italic that caused circular dependency */
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* Code title styling */
+.rehype-code-title {
+  @apply px-5 py-2 font-mono text-sm font-bold text-gray-200 bg-gray-700 border-b border-gray-600 rounded-t-lg;
+}
+
+.rehype-code-title + pre {
+  @apply mt-0 rounded-t-none;
+}
+
+.code-highlight {
+  @apply float-left min-w-full;
+}
+
+.code-line {
+  @apply block px-4 py-0.5;
+}
+
+.code-line.inserted {
+  @apply bg-green-800/50;
+}
+
+.code-line.deleted {
+  @apply bg-red-800/50;
+}
+
+.highlight-line {
+  @apply -mx-4 bg-gray-700/50 border-l-4 border-primary;
+}
+
+.line-number::before {
+  @apply inline-block w-4 mr-4 text-right text-gray-500;
+  content: attr(line);
+}

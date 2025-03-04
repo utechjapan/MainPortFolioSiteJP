@@ -1,7 +1,26 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    domains: ['placeholder.com', 'via.placeholder.com'],
+  },
+  webpack: (config, { isServer }) => {
+    // Only include svg converting on client-side
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+      };
+    }
+    
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+    
+    return config;
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
