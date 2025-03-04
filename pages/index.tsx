@@ -9,7 +9,19 @@ import { motion } from 'framer-motion';
 import { siteConfig } from '../lib/siteConfig';
 import Tag from '../components/ui/Tag';
 
-export default function Home({ posts, recentPosts, tags }) {
+interface HomeProps {
+  posts: {
+    slug: string;
+    frontMatter: any;
+  }[];
+  recentPosts: {
+    slug: string;
+    title: string;
+  }[];
+  tags: string[];
+}
+
+export default function Home({ posts, recentPosts, tags }: HomeProps) {
   // Define categories
   const categories = [
     ...siteConfig.categories,
@@ -19,7 +31,6 @@ export default function Home({ posts, recentPosts, tags }) {
     { name: 'Security', icon: '/images/categories/security.png', slug: 'security' },
   ];
   
-
   return (
     <Layout recentPosts={recentPosts} tags={tags}>
       <Head>
@@ -30,33 +41,32 @@ export default function Home({ posts, recentPosts, tags }) {
       <div className="space-y-16">
         {/* Browse by Category */}
         <section className="pb-4 border-b border-gray-700">
-  <h2 className="text-2xl font-bold mb-6 text-white">
-    <span className="inline-block border-b-2 border-primary pb-1">Browse by Category</span>
-  </h2>
-  
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-    {siteConfig.categories.map((category) => (
-      <Link 
-        href={`/blog/category/${category.slug}`} 
-        key={category.slug}
-        className="flex flex-col items-center group"
-      >
-        <div className="mb-3 relative w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
-          <Image 
-            src={category.icon} 
-            alt={category.name}
-            width={64}
-            height={64}
-            className="object-contain transition-transform group-hover:scale-110"
-          />
-        </div>
-        <h3 className="text-lg font-medium text-white group-hover:text-primary transition-colors">
-          {category.name}
-        </h3>
-      </Link>
-    ))}
-  </div>
-</section>
+          <h2 className="text-2xl font-bold mb-6 text-white">
+            <span className="inline-block border-b-2 border-primary pb-1">Browse by Category</span>
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {siteConfig.categories.map((category) => (
+              <Link 
+                href={`/blog/category/${category.slug}`} 
+                key={category.slug}
+                className="flex flex-col items-center group"
+              >
+                <div className="mb-3 relative w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
+                  <Image 
+                    src={category.icon} 
+                    alt={category.name}
+                    width={64}
+                    height={64}
+                    className="object-contain transition-transform group-hover:scale-110"
+                  />
+                </div>
+                <h3 className="text-lg font-medium text-white group-hover:text-primary transition-colors">
+                  {category.name}
+                </h3>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* Latest Posts */}
         <section>
@@ -70,7 +80,7 @@ export default function Home({ posts, recentPosts, tags }) {
             >
               View all posts 
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </Link>
           </div>
@@ -141,7 +151,7 @@ export default function Home({ posts, recentPosts, tags }) {
             >
               View More Posts
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </Link>
           </div>
@@ -177,7 +187,7 @@ export default function Home({ posts, recentPosts, tags }) {
             >
               Subscribe Now
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </button>
           </form>
@@ -193,7 +203,7 @@ export async function getStaticProps() {
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount = {};
+  const tagCount: { [key: string]: number } = {};
   
   // Count tag occurrences
   allTags.forEach(tag => {
