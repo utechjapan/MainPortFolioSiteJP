@@ -87,7 +87,8 @@ export const getStaticProps: GetStaticProps<TagPageProps, Params> = async ({ par
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount = {};
+  // Explicitly type tagCount to allow string indexing
+  const tagCount: { [key: string]: number } = {};
   
   // Count tag occurrences
   allTags.forEach(t => {
@@ -98,7 +99,7 @@ export const getStaticProps: GetStaticProps<TagPageProps, Params> = async ({ par
   const popularTags = Object.entries(tagCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
-    .map(([t]) => t);
+    .map(([tag]) => tag);
   
   return {
     props: {
