@@ -1,11 +1,13 @@
 // pages/index.tsx
 import Head from 'next/head';
+import Layout from '../components/layout/Layout';
 import Image from 'next/image';
 import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
-import Layout from '../components/layout/Layout';
 import { getAllMDXContent } from '../lib/mdx';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import SearchBar from '../components/ui/SearchBar';
 import { siteConfig } from '../lib/siteConfig';
 import Tag from '../components/ui/Tag';
 
@@ -22,15 +24,17 @@ interface HomeProps {
 }
 
 export default function Home({ posts, recentPosts, tags }: HomeProps) {
-  // Define categories
-  const categories = [
-    ...siteConfig.categories,
-    { name: 'HomeLab', icon: '/images/categories/homelab.png', slug: 'homelab' },
-    { name: 'Tutorials', icon: '/images/categories/tutorials.png', slug: 'tutorials' },
-    { name: 'Automation', icon: '/images/categories/automation.png', slug: 'automation' },
-    { name: 'Security', icon: '/images/categories/security.png', slug: 'security' },
-  ];
-  
+  const [activeTag, setActiveTag] = useState('all');
+
+  // Filter posts by tag
+  const filteredPosts =
+    activeTag === 'all'
+      ? posts
+      : posts.filter(post => post.frontMatter.tags?.includes(activeTag));
+
+  // Extract all unique tags
+  const allTags = ['all', ...new Set(posts.flatMap(post => post.frontMatter.tags || []))];
+
   return (
     <Layout recentPosts={recentPosts} tags={tags}>
       <Head>
@@ -86,7 +90,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {posts.map((post) => (
+            {filteredPosts.map((post) => (
               <motion.article 
                 key={post.slug}
                 className="bg-dark-card rounded-lg overflow-hidden"
@@ -134,7 +138,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                   
                   {post.frontMatter.tags && (
                     <div className="flex flex-wrap gap-2">
-                      {post.frontMatter.tags.slice(0, 3).map(tag => (
+                      {post.frontMatter.tags.slice(0, 3).map((tag: string) => (
                         <Tag key={tag} text={tag} />
                       ))}
                     </div>
@@ -151,7 +155,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
             >
               View More Posts
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </Link>
           </div>
