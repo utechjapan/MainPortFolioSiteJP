@@ -111,7 +111,7 @@ export const getStaticProps: GetStaticProps<CategoryPageProps, Params> = async (
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount = {};
+  const tagCount: { [key: string]: number } = {};
   
   // Count tag occurrences
   allTags.forEach(t => {
