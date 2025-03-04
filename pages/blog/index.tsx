@@ -7,16 +7,11 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import SearchBar from '../../components/ui/SearchBar';
 import { siteConfig } from '../../lib/siteConfig';
+import { Post, RecentPost } from '../../types';
 
 interface BlogIndexProps {
-  posts: {
-    slug: string;
-    frontMatter: any;
-  }[];
-  recentPosts: {
-    slug: string;
-    title: string;
-  }[];
+  posts: Post[];
+  recentPosts: RecentPost[];
   tags: string[];
 }
 
@@ -94,7 +89,7 @@ export async function getStaticProps() {
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount: { [key: string]: number } = {};
+  const tagCount: Record<string, number> = {};
   
   // Count tag occurrences
   allTags.forEach(tag => {
