@@ -1,4 +1,3 @@
-// components/layout/Layout.tsx - Update to accept TOC prop
 import { ReactNode, useState } from 'react';
 import Sidebar from './Sidebar';
 import RightSidebar from './RightSidebar';
@@ -15,12 +14,12 @@ interface LayoutProps {
   toc: any[] | null;
 }
 
-export default function Layout({ 
-  children, 
-  rightSidebar = true, 
-  recentPosts, 
+export default function Layout({
+  children,
+  rightSidebar = true,
+  recentPosts,
   tags,
-  toc = null
+  toc = null,
 }: LayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -29,7 +28,7 @@ export default function Layout({
       {/* Sidebar */}
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Mobile menu button - Updated to stay at top */}
+      {/* Mobile menu button */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-dark-bg border-b border-gray-700 py-3 px-4 flex justify-between items-center">
         <button
           className="p-2 rounded-md bg-primary/80 backdrop-blur-sm text-white hover:bg-primary transition-colors"
@@ -37,18 +36,30 @@ export default function Layout({
           aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           )}
         </button>
-        
+
         <span className="text-lg font-bold text-white">UTechLab</span>
-        
+
         <ThemeToggle className="py-1 px-1" />
       </div>
 
@@ -65,7 +76,7 @@ export default function Layout({
 
       {/* Right sidebar */}
       {rightSidebar && <RightSidebar recentPosts={recentPosts} tags={tags} toc={toc} />}
-      
+
       {/* Back to top button */}
       <BackToTop />
     </div>
