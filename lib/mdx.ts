@@ -42,10 +42,8 @@ function extractHeadings(content: string) {
 // Get all MDX files in a directory
 export function getAllMDXSlugs(contentType: string): string[] {
   // Server-side only
-  if (typeof window !== 'undefined') {
-    return [];
-  }
-
+  if (typeof window !== 'undefined') return [];
+  
   const contentPath = path.join(process.cwd(), 'content', contentType);
   const filenames = fs.readdirSync(contentPath);
   
@@ -58,7 +56,7 @@ export function getAllMDXSlugs(contentType: string): string[] {
 export async function getMDXContent(contentType: string, slug: string) {
   // Server-side only
   if (typeof window !== 'undefined') {
-    return { content: '', frontMatter: {}, toc: [] };
+    return { content: '', frontMatter: { title: '', date: '' } as MDXFrontMatter, toc: [] };
   }
 
   const filePath = path.join(process.cwd(), 'content', contentType, `${slug}.mdx`);
@@ -70,46 +68,41 @@ export async function getMDXContent(contentType: string, slug: string) {
   // Calculate reading time
   const readingStats = readingTime(content);
   
-  return {
-    content,
-    frontMatter: {
-      ...data,
-      readingTime: readingStats.text,
-    } as MDXFrontMatter,
-    toc,
+  // Construct a complete frontMatter object with default values if properties are missing
+  const frontMatter: MDXFrontMatter = {
+    title: data.title || 'Untitled',
+    date: data.date || '1970-01-01',
+    description: data.description || '',
+    excerpt: data.excerpt || '',
+    author: data.author || '',
+    authorImage: data.authorImage || '',
+    authorBio: data.authorBio || '',
+    image: data.image || '',
+    tags: data.tags || [],
+    readingTime: readingStats.text,
   };
+
+  return { content, frontMatter, toc };
 }
 
 // Get all MDX files with their frontmatter
 export async function getAllMDXContent(contentType: string) {
   // Server-side only
-  if (typeof window !== 'undefined') {
-    return [];
-  }
-
+  if (typeof window !== 'undefined') return [];
+  
   const slugs = getAllMDXSlugs(contentType);
   
-  const content = await Promise.all(
+  const contentArr = await Promise.all(
     slugs.map(async (slug) => {
       const { content, frontMatter, toc } = await getMDXContent(contentType, slug);
-      return {
-        slug,
-        content,
-        frontMatter,
-        toc,
-      };
+      return { slug, content, frontMatter, toc };
     })
   );
   
-  // Sort by date.
-  return content.sort((a, b) => {
-    // Use a type guard: if frontMatter has a 'date' property, use it; otherwise default to new Date(0)
-    const dateA = 'date' in a.frontMatter 
-      ? new Date((a.frontMatter as MDXFrontMatter).date)
-      : new Date(0);
-    const dateB = 'date' in b.frontMatter 
-      ? new Date((b.frontMatter as MDXFrontMatter).date)
-      : new Date(0);
+  // Sort by date (assuming every post now has a valid date string)
+  return contentArr.sort((a, b) => {
+    const dateA = new Date(a.frontMatter.date);
+    const dateB = new Date(b.frontMatter.date);
     return dateB.getTime() - dateA.getTime();
   });
 }
