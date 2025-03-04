@@ -11,7 +11,7 @@ interface LayoutProps {
   rightSidebar?: boolean;
   recentPosts?: any[];
   tags?: string[];
-  toc: any[] | null;
+  toc?: any[] | null; // Made optional
 }
 
 export default function Layout({
