@@ -101,13 +101,15 @@ export async function getAllMDXContent(contentType: string) {
     })
   );
   
-  // Sort by date using an explicit cast so TS recognizes the date property.
+  // Sort by date.
   return content.sort((a, b) => {
-    const frontMatterA = a.frontMatter as MDXFrontMatter;
-    const frontMatterB = b.frontMatter as MDXFrontMatter;
-    // Fallback to an empty string if date is missing; this converts to "Invalid Date" and sorts at 0.
-    const dateA = new Date(frontMatterA.date || '');
-    const dateB = new Date(frontMatterB.date || '');
+    // Use a type guard: if frontMatter has a 'date' property, use it; otherwise default to new Date(0)
+    const dateA = 'date' in a.frontMatter 
+      ? new Date((a.frontMatter as MDXFrontMatter).date)
+      : new Date(0);
+    const dateB = 'date' in b.frontMatter 
+      ? new Date((b.frontMatter as MDXFrontMatter).date)
+      : new Date(0);
     return dateB.getTime() - dateA.getTime();
   });
 }
