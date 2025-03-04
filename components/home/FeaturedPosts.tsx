@@ -5,7 +5,24 @@ import { motion } from 'framer-motion';
 import BlogMeta from '../blog/BlogMeta';
 import Tag from '../ui/Tag';
 
-export default function FeaturedPosts({ posts }) {
+interface Post {
+  slug: string;
+  frontMatter: {
+    title: string;
+    date: string;
+    description?: string;
+    image?: string;
+    readingTime?: string;
+    author?: string;
+    tags?: string[];
+  };
+}
+
+interface FeaturedPostsProps {
+  posts: Post[];
+}
+
+export default function FeaturedPosts({ posts }: FeaturedPostsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
       {posts.map((post, index) => (
