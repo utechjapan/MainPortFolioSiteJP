@@ -60,7 +60,7 @@ export default function FeaturedPosts({ posts }: FeaturedPostsProps) {
             <BlogMeta 
               date={post.frontMatter.date} 
               readingTime={post.frontMatter.readingTime} 
-              author={post.frontMatter.author} 
+              // Removed the author prop
             />
             
             {post.frontMatter.description && (
