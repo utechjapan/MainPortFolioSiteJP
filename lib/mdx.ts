@@ -22,8 +22,8 @@ export interface MDXFrontMatter {
 // Extract headings from markdown content
 function extractHeadings(content: string) {
   const headingRegex = /^(#{2,4})\s+(.*)$/gm;
-  const headings = [];
-  let match;
+  const headings: { id: string; text: string; level: number }[] = [];
+  let match: RegExpExecArray | null;
 
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1].length;
@@ -50,8 +50,8 @@ export function getAllMDXSlugs(contentType: string): string[] {
   const filenames = fs.readdirSync(contentPath);
   
   return filenames
-    .filter(filename => filename.endsWith('.mdx'))
-    .map(filename => filename.replace('.mdx', ''));
+    .filter((filename: string) => filename.endsWith('.mdx'))
+    .map((filename: string) => filename.replace('.mdx', ''));
 }
 
 // Get content and frontmatter of an MDX file
