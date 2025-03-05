@@ -81,7 +81,7 @@ export default function Layout({
         </button>
 
         {/* Centered logo text for mobile */}
-        <span className="text-lg font-bold absolute left-1/2 transform -translate-x-1/2 text-gray-900 dark:text-white transition-theme">
+        <span className="text-lg font-bold text-gray-900 dark:text-white transition-theme">
           UTechLab
         </span>
 

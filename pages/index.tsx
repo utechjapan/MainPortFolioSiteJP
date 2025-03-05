@@ -1,3 +1,4 @@
+//pages/index.tsx//
 import Head from "next/head";
 import Layout from "../components/layout/Layout";
 import Image from "next/image";
@@ -42,34 +43,55 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
       </Head>
 
       <div className="space-y-16">
-        {/* Hero section */}
-        <section className="mb-16">
+        {/* Hero section - Redesigned for better professionalism */}
+        <section className="mb-10">
           <motion.div
-            className="text-center"
+            className="bg-light-card dark:bg-dark-card rounded-lg p-8 shadow-md dark:shadow-none"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.4 }}
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-              Welcome to {siteConfig.title}
-            </h1>
-            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-8 transition-colors">
-              Explore tutorials, guides, and insights on tech, self-hosting, and
-              modern development practices.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                href="/blog"
-                className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors"
-              >
-                Browse Articles
-              </Link>
-              <Link
-                href="/about"
-                className="border border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-lg transition-colors"
-              >
-                About Me
-              </Link>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              {/* Profile image for desktop */}
+              <div className="hidden md:block relative w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-4 border-primary/50">
+                <Image
+                  src={siteConfig.author.avatar}
+                  alt={siteConfig.author.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+                  <span className="text-primary">{siteConfig.title}</span> -
+                  Tech Insights & Tutorials
+                </h1>
+                <p className="text-base text-gray-700 dark:text-gray-300 mb-4">
+                  Explore practical guides on self-hosting, network
+                  infrastructure, and modern development practices. Written by{" "}
+                  <span className="font-medium text-primary">
+                    {siteConfig.author.name}
+                  </span>
+                  , a system engineer passionate about technology.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href="/blog"
+                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center"
+                  >
+                    <i className="fas fa-book-open mr-2"></i>
+                    Read Articles
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-lg transition-colors inline-flex items-center"
+                  >
+                    <i className="fas fa-user mr-2"></i>
+                    About Me
+                  </Link>
+                </div>
+              </div>
             </div>
           </motion.div>
         </section>
@@ -128,38 +150,12 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                       dateTime={post.frontMatter.date}
                       className="flex items-center"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 mr-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
+                      <i className="fas fa-calendar-alt mr-2"></i>
                       {format(parseISO(post.frontMatter.date), "MMMM d, yyyy")}
                     </time>
                     <span className="mx-2">•</span>
                     <span className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 mr-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <i className="fas fa-clock mr-2"></i>
                       {post.frontMatter.readingTime || "5 min read"}
                     </span>
                   </div>
@@ -193,18 +189,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
             >
               View More Posts
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <i className="fas fa-arrow-right ml-2"></i>
             </Link>
           </div>
         </section>
@@ -213,20 +198,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
         <section className="bg-light-card dark:bg-dark-card rounded-lg p-8 text-center shadow-md dark:shadow-none transition-colors">
           <div className="flex justify-center mb-6">
             <div className="bg-primary/20 p-4 rounded-full">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-10 w-10 text-primary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
+              <i className="fas fa-envelope text-primary text-3xl"></i>
             </div>
           </div>
           <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
@@ -251,18 +223,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="w-full bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-md flex items-center justify-center transition-colors"
             >
               Subscribe Now
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <i className="fas fa-arrow-right ml-2"></i>
             </button>
           </form>
         </section>
