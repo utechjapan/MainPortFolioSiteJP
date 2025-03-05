@@ -13,6 +13,7 @@
     @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-100 transition-colors duration-300;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    overflow-x: hidden;
   }
 
   ::selection {
@@ -27,6 +28,12 @@
   /* Fix any potential overflow issues */
   * {
     @apply box-border;
+  }
+
+  /* Fix for bold text in dark mode */
+  strong,
+  b {
+    @apply text-gray-900 dark:text-gray-100;
   }
 }
 
@@ -54,7 +61,7 @@
 
   /* Responsive container for blog post content */
   .blog-content-container {
-    @apply w-full mx-auto max-w-full overflow-x-hidden;
+    @apply w-full mx-auto max-w-full overflow-x-hidden break-words;
   }
 
   /* Make links more accessible */
@@ -85,6 +92,8 @@ pre {
   @apply relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto my-6 transition-colors p-4;
   scrollbar-width: thin;
   scrollbar-color: rgba(138, 99, 210, 0.5) transparent;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 pre::-webkit-scrollbar {
@@ -114,6 +123,29 @@ pre > code {
   height: auto;
   display: block;
   margin: 0 auto;
+}
+
+/* Overflow handling */
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Dark mode improvements */
+.dark .prose strong,
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6 {
+  @apply text-white;
+}
+
+.dark .prose p,
+.dark .prose li,
+.dark .prose blockquote {
+  @apply text-gray-300;
 }
 
 /* Prism theme customization */
@@ -230,5 +262,50 @@ pre > code {
 
   .mobile-center-text {
     @apply text-center w-full absolute left-1/2 transform -translate-x-1/2;
+  }
+}
+
+/* Ensure consistency in dark mode across components */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark strong {
+  @apply text-white;
+}
+
+/* Typography scale refinements */
+h1 {
+  @apply text-3xl sm:text-4xl md:text-5xl break-words;
+}
+
+h2 {
+  @apply text-2xl sm:text-3xl md:text-4xl break-words;
+}
+
+h3 {
+  @apply text-xl sm:text-2xl md:text-3xl break-words;
+}
+
+p,
+li,
+a,
+blockquote {
+  @apply break-words;
+}
+
+/* Responsive table improvements */
+table {
+  @apply min-w-full overflow-hidden;
+  display: block;
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  table {
+    display: table;
+    overflow-x: initial;
   }
 }

@@ -59,20 +59,22 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
       <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white border-b border-gray-300 dark:border-gray-700 pb-2 transition-colors">
         Contents
       </h3>
-      <nav>
+      <nav className="overflow-y-auto max-h-[70vh]">
         <ul className="space-y-2">
           {toc.map((item) => (
             <li
               key={item.id}
               style={{ paddingLeft: `${(item.level - 2) * 0.75}rem` }}
+              className="overflow-hidden"
             >
               <button
                 onClick={() => handleClick(item.id)}
-                className={`text-left text-sm hover:text-primary transition-colors ${
+                className={`text-left text-sm hover:text-primary transition-colors truncate w-full ${
                   activeId === item.id
                     ? "text-primary font-medium"
                     : "text-gray-600 dark:text-gray-400"
                 }`}
+                title={item.text}
               >
                 {item.text}
               </button>

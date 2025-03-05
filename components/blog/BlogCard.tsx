@@ -25,11 +25,14 @@ export default function BlogCard({ post }: BlogCardProps) {
       </Link>
 
       <div className="p-6 flex flex-col flex-grow">
-        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-3 transition-colors">
-          <time dateTime={post.frontMatter.date} className="flex items-center">
+        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-3 transition-colors flex-wrap">
+          <time
+            dateTime={post.frontMatter.date}
+            className="flex items-center mb-1 sm:mb-0"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
+              className="h-4 w-4 mr-1 flex-shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -43,11 +46,11 @@ export default function BlogCard({ post }: BlogCardProps) {
             </svg>
             {format(parseISO(post.frontMatter.date), "MMMM d, yyyy")}
           </time>
-          <span className="mx-2">•</span>
+          <span className="mx-2 hidden sm:inline">•</span>
           <span className="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
+              className="h-4 w-4 mr-1 flex-shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -64,12 +67,12 @@ export default function BlogCard({ post }: BlogCardProps) {
         </div>
 
         <Link href={`/blog/${post.slug}`} className="group">
-          <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary transition-colors">
+          <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary transition-colors break-words">
             {post.frontMatter.title}
           </h3>
         </Link>
 
-        <p className="text-gray-700 dark:text-gray-400 mb-4 line-clamp-2 flex-grow transition-colors">
+        <p className="text-gray-700 dark:text-gray-400 mb-4 line-clamp-2 flex-grow transition-colors break-words">
           {post.frontMatter.description}
         </p>
 

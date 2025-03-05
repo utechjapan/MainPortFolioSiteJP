@@ -1,4 +1,4 @@
-// pages/blog/[slug].tsx - Fixed responsive issues
+// pages/blog/[slug].tsx - Improved responsiveness and dark mode text
 import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -60,40 +60,40 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       h1: (props: any) => (
         <h1
           {...props}
-          className="text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors"
+          className="text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
         />
       ),
       h2: (props: any) => (
         <h2
           {...props}
-          className="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors"
+          className="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
         />
       ),
       h3: (props: any) => (
         <h3
           {...props}
-          className="text-xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors"
+          className="text-xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors break-words"
         />
       ),
       p: (props: any) => (
         <p
           {...props}
-          className="mb-4 text-gray-700 dark:text-gray-300 transition-colors"
+          className="mb-4 text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
       ul: (props: any) => (
         <ul
           {...props}
-          className="list-disc ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors"
+          className="list-disc ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
       ol: (props: any) => (
         <ol
           {...props}
-          className="list-decimal ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors"
+          className="list-decimal ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
-      li: (props: any) => <li {...props} className="mb-1" />,
+      li: (props: any) => <li {...props} className="mb-1 break-words" />,
       img: (props: any) => (
         <div className="my-8 relative w-full rounded-lg overflow-hidden">
           <Image
@@ -109,7 +109,11 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       a: (props: any) => (
         <a
           {...props}
-          className="text-primary hover:text-primary-dark underline transition-colors"
+          className="text-primary hover:text-primary-dark underline transition-colors break-words"
+          target={props.href.startsWith("http") ? "_blank" : undefined}
+          rel={
+            props.href.startsWith("http") ? "noopener noreferrer" : undefined
+          }
         />
       ),
       code: (props: any) => {
@@ -117,14 +121,14 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           return (
             <code
               {...props}
-              className={`${props.className} rounded p-1 text-sm`}
+              className={`${props.className} rounded p-1 text-sm break-words overflow-x-auto`}
             />
           );
         }
         return (
           <code
             {...props}
-            className="bg-gray-100 dark:bg-gray-800 rounded p-1 text-sm text-gray-800 dark:text-gray-200 transition-colors"
+            className="bg-gray-100 dark:bg-gray-800 rounded p-1 text-sm text-gray-800 dark:text-gray-200 transition-colors break-words"
           />
         );
       },
@@ -146,7 +150,33 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       blockquote: (props: any) => (
         <blockquote
           {...props}
-          className="border-l-4 border-primary pl-4 italic my-6 text-gray-600 dark:text-gray-400 transition-colors"
+          className="border-l-4 border-primary pl-4 italic my-6 text-gray-600 dark:text-gray-400 transition-colors break-words"
+        />
+      ),
+      strong: (props: any) => (
+        <strong
+          {...props}
+          className="font-bold text-gray-900 dark:text-gray-100 transition-colors"
+        />
+      ),
+      table: (props: any) => (
+        <div className="overflow-x-auto mb-6">
+          <table
+            {...props}
+            className="min-w-full divide-y divide-gray-300 dark:divide-gray-700 transition-colors"
+          />
+        </div>
+      ),
+      th: (props: any) => (
+        <th
+          {...props}
+          className="py-3 px-4 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider bg-gray-100 dark:bg-gray-800 transition-colors"
+        />
+      ),
+      td: (props: any) => (
+        <td
+          {...props}
+          className="py-2 px-4 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 transition-colors"
         />
       ),
     }),
@@ -194,7 +224,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto"
+        className="w-full max-w-4xl mx-auto px-4 sm:px-0"
       >
         <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           {/* Cover image */}
@@ -212,7 +242,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
 
           {/* Post content */}
           <div className="p-4 sm:p-6 md:p-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 transition-colors leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 transition-colors leading-tight break-words">
               {frontMatter.title}
             </h1>
 
@@ -247,7 +277,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
             )}
 
             {/* Actual MDX content */}
-            <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden">
+            <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words">
               <MDXRemote {...source} components={components} />
             </div>
           </div>

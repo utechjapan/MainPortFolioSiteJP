@@ -8,6 +8,9 @@ export default function Document() {
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-iecdLmaskl7CVpOaEUAB+CXzKavmELwJ6C41/Fz0fA8RXn6+SRuH4DmNWFXpDr8Iy+B/NtDJuFuk8Y/t8cGjnQ=="
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -18,16 +21,32 @@ export default function Document() {
           rel="preload"
           as="font"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          crossOrigin=""
         />
+
+        {/* Meta tags for SEO and social media */}
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content="Chikara Inohara" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="UTechLab" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:creator" content="@_utechlab" />
+        <link rel="icon" href="/favicon.ico" />
 
         {/* Script for applying theme early to avoid theme flashing */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // Check for saved theme in localStorage
-                const theme = localStorage.getItem('theme') || 'dark';
-                document.documentElement.classList.add(theme);
+                try {
+                  // Check for saved theme in localStorage
+                  const theme = localStorage.getItem('theme') || 'dark';
+                  document.documentElement.classList.add(theme);
+                } catch (e) {
+                  // Fallback to dark theme if localStorage is not available
+                  document.documentElement.classList.add('dark');
+                }
               })();
             `,
           }}

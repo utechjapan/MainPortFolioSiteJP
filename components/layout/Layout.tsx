@@ -36,14 +36,14 @@ export default function Layout({
   const isDark = theme === "dark" || resolvedTheme === "dark";
 
   return (
-    <div className="min-h-screen flex bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-theme">
+    <div className="min-h-screen flex flex-col bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-theme">
       {/* Sidebar */}
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
       {/* Mobile menu button and header */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme">
         <button
-          className="p-2 rounded-md bg-primary/80 backdrop-blur-sm text-white hover:bg-primary transition-colors"
+          className="p-2 rounded-md bg-primary/80 text-white hover:bg-primary transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -94,7 +94,11 @@ export default function Layout({
 
       {/* Main content */}
       <main className="flex-1 ml-0 md:ml-72 transition-all duration-300 ease-in-out pt-14 md:pt-0">
-        <div className={`p-6 md:p-8 lg:p-10 ${rightSidebar ? "lg:mr-64" : ""}`}>
+        <div
+          className={`p-4 md:p-6 lg:p-8 ${
+            rightSidebar ? "lg:mr-64" : ""
+          } max-w-full overflow-hidden`}
+        >
           {children}
           <Footer />
         </div>

@@ -31,7 +31,7 @@ export default function RightSidebar({
   }
 
   return (
-    <aside className="h-full pt-6">
+    <aside className="h-full pt-6 overflow-y-auto">
       {/* Table of contents for blog posts */}
       {isPostPage && toc && toc.length > 0 && (
         <div className="mb-10">
@@ -49,11 +49,12 @@ export default function RightSidebar({
             {recentPosts.map((post) => (
               <li
                 key={post.slug}
-                className="transition-transform hover:translate-x-1"
+                className="transition-transform hover:translate-x-1 overflow-hidden"
               >
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="text-gray-700 dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm transition-colors"
+                  className="text-gray-700 dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm transition-colors block truncate"
+                  title={post.title}
                 >
                   <i className="fas fa-angle-right mr-2 text-primary/70"></i>
                   {post.title}
@@ -77,7 +78,7 @@ export default function RightSidebar({
               <Link
                 key={tag}
                 href={`/blog/tag/${tag}`}
-                className="inline-block bg-primary/20 hover:bg-primary/30 text-primary text-xs px-3 py-1 rounded-full transition-colors"
+                className="inline-block bg-primary/20 hover:bg-primary/30 text-primary text-xs px-3 py-1 rounded-full transition-colors mb-2"
               >
                 {tag}
               </Link>
