@@ -1,7 +1,9 @@
+// components/layout/RightSidebar.tsx
 import Link from "next/link";
 import { useRouter } from "next/router";
 import TableOfContents from "../blog/TableOfContents";
 import { RecentPost, TocItem } from "../../types";
+import { useEffect, useState } from "react";
 
 interface RightSidebarProps {
   recentPosts?: RecentPost[];
@@ -17,6 +19,16 @@ export default function RightSidebar({
   const router = useRouter();
   const isPostPage =
     router.pathname.startsWith("/blog/") && router.pathname !== "/blog";
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <aside className="h-full pt-6">

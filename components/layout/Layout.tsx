@@ -1,5 +1,5 @@
 // components/layout/Layout.tsx
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
@@ -25,7 +25,13 @@ export default function Layout({
   toc = null,
 }: LayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme, resolvedTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // When mounted on client, now we can show UI components that depend on theme
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isDark = theme === "dark" || resolvedTheme === "dark";
 
@@ -34,7 +40,7 @@ export default function Layout({
       {/* Sidebar */}
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Mobile menu button */}
+      {/* Mobile menu button and header */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme">
         <button
           className="p-2 rounded-md bg-primary/80 backdrop-blur-sm text-white hover:bg-primary transition-colors"
@@ -74,11 +80,13 @@ export default function Layout({
           )}
         </button>
 
-        <span className="text-lg font-bold text-gray-900 dark:text-white transition-theme">
+        {/* Centered logo text for mobile */}
+        <span className="text-lg font-bold absolute left-1/2 transform -translate-x-1/2 text-gray-900 dark:text-white transition-theme">
           UTechLab
         </span>
 
-        <ThemeToggle className="py-1 px-1" />
+        {/* Theme toggle for mobile - moved out of sidebar */}
+        {mounted && <ThemeToggle className="py-1 px-1" />}
       </div>
 
       {/* Mobile menu overlay */}
@@ -93,7 +101,7 @@ export default function Layout({
       </main>
 
       {/* Right sidebar */}
-      {rightSidebar && (
+      {rightSidebar && mounted && (
         // Hide on small screens, show at lg
         <div className="hidden lg:block w-64 fixed top-0 right-0 h-screen bg-light-sidebar dark:bg-dark-sidebar border-l border-light-border dark:border-gray-700 p-6 overflow-y-auto transition-theme">
           <RightSidebar recentPosts={recentPosts} tags={tags} toc={toc} />

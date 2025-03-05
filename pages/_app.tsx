@@ -20,6 +20,14 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         {/* Add viewport and other meta tags */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
+        {/* Add preload for Font Awesome to improve performance */}
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
       </Head>
 
       {!mounted ? (

@@ -21,9 +21,11 @@ export default function About() {
         transition={{ duration: 0.5 }}
         className="max-w-3xl mx-auto"
       >
-        <h1 className="text-4xl font-bold mb-8 text-white">About</h1>
+        <h1 className="text-4xl font-bold mb-8 text-gray-900 dark:text-white transition-colors">
+          About
+        </h1>
 
-        <div className="bg-dark-card rounded-lg overflow-hidden mb-8">
+        <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           <div className="relative h-64 w-full">
             <Image
               src="/images/about-cover.jpg"
@@ -35,23 +37,42 @@ export default function About() {
 
           <div className="p-8">
             {/* Our Mission */}
-            <h2 className="text-2xl font-bold mb-4 text-white">Our Mission</h2>
-            <p className="text-gray-300 mb-6">
-              I'm <strong>Chikara Inohara</strong>, a technology enthusiast and
-              innovator based in Japan. I created <strong>UTechLabs</strong> as
-              a platform to document my journey through the ever-evolving world
-              of technology.
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
+              Our Mission
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
+              I'm{" "}
+              <strong className="text-gray-900 dark:text-white">
+                Chikara Inohara
+              </strong>
+              , a technology enthusiast and innovator based in Japan. I created{" "}
+              <strong className="text-gray-900 dark:text-white">
+                UTechLabs
+              </strong>{" "}
+              as a platform to document my journey through the ever-evolving
+              world of technology.
             </p>
-            <p className="text-gray-300 mb-6">
-              At UTechLabs, my goal is to <strong>Educate</strong> through
-              comprehensive tutorials, <strong> Innovate</strong> by exploring
-              new tools and methodologies, and <strong> Collaborate</strong>{" "}
+            <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
+              At UTechLabs, my goal is to{" "}
+              <strong className="text-gray-900 dark:text-white">Educate</strong>{" "}
+              through comprehensive tutorials,{" "}
+              <strong className="text-gray-900 dark:text-white">
+                {" "}
+                Innovate
+              </strong>{" "}
+              by exploring new tools and methodologies, and{" "}
+              <strong className="text-gray-900 dark:text-white">
+                {" "}
+                Collaborate
+              </strong>{" "}
               with fellow tech enthusiasts.
             </p>
 
             {/* Who We Are */}
-            <h2 className="text-2xl font-bold mb-4 text-white">Who We Are</h2>
-            <p className="text-gray-300 mb-6">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
+              Who We Are
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
               With years of experience in software development, networking, and
               system administration, I have worked on projects ranging from
               small business solutions to large-scale enterprise systems. My
@@ -60,40 +81,40 @@ export default function About() {
             </p>
 
             {/* What We Cover */}
-            <h2 className="text-2xl font-bold mb-4 text-white">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
               What We Cover
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="bg-dark-sidebar p-4 rounded-lg">
+              <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
                   Cloud Computing
                 </h3>
-                <p className="text-gray-400">
+                <p className="text-gray-700 dark:text-gray-400 transition-colors">
                   AWS, Azure, and GCP insights, reviews, and tutorials.
                 </p>
               </div>
-              <div className="bg-dark-sidebar p-4 rounded-lg">
+              <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
                   DevOps Practices
                 </h3>
-                <p className="text-gray-400">
+                <p className="text-gray-700 dark:text-gray-400 transition-colors">
                   CI/CD pipelines, automation, and containerization strategies.
                 </p>
               </div>
-              <div className="bg-dark-sidebar p-4 rounded-lg">
+              <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
                   Programming Languages
                 </h3>
-                <p className="text-gray-400">
+                <p className="text-gray-700 dark:text-gray-400 transition-colors">
                   Python, Go, and JavaScript development tips and best
                   practices.
                 </p>
               </div>
-              <div className="bg-dark-sidebar p-4 rounded-lg">
+              <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
                   HomeLab Enthusiast
                 </h3>
-                <p className="text-gray-400">
+                <p className="text-gray-700 dark:text-gray-400 transition-colors">
                   Building and experimenting with home servers and self-hosted
                   solutions.
                 </p>
@@ -101,8 +122,10 @@ export default function About() {
             </div>
 
             {/* Get In Touch */}
-            <h2 className="text-2xl font-bold mb-4 text-white">Get In Touch</h2>
-            <p className="text-gray-300 mb-6">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
+              Get In Touch
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
               I'm always excited to connect with fellow tech enthusiasts. Have
               questions or suggestions? Reach out through any of these channels:
             </p>

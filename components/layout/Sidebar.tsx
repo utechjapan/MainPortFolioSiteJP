@@ -3,8 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
-import ThemeToggle from "../ui/ThemeToggle";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -14,6 +14,16 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const router = useRouter();
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // When mounted on client, now we can show the UI
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <aside
@@ -25,7 +35,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         <div className="px-6">
           {/* Profile section */}
           <div className="flex flex-col items-center mb-8">
-            <Link href="/" className="mb-4">
+            <Link href="/" className="mb-4" onClick={() => setIsOpen(false)}>
               <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-primary/50 hover:border-primary transition-colors duration-300">
                 <Image
                   src={siteConfig.author.avatar}
@@ -41,11 +51,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
               {siteConfig.description}
             </p>
-
-            {/* Add theme toggle in sidebar for all screen sizes */}
-            <div className="mt-4">
-              <ThemeToggle />
-            </div>
           </div>
 
           {/* Navigation */}

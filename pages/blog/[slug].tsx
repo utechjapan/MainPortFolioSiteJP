@@ -1,3 +1,4 @@
+// pages/blog/[slug].tsx - Fixed responsive issues
 import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -94,12 +95,14 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       ),
       li: (props: any) => <li {...props} className="mb-1" />,
       img: (props: any) => (
-        <div className="my-8 relative aspect-[16/9] w-full rounded-lg overflow-hidden">
+        <div className="my-8 relative w-full rounded-lg overflow-hidden">
           <Image
             src={props.src}
             alt={props.alt || ""}
-            fill
-            className="object-cover"
+            width={800}
+            height={450}
+            className="object-cover max-w-full h-auto mx-auto"
+            style={{ maxHeight: "500px" }}
           />
         </div>
       ),
@@ -191,15 +194,12 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
+        className="w-full max-w-4xl mx-auto"
       >
         <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           {/* Cover image */}
           {frontMatter.image && (
-            <div
-              className="relative w-full"
-              style={{ height: "clamp(200px, 30vh, 400px)" }}
-            >
+            <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px]">
               <Image
                 src={frontMatter.image}
                 alt={frontMatter.title}
@@ -211,8 +211,8 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           )}
 
           {/* Post content */}
-          <div className="p-5 sm:p-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-3 transition-colors leading-tight">
+          <div className="p-4 sm:p-6 md:p-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 transition-colors leading-tight">
               {frontMatter.title}
             </h1>
 
@@ -247,14 +247,14 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
             )}
 
             {/* Actual MDX content */}
-            <div className="prose prose-lg dark:prose-invert max-w-none">
+            <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden">
               <MDXRemote {...source} components={components} />
             </div>
           </div>
         </div>
 
         {/* Comments in a separate card */}
-        <div className="bg-light-card dark:bg-dark-card rounded-lg p-5 sm:p-8 shadow-md dark:shadow-none transition-colors">
+        <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
           <GiscusComments slug={slug} />
         </div>
       </motion.div>

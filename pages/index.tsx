@@ -60,48 +60,18 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/blog"
-                className="btn btn-primary px-6 py-3 rounded-lg"
+                className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors"
               >
                 Browse Articles
               </Link>
               <Link
                 href="/about"
-                className="btn btn-outline px-6 py-3 rounded-lg"
+                className="border border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-lg transition-colors"
               >
                 About Me
               </Link>
             </div>
           </motion.div>
-        </section>
-
-        {/* Browse by Category */}
-        <section className="pb-10 border-b border-gray-300 dark:border-gray-700 transition-colors">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white transition-colors">
-            <span className="inline-block border-b-2 border-primary pb-1">
-              Browse by Category
-            </span>
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {siteConfig.categories.map((category) => (
-              <Link
-                href={`/blog/category/${category.slug}`}
-                key={category.slug}
-                className="flex flex-col items-center group transition-transform hover:scale-105"
-              >
-                <div className="mb-3 relative w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
-                  <Image
-                    src={category.icon}
-                    alt={category.name}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-110"
-                  />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                  {category.name}
-                </h3>
-              </Link>
-            ))}
-          </div>
         </section>
 
         {/* Latest Posts */}
@@ -114,7 +84,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
             </h2>
             <Link
               href="/blog"
-              className="text-primary hover:text-primary-dark flex items-center"
+              className="text-primary hover:text-primary-dark flex items-center transition-colors"
             >
               View all posts
               <svg
@@ -195,7 +165,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                   </div>
 
                   <Link href={`/blog/${post.slug}`}>
-                    <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white hover:text-primary transition-colors">
+                    <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary transition-colors">
                       {post.frontMatter.title}
                     </h3>
                   </Link>
