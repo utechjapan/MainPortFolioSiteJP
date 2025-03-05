@@ -1,4 +1,4 @@
-//pages/index.tsx//
+// pages/index.tsx
 import Head from "next/head";
 import Layout from "../components/layout/Layout";
 import Image from "next/image";
@@ -51,46 +51,34 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              {/* Profile image for desktop */}
-              <div className="hidden md:block relative w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-4 border-primary/50">
-                <Image
-                  src={siteConfig.author.avatar}
-                  alt={siteConfig.author.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
-                  <span className="text-primary">{siteConfig.title}</span> -
-                  Tech Insights & Tutorials
-                </h1>
-                <p className="text-base text-gray-700 dark:text-gray-300 mb-4">
-                  Explore practical guides on self-hosting, network
-                  infrastructure, and modern development practices. Written by{" "}
-                  <span className="font-medium text-primary">
-                    {siteConfig.author.name}
-                  </span>
-                  , a system engineer passionate about technology.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Link
-                    href="/blog"
-                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center"
-                  >
-                    <i className="fas fa-book-open mr-2"></i>
-                    Read Articles
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-lg transition-colors inline-flex items-center"
-                  >
-                    <i className="fas fa-user mr-2"></i>
-                    About Me
-                  </Link>
-                </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+                <span className="text-primary">{siteConfig.title}</span> - Tech
+                Insights & Tutorials
+              </h1>
+              <p className="text-base text-gray-700 dark:text-gray-300 mb-4">
+                Explore practical guides on self-hosting, network
+                infrastructure, and modern development practices. Written by{" "}
+                <span className="font-medium text-primary">
+                  {siteConfig.author.name}
+                </span>
+                , a system engineer passionate about technology.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/blog"
+                  className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center"
+                >
+                  <i className="fas fa-book-open mr-2"></i>
+                  Read Articles
+                </Link>
+                <Link
+                  href="/about"
+                  className="border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-lg transition-colors inline-flex items-center"
+                >
+                  <i className="fas fa-user mr-2"></i>
+                  About Me
+                </Link>
               </div>
             </div>
           </motion.div>
@@ -109,18 +97,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="text-primary hover:text-primary-dark flex items-center transition-colors"
             >
               View all posts
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <i className="fas fa-arrow-right ml-2"></i>
             </Link>
           </div>
 

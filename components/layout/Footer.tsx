@@ -3,13 +3,14 @@ import Link from "next/link";
 import { siteConfig } from "../../lib/siteConfig";
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="mt-20 pt-10 border-t border-gray-300 dark:border-gray-700 transition-colors">
+    <div className="mt-20 pt-10 border-t border-gray-300 dark:border-gray-700 transition-colors">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center">
           <span className="text-gray-600 dark:text-gray-400 text-sm transition-colors">
-            &copy; {new Date().getFullYear()} {siteConfig.title}. All rights
-            reserved.
+            &copy; {currentYear} {siteConfig.title}. All rights reserved.
           </span>
         </div>
 
@@ -54,6 +55,6 @@ export default function Footer() {
           </Link>
         </div>
       </div>
-    </footer>
+    </div>
   );
 }

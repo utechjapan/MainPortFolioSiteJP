@@ -36,11 +36,34 @@
     @apply text-gray-900 dark:text-gray-100;
   }
 
-  /* Ensure all icons show correctly */
-  i[class^="fa-"],
-  i[class*=" fa-"] {
+  /* Ensure all Font Awesome icons show correctly */
+  i[class^="fa"],
+  i[class*=" fa"],
+  .fa,
+  .fas,
+  .far,
+  .fab {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+    font-style: normal !important;
     display: inline-block !important;
+    width: auto;
     min-width: 1em;
+    text-align: center;
+  }
+
+  .fas,
+  .fa-solid {
+    font-weight: 900 !important;
+  }
+
+  .far,
+  .fa-regular {
+    font-weight: 400 !important;
+  }
+
+  .fab,
+  .fa-brands {
+    font-weight: 400 !important;
   }
 }
 
@@ -100,10 +123,16 @@
     border-color: var(--tw-border-opacity-border);
   }
 
-  /* Adjust sidebar for mobile */
+  /* Adjust sidebar for mobile - fix sidebar top position to avoid overlap with header */
   .mobile-sidebar {
     margin-top: 60px;
     height: calc(100vh - 60px);
+  }
+
+  /* Make sure the mobile menu is properly positioned under the header */
+  aside[class*="fixed top-0"] {
+    top: 60px !important;
+    height: calc(100vh - 60px) !important;
   }
 }
 
@@ -333,4 +362,41 @@ table {
     display: table;
     overflow-x: initial;
   }
+}
+
+/* Fix for FontAwesome icons visibility */
+.fas,
+.fa,
+.fa-solid,
+.far,
+.fa-regular,
+.fab,
+.fa-brands {
+  display: inline-block !important;
+  font-style: normal !important;
+  font-variant: normal !important;
+  text-rendering: auto !important;
+  line-height: 1 !important;
+}
+
+/* ThemeToggle icon visibility fix */
+button[aria-label="Toggle Dark Mode"] svg {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix for potential icon alignment issues */
+.icon-align-fix {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Make sure icon buttons are properly clickable */
+button:has(svg),
+button:has(i) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
