@@ -8,16 +8,13 @@ import { motion } from 'framer-motion';
 import { ParsedUrlQuery } from 'querystring';
 import { siteConfig } from '../../../lib/siteConfig';
 import Image from 'next/image';
+import { Post, RecentPost, CategoryInfo } from '../../../types';
 
 interface CategoryPageProps {
-  posts: any[];
+  posts: Post[];
   category: string;
-  categoryInfo: {
-    name: string;
-    icon: string;
-    description: string;
-  };
-  recentPosts: any[];
+  categoryInfo: CategoryInfo;
+  recentPosts: RecentPost[];
   tags: string[];
 }
 
@@ -111,7 +108,7 @@ export const getStaticProps: GetStaticProps<CategoryPageProps, Params> = async (
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount: { [key: string]: number } = {};
+  const tagCount: Record<string, number> = {};
   
   // Count tag occurrences
   allTags.forEach(t => {

@@ -7,11 +7,12 @@ import { getAllMDXContent } from '../../../lib/mdx';
 import { motion } from 'framer-motion';
 import { ParsedUrlQuery } from 'querystring';
 import { siteConfig } from '../../../lib/siteConfig';
+import { Post, RecentPost } from '../../../types';
 
 interface TagPageProps {
-  posts: any[];
+  posts: Post[];
   tag: string;
-  recentPosts: any[];
+  recentPosts: RecentPost[];
   tags: string[];
 }
 
@@ -88,7 +89,7 @@ export const getStaticProps: GetStaticProps<TagPageProps, Params> = async ({ par
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
   // Explicitly type tagCount to allow string indexing
-  const tagCount: { [key: string]: number } = {};
+  const tagCount: Record<string, number> = {};
   
   // Count tag occurrences
   allTags.forEach(t => {

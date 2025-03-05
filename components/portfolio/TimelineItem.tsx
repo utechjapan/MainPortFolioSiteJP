@@ -2,18 +2,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useState } from 'react';
 import Tag from '../ui/Tag';
-
-interface TimelineEvent {
-  id: string;
-  date: string;
-  title: string;
-  description: string;
-  images?: string[];
-  tags?: string[];
-  side: 'left' | 'right';
-  icon?: string;
-  iconBg?: string;
-}
+import { TimelineEvent } from '../../types';
 
 interface TimelineItemProps {
   event: TimelineEvent;
