@@ -5,18 +5,20 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        {/* FontAwesome - Make sure it's loaded properly with the correct integrity hash */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          integrity="sha512-iecdLmaskl7CVpOaEUAB+CXzKavmELwJ8C41/HjxQyoQjqELDMNk/LrRJmFZfhIljMCjUPj8DPU5/22NBbvQ=="
+          integrity="sha512-iecdLmaskl7CVpOaEUAB+CXzKavmELwJ8WTUzXSUk3i/G9FJjqEUXe9VpKpJI9S9I62JG728QhMM+MEulOLDgQ=="
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+
+        {/* Font preloading for performance */}
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
-        {/* Preload fonts to reduce layout shift */}
         <link
           rel="preload"
           as="font"

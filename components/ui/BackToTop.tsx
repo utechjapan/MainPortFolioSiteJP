@@ -37,7 +37,7 @@ export default function BackToTop() {
           className="fixed bottom-6 right-6 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary-dark transition-colors z-50"
           aria-label="Back to top"
         >
-          <i className="fas fa-arrow-up h-6 w-6"></i>
+          <i className="fas fa-arrow-up" aria-hidden="true"></i>
         </button>
       )}
     </>

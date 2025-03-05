@@ -67,7 +67,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
-                    <i className={`${link.icon} w-5 text-center mr-3`}></i>
+                    <i
+                      className={`${link.icon} w-5 text-center mr-3`}
+                      aria-hidden="true"
+                    ></i>
                     <span>{link.label}</span>
                   </Link>
                 </li>
@@ -88,7 +91,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 className="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
                 aria-label={social.name}
               >
-                <i className={`${social.icon} text-xl`}></i>
+                <i className={`${social.icon} text-xl`} aria-hidden="true"></i>
               </a>
             ))}
           </div>

@@ -40,7 +40,7 @@ export default function Layout({
       {/* Sidebar */}
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Mobile menu button and header */}
+      {/* Mobile menu button and header - Fixed the z-index and positioning */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme">
         <button
           className="p-2 rounded-md bg-primary/80 text-white hover:bg-primary transition-colors"
@@ -48,9 +48,9 @@ export default function Layout({
           aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? (
-            <i className="fas fa-times h-6 w-6"></i>
+            <i className="fas fa-times h-6 w-6" aria-hidden="true"></i>
           ) : (
-            <i className="fas fa-bars h-6 w-6"></i>
+            <i className="fas fa-bars h-6 w-6" aria-hidden="true"></i>
           )}
         </button>
 
@@ -66,8 +66,8 @@ export default function Layout({
       {/* Mobile menu overlay */}
       <MobileMenu isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Main content */}
-      <main className="flex-1 ml-0 md:ml-72 transition-all duration-300 ease-in-out pt-14 md:pt-0">
+      {/* Main content - Added proper padding for mobile */}
+      <main className="flex-1 ml-0 md:ml-72 transition-all duration-300 ease-in-out pt-16 md:pt-0">
         <div
           className={`p-4 md:p-6 lg:p-8 ${
             rightSidebar ? "lg:mr-64" : ""

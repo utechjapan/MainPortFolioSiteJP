@@ -36,19 +36,17 @@
     @apply text-gray-900 dark:text-gray-100;
   }
 
-  /* Ensure all Font Awesome icons show correctly */
-  i[class^="fa"],
-  i[class*=" fa"],
-  .fa,
+  /* Ensure all Font Awesome icons show correctly - Updated */
   .fas,
+  .fa-solid,
   .far,
-  .fab {
+  .fa-regular,
+  .fab,
+  .fa-brands,
+  .fa {
     font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
     font-style: normal !important;
     display: inline-block !important;
-    width: auto;
-    min-width: 1em;
-    text-align: center;
   }
 
   .fas,
@@ -100,7 +98,7 @@
   }
 }
 
-/* Padding for fixed mobile header */
+/* Padding for fixed mobile header - Updated to fix profile overlap issue */
 @media (max-width: 768px) {
   body {
     padding-top: 60px;
@@ -111,7 +109,7 @@
     scroll-behavior: smooth;
   }
 
-  /* Fixed positioning for mobile header to prevent profile photo overlap */
+  /* Fixed positioning for mobile header */
   .fixed-mobile-header {
     position: fixed;
     top: 0;
@@ -123,16 +121,11 @@
     border-color: var(--tw-border-opacity-border);
   }
 
-  /* Adjust sidebar for mobile - fix sidebar top position to avoid overlap with header */
-  .mobile-sidebar {
-    margin-top: 60px;
-    height: calc(100vh - 60px);
-  }
-
-  /* Make sure the mobile menu is properly positioned under the header */
+  /* Adjust sidebar for mobile - fixed to prevent header overlap */
   aside[class*="fixed top-0"] {
     top: 60px !important;
     height: calc(100vh - 60px) !important;
+    z-index: 30 !important;
   }
 }
 
@@ -319,6 +312,16 @@ pre > code {
   }
 }
 
+/* Fixed font awesome icon display - Specific fix for theme toggle */
+button[aria-label="Toggle Dark Mode"] i {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  font-size: 1rem !important;
+  width: auto !important;
+  height: auto !important;
+}
+
 /* Ensure consistency in dark mode across components */
 .dark h1,
 .dark h2,
@@ -362,41 +365,4 @@ table {
     display: table;
     overflow-x: initial;
   }
-}
-
-/* Fix for FontAwesome icons visibility */
-.fas,
-.fa,
-.fa-solid,
-.far,
-.fa-regular,
-.fab,
-.fa-brands {
-  display: inline-block !important;
-  font-style: normal !important;
-  font-variant: normal !important;
-  text-rendering: auto !important;
-  line-height: 1 !important;
-}
-
-/* ThemeToggle icon visibility fix */
-button[aria-label="Toggle Dark Mode"] svg {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Fix for potential icon alignment issues */
-.icon-align-fix {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* Make sure icon buttons are properly clickable */
-button:has(svg),
-button:has(i) {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
 }

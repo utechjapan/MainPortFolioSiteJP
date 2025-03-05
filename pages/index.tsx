@@ -43,7 +43,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
       </Head>
 
       <div className="space-y-16">
-        {/* Hero section - Redesigned for better professionalism */}
+        {/* Hero section - Simplified design without the intro text */}
         <section className="mb-10">
           <motion.div
             className="bg-light-card dark:bg-dark-card rounded-lg p-8 shadow-md dark:shadow-none"
@@ -52,31 +52,27 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
             transition={{ duration: 0.4 }}
           >
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
-                <span className="text-primary">{siteConfig.title}</span> - Tech
-                Insights & Tutorials
+              <h1 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+                Welcome to{" "}
+                <span className="text-primary">{siteConfig.title}</span>
               </h1>
               <p className="text-base text-gray-700 dark:text-gray-300 mb-4">
-                Explore practical guides on self-hosting, network
-                infrastructure, and modern development practices. Written by{" "}
-                <span className="font-medium text-primary">
-                  {siteConfig.author.name}
-                </span>
-                , a system engineer passionate about technology.
+                Explore technical guides, tutorials, and best practices for
+                modern IT infrastructure and development.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/blog"
                   className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center"
                 >
-                  <i className="fas fa-book-open mr-2"></i>
+                  <i className="fas fa-book-open mr-2" aria-hidden="true"></i>
                   Read Articles
                 </Link>
                 <Link
                   href="/about"
                   className="border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-lg transition-colors inline-flex items-center"
                 >
-                  <i className="fas fa-user mr-2"></i>
+                  <i className="fas fa-user mr-2" aria-hidden="true"></i>
                   About Me
                 </Link>
               </div>
@@ -97,7 +93,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="text-primary hover:text-primary-dark flex items-center transition-colors"
             >
               View all posts
-              <i className="fas fa-arrow-right ml-2"></i>
+              <i className="fas fa-arrow-right ml-2" aria-hidden="true"></i>
             </Link>
           </div>
 
@@ -127,12 +123,15 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                       dateTime={post.frontMatter.date}
                       className="flex items-center"
                     >
-                      <i className="fas fa-calendar-alt mr-2"></i>
+                      <i
+                        className="fas fa-calendar-alt mr-2"
+                        aria-hidden="true"
+                      ></i>
                       {format(parseISO(post.frontMatter.date), "MMMM d, yyyy")}
                     </time>
                     <span className="mx-2">•</span>
                     <span className="flex items-center">
-                      <i className="fas fa-clock mr-2"></i>
+                      <i className="fas fa-clock mr-2" aria-hidden="true"></i>
                       {post.frontMatter.readingTime || "5 min read"}
                     </span>
                   </div>
@@ -166,7 +165,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
             >
               View More Posts
-              <i className="fas fa-arrow-right ml-2"></i>
+              <i className="fas fa-arrow-right ml-2" aria-hidden="true"></i>
             </Link>
           </div>
         </section>
@@ -175,7 +174,10 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
         <section className="bg-light-card dark:bg-dark-card rounded-lg p-8 text-center shadow-md dark:shadow-none transition-colors">
           <div className="flex justify-center mb-6">
             <div className="bg-primary/20 p-4 rounded-full">
-              <i className="fas fa-envelope text-primary text-3xl"></i>
+              <i
+                className="fas fa-envelope text-primary text-3xl"
+                aria-hidden="true"
+              ></i>
             </div>
           </div>
           <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
@@ -200,7 +202,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="w-full bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-md flex items-center justify-center transition-colors"
             >
               Subscribe Now
-              <i className="fas fa-arrow-right ml-2"></i>
+              <i className="fas fa-arrow-right ml-2" aria-hidden="true"></i>
             </button>
           </form>
         </section>

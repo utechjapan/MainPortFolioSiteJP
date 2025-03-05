@@ -24,7 +24,7 @@ export default function Footer() {
               className="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
               aria-label={social.name}
             >
-              <i className={`${social.icon} text-lg`}></i>
+              <i className={`${social.icon} text-lg`} aria-hidden="true"></i>
             </a>
           ))}
         </div>
@@ -32,7 +32,8 @@ export default function Footer() {
 
       <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-500">
         <p>
-          Made with <i className="fas fa-heart text-primary"></i> and
+          Made with{" "}
+          <i className="fas fa-heart text-primary" aria-hidden="true"></i> and
           open-source tech
         </p>
         <div className="mt-2">
