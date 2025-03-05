@@ -4,19 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import BlogMeta from '../blog/BlogMeta';
 import Tag from '../ui/Tag';
-
-interface Post {
-  slug: string;
-  frontMatter: {
-    title: string;
-    date: string;
-    description?: string;
-    image?: string;
-    readingTime?: string;
-    author?: string;
-    tags?: string[];
-  };
-}
+import { Post } from '../../types';
 
 interface FeaturedPostsProps {
   posts: Post[];
@@ -60,7 +48,6 @@ export default function FeaturedPosts({ posts }: FeaturedPostsProps) {
             <BlogMeta 
               date={post.frontMatter.date} 
               readingTime={post.frontMatter.readingTime} 
-              // Removed the author prop
             />
             
             {post.frontMatter.description && (
