@@ -42,9 +42,41 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
       </Head>
 
       <div className="space-y-16">
+        {/* Hero section */}
+        <section className="mb-16">
+          <motion.div
+            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+              Welcome to {siteConfig.title}
+            </h1>
+            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-8 transition-colors">
+              Explore tutorials, guides, and insights on tech, self-hosting, and
+              modern development practices.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link
+                href="/blog"
+                className="btn btn-primary px-6 py-3 rounded-lg"
+              >
+                Browse Articles
+              </Link>
+              <Link
+                href="/about"
+                className="btn btn-outline px-6 py-3 rounded-lg"
+              >
+                About Me
+              </Link>
+            </div>
+          </motion.div>
+        </section>
+
         {/* Browse by Category */}
-        <section className="pb-4 border-b border-gray-700">
-          <h2 className="text-2xl font-bold mb-6 text-white">
+        <section className="pb-10 border-b border-gray-300 dark:border-gray-700 transition-colors">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white transition-colors">
             <span className="inline-block border-b-2 border-primary pb-1">
               Browse by Category
             </span>
@@ -54,7 +86,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               <Link
                 href={`/blog/category/${category.slug}`}
                 key={category.slug}
-                className="flex flex-col items-center group"
+                className="flex flex-col items-center group transition-transform hover:scale-105"
               >
                 <div className="mb-3 relative w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
                   <Image
@@ -64,7 +96,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                     className="object-cover transition-transform group-hover:scale-110"
                   />
                 </div>
-                <h3 className="text-lg font-medium text-white group-hover:text-primary transition-colors">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-primary transition-colors">
                   {category.name}
                 </h3>
               </Link>
@@ -75,7 +107,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
         {/* Latest Posts */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">
               <span className="inline-block border-b-2 border-primary pb-1">
                 Latest Posts
               </span>
@@ -101,13 +133,13 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredPosts.map((post) => (
+            {filteredPosts.map((post, index) => (
               <motion.article
                 key={post.slug}
-                className="bg-dark-card rounded-lg overflow-hidden"
+                className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden shadow-md hover:shadow-lg dark:shadow-none transition-all"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Link href={`/blog/${post.slug}`} className="block">
                   <div className="relative h-48 w-full">
@@ -121,7 +153,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                 </Link>
 
                 <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-400 mb-3">
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-3 transition-colors">
                     <time
                       dateTime={post.frontMatter.date}
                       className="flex items-center"
@@ -163,12 +195,12 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                   </div>
 
                   <Link href={`/blog/${post.slug}`}>
-                    <h3 className="text-xl font-bold mb-2 text-white hover:text-primary transition-colors">
+                    <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white hover:text-primary transition-colors">
                       {post.frontMatter.title}
                     </h3>
                   </Link>
 
-                  <p className="text-gray-400 mb-4 line-clamp-2">
+                  <p className="text-gray-700 dark:text-gray-400 mb-4 line-clamp-2 transition-colors">
                     {post.frontMatter.description}
                   </p>
 
@@ -176,7 +208,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                     post.frontMatter.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {post.frontMatter.tags.slice(0, 3).map((tag) => (
-                          <Tag key={tag} text={tag} />
+                          <Tag key={tag} text={tag} href={`/blog/tag/${tag}`} />
                         ))}
                       </div>
                     )}
@@ -208,7 +240,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
         </section>
 
         {/* Subscribe section */}
-        <section className="bg-dark-card rounded-lg p-8 text-center">
+        <section className="bg-light-card dark:bg-dark-card rounded-lg p-8 text-center shadow-md dark:shadow-none transition-colors">
           <div className="flex justify-center mb-6">
             <div className="bg-primary/20 p-4 rounded-full">
               <svg
@@ -227,8 +259,10 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               </svg>
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4 text-white">Stay Updated</h2>
-          <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
+            Stay Updated
+          </h2>
+          <p className="text-gray-700 dark:text-gray-400 mb-8 max-w-2xl mx-auto transition-colors">
             Get the latest tutorials, guides, and updates delivered directly to
             your inbox. No spam, unsubscribe anytime.
           </p>
@@ -238,7 +272,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               <input
                 type="email"
                 placeholder="Your email address"
-                className="w-full px-4 py-3 rounded-md bg-dark-sidebar border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-3 rounded-md bg-white dark:bg-dark-sidebar border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
                 required
               />
             </div>

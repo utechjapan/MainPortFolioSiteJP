@@ -2,6 +2,7 @@
 import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -12,14 +13,21 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    // Prevent theme flash on load by rendering nothing initially
-    return <div style={{ visibility: "hidden" }} />;
-  }
-
+  // Use this to prevent theme flash on load
   return (
-    <ThemeProvider attribute="class" enableSystem={false} defaultTheme="dark">
-      <Component {...pageProps} />
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <Head>
+        {/* Add viewport and other meta tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="color-scheme" content="light dark" />
+      </Head>
+
+      {!mounted ? (
+        // Display a minimal UI while client-side JS loads
+        <div className="min-h-screen bg-light-bg dark:bg-dark-bg" />
+      ) : (
+        <Component {...pageProps} />
+      )}
     </ThemeProvider>
   );
 }

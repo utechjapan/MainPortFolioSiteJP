@@ -25,15 +25,17 @@ export default function Layout({
   toc = null,
 }: LayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
+
+  const isDark = theme === "dark" || resolvedTheme === "dark";
 
   return (
-    <div className="min-h-screen flex bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300">
+    <div className="min-h-screen flex bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-theme">
       {/* Sidebar */}
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
       {/* Mobile menu button */}
-      <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center">
+      <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme">
         <button
           className="p-2 rounded-md bg-primary/80 backdrop-blur-sm text-white hover:bg-primary transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -72,7 +74,7 @@ export default function Layout({
           )}
         </button>
 
-        <span className="text-lg font-bold text-gray-900 dark:text-white">
+        <span className="text-lg font-bold text-gray-900 dark:text-white transition-theme">
           UTechLab
         </span>
 
@@ -93,7 +95,7 @@ export default function Layout({
       {/* Right sidebar */}
       {rightSidebar && (
         // Hide on small screens, show at lg
-        <div className="hidden lg:block w-64 fixed top-0 right-0 h-screen bg-dark-sidebar border-l border-gray-700 p-6 overflow-y-auto">
+        <div className="hidden lg:block w-64 fixed top-0 right-0 h-screen bg-light-sidebar dark:bg-dark-sidebar border-l border-light-border dark:border-gray-700 p-6 overflow-y-auto transition-theme">
           <RightSidebar recentPosts={recentPosts} tags={tags} toc={toc} />
         </div>
       )}

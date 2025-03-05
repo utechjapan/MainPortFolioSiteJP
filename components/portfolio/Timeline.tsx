@@ -18,7 +18,7 @@ export default function Timeline({ events }: TimelineProps) {
   return (
     <div ref={ref} className="relative mx-auto max-w-7xl py-10">
       {/* Timeline center line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 transform -translate-x-1/2"></div>
+      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 transform -translate-x-1/2 transition-colors"></div>
 
       {/* Progress indicator */}
       <motion.div

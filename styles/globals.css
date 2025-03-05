@@ -10,7 +10,7 @@
   }
 
   body {
-    @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-100;
+    @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-100 transition-colors duration-300;
   }
 
   ::selection {
@@ -34,11 +34,11 @@
   .btn-outline {
     @apply border border-primary text-primary hover:bg-primary hover:text-white;
   }
-}
 
-/* Smooth transitions for dark mode */
-.transition-theme {
-  @apply transition-colors duration-300;
+  /* Add a utility class for theme transitions */
+  .transition-theme {
+    @apply transition-colors duration-300 ease-in-out;
+  }
 }
 
 /* Padding for fixed mobile header */
@@ -50,12 +50,12 @@
 
 /* Top bar styles */
 .top-bar {
-  @apply fixed top-0 left-0 right-0 z-50 bg-dark-bg border-b border-gray-700 py-3 px-4 flex justify-between items-center;
+  @apply fixed top-0 left-0 right-0 z-50 bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme;
 }
 
 /* Code block styling */
 pre {
-  @apply relative bg-gray-800 rounded-lg overflow-x-auto my-6;
+  @apply relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto my-6 transition-colors;
   scrollbar-width: thin;
   scrollbar-color: rgba(138, 99, 210, 0.5) transparent;
 }
@@ -77,7 +77,7 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 
 pre > code {
-  @apply font-mono text-sm;
+  @apply font-mono text-sm text-gray-800 dark:text-gray-200 transition-colors;
 }
 
 /* Prism theme customization */
@@ -85,11 +85,11 @@ pre > code {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  @apply text-gray-400;
+  @apply text-gray-500 dark:text-gray-400;
 }
 
 .token.punctuation {
-  @apply text-gray-300;
+  @apply text-gray-600 dark:text-gray-300;
 }
 
 .token.property,
@@ -97,12 +97,12 @@ pre > code {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  @apply text-red-300;
+  @apply text-red-600 dark:text-red-300;
 }
 
 .token.boolean,
 .token.number {
-  @apply text-amber-300;
+  @apply text-amber-600 dark:text-amber-300;
 }
 
 .token.selector,
@@ -111,7 +111,7 @@ pre > code {
 .token.char,
 .token.builtin,
 .token.inserted {
-  @apply text-green-300;
+  @apply text-green-600 dark:text-green-300;
 }
 
 .token.operator,
@@ -120,23 +120,23 @@ pre > code {
 .language-css .token.string,
 .style .token.string,
 .token.variable {
-  @apply text-blue-300;
+  @apply text-blue-600 dark:text-blue-300;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.function,
 .token.class-name {
-  @apply text-yellow-200;
+  @apply text-yellow-600 dark:text-yellow-200;
 }
 
 .token.keyword {
-  @apply text-pink-300;
+  @apply text-pink-600 dark:text-pink-300;
 }
 
 .token.regex,
 .token.important {
-  @apply text-red-400;
+  @apply text-red-600 dark:text-red-400;
 }
 
 .token.important,
@@ -154,7 +154,7 @@ pre > code {
 
 /* Code title styling */
 .rehype-code-title {
-  @apply px-5 py-2 font-mono text-sm font-bold text-gray-200 bg-gray-700 border-b border-gray-600 rounded-t-lg;
+  @apply px-5 py-2 font-mono text-sm font-bold text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 rounded-t-lg transition-colors;
 }
 
 .rehype-code-title + pre {
@@ -170,15 +170,15 @@ pre > code {
 }
 
 .code-line.inserted {
-  @apply bg-green-800/50;
+  @apply bg-green-100 dark:bg-green-800/50;
 }
 
 .code-line.deleted {
-  @apply bg-red-800/50;
+  @apply bg-red-100 dark:bg-red-800/50;
 }
 
 .highlight-line {
-  @apply -mx-4 bg-gray-700/50 border-l-4 border-primary;
+  @apply -mx-4 bg-gray-200 dark:bg-gray-700/50 border-l-4 border-primary;
 }
 
 .line-number::before {

@@ -1,8 +1,10 @@
 // components/layout/Sidebar.tsx
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { siteConfig } from '../../lib/siteConfig';
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useTheme } from "next-themes";
+import { siteConfig } from "../../lib/siteConfig";
+import ThemeToggle from "../ui/ThemeToggle";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,11 +13,12 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const router = useRouter();
+  const { theme } = useTheme();
 
   return (
-    <aside 
-      className={`fixed top-0 left-0 bottom-0 w-72 bg-light-sidebar dark:bg-dark-sidebar border-r border-light-border dark:border-dark-border transition-transform duration-300 z-30 ${
-        isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+    <aside
+      className={`fixed top-0 left-0 bottom-0 w-72 bg-light-sidebar dark:bg-dark-sidebar border-r border-light-border dark:border-dark-border transition-all duration-300 z-30 ${
+        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       }`}
     >
       <div className="h-full flex flex-col justify-between py-8">
@@ -24,8 +27,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <div className="flex flex-col items-center mb-8">
             <Link href="/" className="mb-4">
               <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-primary/50 hover:border-primary transition-colors duration-300">
-                <Image 
-                  src={siteConfig.author.avatar} 
+                <Image
+                  src={siteConfig.author.avatar}
                   alt={siteConfig.author.name}
                   fill
                   className="object-cover"
@@ -38,19 +41,24 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
               {siteConfig.description}
             </p>
+
+            {/* Add theme toggle in sidebar for all screen sizes */}
+            <div className="mt-4">
+              <ThemeToggle />
+            </div>
           </div>
-          
+
           {/* Navigation */}
           <nav className="mb-8">
             <ul className="space-y-2">
               {siteConfig.navLinks.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
                     className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
                       router.pathname === link.href
-                        ? 'bg-primary text-white font-medium'
-                        : 'hover:bg-light-card dark:hover:bg-dark-card text-gray-700 dark:text-gray-300'
+                        ? "bg-primary text-white font-medium"
+                        : "hover:bg-light-card dark:hover:bg-dark-card text-gray-700 dark:text-gray-300"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
@@ -62,12 +70,12 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             </ul>
           </nav>
         </div>
-        
+
         {/* Social links */}
         <div className="px-6">
           <div className="flex justify-center space-x-4">
             {siteConfig.socialLinks.map((social) => (
-              <a 
+              <a
                 key={social.name}
                 href={social.url}
                 target="_blank"

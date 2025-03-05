@@ -24,6 +24,7 @@ import {
   getAllMDXContent,
   MDXFrontMatter,
 } from "../../lib/mdx";
+import { siteConfig } from "../../lib/siteConfig";
 
 interface MDXPost {
   source: any;
@@ -56,36 +57,56 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const components = useMemo(
     () => ({
       h1: (props: any) => (
-        <h1 {...props} className="text-3xl font-bold mt-8 mb-4 text-white" />
+        <h1
+          {...props}
+          className="text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors"
+        />
       ),
       h2: (props: any) => (
-        <h2 {...props} className="text-2xl font-bold mt-8 mb-4 text-white" />
+        <h2
+          {...props}
+          className="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors"
+        />
       ),
       h3: (props: any) => (
-        <h3 {...props} className="text-xl font-bold mt-6 mb-3 text-white" />
+        <h3
+          {...props}
+          className="text-xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors"
+        />
       ),
-      p: (props: any) => <p {...props} className="mb-4 text-gray-300" />,
+      p: (props: any) => (
+        <p
+          {...props}
+          className="mb-4 text-gray-700 dark:text-gray-300 transition-colors"
+        />
+      ),
       ul: (props: any) => (
-        <ul {...props} className="list-disc ml-6 mb-4 text-gray-300" />
+        <ul
+          {...props}
+          className="list-disc ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors"
+        />
       ),
       ol: (props: any) => (
-        <ol {...props} className="list-decimal ml-6 mb-4 text-gray-300" />
+        <ol
+          {...props}
+          className="list-decimal ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors"
+        />
       ),
       li: (props: any) => <li {...props} className="mb-1" />,
       img: (props: any) => (
-        <div className="my-8 relative aspect-[16/9] w-full">
+        <div className="my-8 relative aspect-[16/9] w-full rounded-lg overflow-hidden">
           <Image
             src={props.src}
             alt={props.alt || ""}
             fill
-            className="object-cover rounded-lg"
+            className="object-cover"
           />
         </div>
       ),
       a: (props: any) => (
         <a
           {...props}
-          className="text-primary hover:text-primary-dark underline"
+          className="text-primary hover:text-primary-dark underline transition-colors"
         />
       ),
       code: (props: any) => {
@@ -100,7 +121,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         return (
           <code
             {...props}
-            className="bg-gray-800 rounded p-1 text-sm text-gray-200"
+            className="bg-gray-100 dark:bg-gray-800 rounded p-1 text-sm text-gray-800 dark:text-gray-200 transition-colors"
           />
         );
       },
@@ -111,7 +132,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           <div className="relative group">
             <pre
               {...props}
-              className="bg-gray-800 p-4 rounded-lg overflow-x-auto mb-6 py-6"
+              className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-6 py-6 transition-colors"
             >
               {props.children}
             </pre>
@@ -122,7 +143,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       blockquote: (props: any) => (
         <blockquote
           {...props}
-          className="border-l-4 border-primary pl-4 italic my-6 text-gray-400"
+          className="border-l-4 border-primary pl-4 italic my-6 text-gray-600 dark:text-gray-400 transition-colors"
         />
       ),
     }),
@@ -132,11 +153,37 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   return (
     <Layout recentPosts={recentPosts} tags={tags} toc={toc}>
       <Head>
-        <title>{frontMatter.title} | Blog</title>
+        <title>
+          {frontMatter.title} | {siteConfig.title}
+        </title>
         <meta
           name="description"
-          content={frontMatter.description || frontMatter.excerpt}
+          content={
+            frontMatter.description ||
+            frontMatter.excerpt ||
+            `${frontMatter.title} - ${siteConfig.title}`
+          }
         />
+        {/* Add OpenGraph tags for better social sharing */}
+        <meta
+          property="og:title"
+          content={`${frontMatter.title} | ${siteConfig.title}`}
+        />
+        <meta
+          property="og:description"
+          content={
+            frontMatter.description ||
+            frontMatter.excerpt ||
+            `${frontMatter.title} - ${siteConfig.title}`
+          }
+        />
+        {frontMatter.image && (
+          <meta
+            property="og:image"
+            content={`${siteConfig.siteUrl}${frontMatter.image}`}
+          />
+        )}
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       {/* Match 'About' style: fade-in + max-w + card container */}
@@ -144,12 +191,15 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="max-w-3xl mx-auto"
+        className="max-w-4xl mx-auto"
       >
-        <div className="bg-dark-card rounded-lg overflow-hidden mb-8">
+        <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           {/* Cover image */}
           {frontMatter.image && (
-            <div className="relative aspect-[16/9] w-full">
+            <div
+              className="relative w-full"
+              style={{ height: "clamp(200px, 30vh, 400px)" }}
+            >
               <Image
                 src={frontMatter.image}
                 alt={frontMatter.title}
@@ -161,8 +211,8 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           )}
 
           {/* Post content */}
-          <div className="p-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
+          <div className="p-5 sm:p-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-3 transition-colors leading-tight">
               {frontMatter.title}
             </h1>
 
@@ -177,22 +227,24 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
             {frontMatter.tags && frontMatter.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {frontMatter.tags.map((tag) => (
-                  <Tag key={tag} text={tag} />
+                  <Tag key={tag} text={tag} href={`/blog/tag/${tag}`} />
                 ))}
               </div>
             )}
 
             {/* Table of Contents on mobile */}
-            <div className="lg:hidden mb-8">
-              <details className="bg-dark-sidebar p-4 rounded-lg">
-                <summary className="text-lg font-bold cursor-pointer text-white">
-                  Table of Contents
-                </summary>
-                <div className="pt-4">
-                  <TableOfContents toc={toc} />
-                </div>
-              </details>
-            </div>
+            {toc && toc.length > 0 && (
+              <div className="lg:hidden mb-8">
+                <details className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
+                  <summary className="text-lg font-bold cursor-pointer text-gray-900 dark:text-white transition-colors">
+                    Table of Contents
+                  </summary>
+                  <div className="pt-4">
+                    <TableOfContents toc={toc} />
+                  </div>
+                </details>
+              </div>
+            )}
 
             {/* Actual MDX content */}
             <div className="prose prose-lg dark:prose-invert max-w-none">
@@ -202,7 +254,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         </div>
 
         {/* Comments in a separate card */}
-        <div className="bg-dark-card rounded-lg p-8">
+        <div className="bg-light-card dark:bg-dark-card rounded-lg p-5 sm:p-8 shadow-md dark:shadow-none transition-colors">
           <GiscusComments slug={slug} />
         </div>
       </motion.div>

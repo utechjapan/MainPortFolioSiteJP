@@ -8,15 +8,18 @@ interface ThemeToggleProps {
 
 export default function ThemeToggle({ className = "" }: ThemeToggleProps) {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   // Only execute client-side
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return null;
 
+  // Determine actual theme
+  const currentTheme = theme === "system" ? resolvedTheme : theme;
+
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTheme(currentTheme === "dark" ? "light" : "dark");
   };
 
   return (
@@ -26,7 +29,7 @@ export default function ThemeToggle({ className = "" }: ThemeToggleProps) {
       className={`p-3 h-10 w-10 rounded-full bg-light-card dark:bg-dark-card flex items-center justify-center hover:ring-2 ring-primary transition-all ${className}`}
       onClick={toggleTheme}
     >
-      {theme === "dark" ? (
+      {currentTheme === "dark" ? (
         <i className="fas fa-sun text-yellow-500"></i>
       ) : (
         <i className="fas fa-moon text-slate-800"></i>
