@@ -1,5 +1,6 @@
 // components/layout/Layout.tsx
 import { ReactNode, useState } from "react";
+import { useTheme } from "next-themes";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import MobileMenu from "./MobileMenu";
@@ -24,14 +25,15 @@ export default function Layout({
   toc = null,
 }: LayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme } = useTheme();
 
   return (
-    <div className="min-h-screen flex bg-dark-bg text-gray-300">
+    <div className="min-h-screen flex bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300">
       {/* Sidebar */}
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
       {/* Mobile menu button */}
-      <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-dark-bg border-b border-gray-700 py-3 px-4 flex justify-between items-center">
+      <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center">
         <button
           className="p-2 rounded-md bg-primary/80 backdrop-blur-sm text-white hover:bg-primary transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -70,7 +72,9 @@ export default function Layout({
           )}
         </button>
 
-        <span className="text-lg font-bold text-white">UTechLab</span>
+        <span className="text-lg font-bold text-gray-900 dark:text-white">
+          UTechLab
+        </span>
 
         <ThemeToggle className="py-1 px-1" />
       </div>
