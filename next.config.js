@@ -2,7 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['placeholder.com', 'via.placeholder.com'],
+    domains: ["placeholder.com", "via.placeholder.com"],
+    dangerouslyAllowSVG: true, // Allow SVG images
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   webpack: (config, { isServer }) => {
     // Only include svg converting on client-side
@@ -13,12 +15,12 @@ const nextConfig = {
         path: false,
       };
     }
-    
+
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: ["@svgr/webpack"],
     });
-    
+
     return config;
   },
 };

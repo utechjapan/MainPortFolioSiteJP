@@ -16,18 +16,18 @@ export interface Post {
   content?: string;
   toc?: TocItem[];
 }
-  
+
 export interface RecentPost {
   slug: string;
   title: string;
 }
-  
+
 export interface TocItem {
   id: string;
   text: string;
   level: number;
 }
-  
+
 export interface CategoryInfo {
   name: string;
   icon: string;
@@ -42,7 +42,7 @@ export interface TimelineEvent {
   description: string;
   images?: string[];
   tags?: string[];
-  side: 'left' | 'right';
+  side: "left" | "right";
   icon?: string;
   iconBg?: string;
 }
