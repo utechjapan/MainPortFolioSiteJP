@@ -1,76 +1,49 @@
-// pages/portfolio.tsx
-import Layout from "../components/layout/Layout";
-import Timeline from "../components/portfolio/Timeline";
 import Head from "next/head";
+import Layout from "../components/layout/Layout";
 import { motion } from "framer-motion";
+import Timeline from "../components/portfolio/Timeline";
+import { siteConfig } from "../lib/siteConfig";
 import { TimelineEvent } from "../types";
 
-// Sample data - in a real implementation, this would come from your content files
+// Timeline events extracted from your work experience content
 const timelineEvents: TimelineEvent[] = [
   {
     id: "1",
-    date: "25/07/1987",
-    title: "Day of Birth",
+    date: "2023 – Present",
+    title: "NTT West | Digital Government",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fugiat, animi. Cras elementum odio a felis sollicitudin, quis vehicula erat luctus. Mauris egestas massa turpis, ac tempor enim rutrum in.",
-    images: [
-      "/images/placeholder1.jpg",
-      "/images/placeholder2.jpg",
-      "/images/placeholder3.jpg",
-    ],
+      "Role: Infrastructure & System Engineer\n\nResponsibilities:\n- Building and maintaining IT systems for municipalities\n- Configuring networks with Cisco Catalyst and FortiGate\n- Operating monitoring systems (Hinemos, Zabbix)\n\nAchievements: Improved system reliability and operational efficiency.",
     side: "right",
     iconBg: "#00bcd4",
   },
   {
     id: "2",
-    date: "25/07/2000",
-    title: "Learning to Code",
+    date: "2020 – 2021",
+    title: "Polaris Export",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fugiat, animi. Donec sed maximus risus. Nullam laoreet tincidunt fermentum. Sed maximus fringilla quam at facilisis.",
+      "Role: Sales & Marketing\n\nResponsibilities:\n- Overseeing sales and customer service\n- Managing SNS campaigns and YouTube content creation\n\nAchievements: Increased online follower count by 30%.",
     side: "left",
-    tags: ["programming", "education"],
     iconBg: "#4caf50",
   },
   {
     id: "3",
-    date: "01/09/2002",
-    title: "Markup and Little Wheels",
+    date: "2017 – 2020",
+    title: "Bagus Bar (芝浦アイランド店)",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fugiat, animi. Praesent molestie fringilla sapien at fringilla. Nulla facilisi. Integer egestas augue felis, vel rhoncus dolor commodo non.",
+      "Role: Hall Staff, later Deputy Manager\n\nResponsibilities:\n- Providing high-quality customer service and operational support\n- Training staff, managing shifts, and controlling costs\n- Handling SNS operations and promotional activities\n\nAchievements: Reduced employee turnover by 15% and enhanced service quality.",
     side: "right",
-    iconBg: "#009688",
-  },
-  {
-    id: "4",
-    date: "15/06/2010",
-    title: "First Developer Job",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fugiat, animi. Nulla facilisi. Integer egestas augue felis, vel rhoncus dolor commodo non. Praesent auctor, augue at rutrum imperdiet.",
-    side: "left",
-    tags: ["career", "development"],
     iconBg: "#ff9800",
-  },
-  {
-    id: "5",
-    date: "03/11/2015",
-    title: "Started My Own Company",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fugiat, animi. Sed ultricies, magna eu convallis molestie, sem nulla egestas nunc, vel lobortis neque tellus vitae enim. Donec sed maximus risus.",
-    side: "right",
-    images: ["/images/placeholder4.jpg", "/images/placeholder5.jpg"],
-    tags: ["business", "entrepreneurship"],
-    iconBg: "#e91e63",
   },
 ];
 
 export default function Portfolio() {
   return (
-    <Layout rightSidebar={false} toc={null}>
+    <Layout rightSidebar={false}>
       <Head>
-        <title>Portfolio | My Timeline</title>
+        <title>Portfolio of Chikara Inohara | {siteConfig.title}</title>
         <meta
           name="description"
-          content="My professional journey and accomplishments"
+          content="Overview of my work experience, technical skills, and selected projects in IT infrastructure, networking, and innovative technology solutions."
         />
       </Head>
 
@@ -78,18 +51,167 @@ export default function Portfolio() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+        className="max-w-3xl mx-auto px-4 py-8"
       >
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-            My Journey
-          </h1>
-          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-            A timeline of my professional development, key life events, and
-            major milestones.
-          </p>
+        {/* Language Toggle */}
+        <div className="text-right mb-4">
+          <a href="/jp/portfolio/" className="text-primary hover:underline">
+            日本語版を見る
+          </a>
         </div>
 
-        <Timeline events={timelineEvents} />
+        <h1 className="text-4xl font-bold mb-6 text-white">Portfolio</h1>
+        <p className="text-gray-300 mb-8">
+          Welcome to my professional portfolio! Here you'll find an overview of
+          my work experience, technical skills, and selected projects that
+          showcase my passion for IT infrastructure, networking, and innovative
+          technology solutions.
+        </p>
+
+        {/* Overview Section */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-4 text-white">Overview</h2>
+          <p className="text-gray-300">
+            I am a dedicated system and network engineer with extensive
+            experience designing, deploying, and maintaining IT systems for
+            municipalities and enterprises. My career spans technical
+            engineering, sales, and digital marketing—each role contributing to
+            enhanced system reliability, operational efficiency, and digital
+            presence.
+          </p>
+        </section>
+
+        <hr className="my-8 border-gray-700" />
+
+        {/* Work Experience Timeline using the Timeline component */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-4 text-white">
+            Work Experience Timeline
+          </h2>
+          <Timeline events={timelineEvents} />
+        </section>
+
+        <hr className="my-8 border-gray-700" />
+
+        {/* Technical Skills Section */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-4 text-white">
+            Technical Skills
+          </h2>
+          <ul className="list-disc list-inside text-gray-300 space-y-2">
+            <li>
+              <strong>Networking:</strong> Cisco Catalyst, FortiGate, VLAN
+              configuration, network troubleshooting
+            </li>
+            <li>
+              <strong>Server Administration:</strong> Windows Server, Linux
+              (RHEL, CentOS), virtualization
+            </li>
+            <li>
+              <strong>Monitoring &amp; Management:</strong> Hinemos, Zabbix,
+              performance tuning
+            </li>
+            <li>
+              <strong>Cloud &amp; Infrastructure:</strong> AWS Cloud
+              Practitioner, Azure Fundamentals (AZ-900)
+            </li>
+            <li>
+              <strong>Scripting &amp; Automation:</strong> Python, PowerShell
+            </li>
+            <li>
+              <strong>Certifications:</strong> CCNA, IT Passport, LPIC Level 1,
+              AWS Cloud Practitioner, AZ-900
+            </li>
+          </ul>
+        </section>
+
+        <hr className="my-8 border-gray-700" />
+
+        {/* Selected Projects Section */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-4 text-white">
+            Selected Projects
+          </h2>
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-2xl font-bold text-white">
+                Proxmox Homelab &amp; Hugo Blog
+              </h3>
+              <p className="text-gray-300">
+                <strong>Description:</strong> Designed and implemented a
+                Proxmox-based homelab hosting a Hugo-powered blog. Automated
+                content deployment from Obsidian using PowerShell and Python.
+              </p>
+              <p className="text-gray-300">
+                <strong>Technologies:</strong> Proxmox VE, Hugo, Nginx, SCP,
+                Python, PowerShell
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-white">
+                Secure Network &amp; Monitoring System for Municipalities
+              </h3>
+              <p className="text-gray-300">
+                <strong>Description:</strong> Led the design and deployment of a
+                secure IT infrastructure for local governments, integrating
+                advanced network devices and monitoring tools.
+              </p>
+              <p className="text-gray-300">
+                <strong>Technologies:</strong> Cisco, FortiGate, Hinemos, Zabbix
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-white">
+                Digital Marketing for Polaris Export
+              </h3>
+              <p className="text-gray-300">
+                <strong>Description:</strong> Managed digital marketing
+                campaigns and produced YouTube content to increase online brand
+                presence.
+              </p>
+              <p className="text-gray-300">
+                <strong>Achievements:</strong> Achieved a 30% increase in online
+                followers.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <hr className="my-8 border-gray-700" />
+
+        {/* Resume Section */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-4 text-white">Resume</h2>
+          <p className="text-gray-300 mb-4">
+            For a detailed view of my professional background, please download
+            my resume:
+          </p>
+          <ul className="list-disc list-inside text-gray-300">
+            <li>
+              <a
+                href="/resume/resume_jp.pdf"
+                className="text-primary hover:underline"
+              >
+                Download Resume (Japanese)
+              </a>
+            </li>
+            {/*
+            Uncomment if an English resume is available:
+            <li>
+              <a href="/resume/resume_en.pdf" className="text-primary hover:underline">
+                Download Resume (English)
+              </a>
+            </li>
+            */}
+          </ul>
+        </section>
+
+        <p className="text-gray-300 italic">
+          Thank you for visiting my portfolio. Feel free to contact me for
+          collaborations or further information!
+        </p>
       </motion.div>
     </Layout>
   );

@@ -92,7 +92,10 @@ export default function Layout({
 
       {/* Right sidebar */}
       {rightSidebar && (
-        <RightSidebar recentPosts={recentPosts} tags={tags} toc={toc} />
+        // Hide on small screens, show at lg
+        <div className="hidden lg:block w-64 fixed top-0 right-0 h-screen bg-dark-sidebar border-l border-gray-700 p-6 overflow-y-auto">
+          <RightSidebar recentPosts={recentPosts} tags={tags} toc={toc} />
+        </div>
       )}
 
       {/* Back to top button */}

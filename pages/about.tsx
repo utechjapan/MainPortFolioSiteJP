@@ -1,4 +1,3 @@
-// pages/about.tsx
 import Head from "next/head";
 import Image from "next/image";
 import Layout from "../components/layout/Layout";
@@ -12,7 +11,7 @@ export default function About() {
         <title>About | {siteConfig.title}</title>
         <meta
           name="description"
-          content="Learn more about our mission and values"
+          content="Learn more about Chikara Inohara and UTechLabs, where we explore cutting-edge technologies."
         />
       </Head>
 
@@ -35,79 +34,91 @@ export default function About() {
           </div>
 
           <div className="p-8">
+            {/* Our Mission */}
             <h2 className="text-2xl font-bold mb-4 text-white">Our Mission</h2>
             <p className="text-gray-300 mb-6">
-              Welcome to {siteConfig.title}, where we&apos;re passionate about
-              sharing knowledge and helping others build their perfect homelab
-              and self-hosted environments.
+              I'm <strong>Chikara Inohara</strong>, a technology enthusiast and
+              innovator based in Japan. I created <strong>UTechLabs</strong> as
+              a platform to document my journey through the ever-evolving world
+              of technology.
             </p>
-
             <p className="text-gray-300 mb-6">
-              Our mission is to provide high-quality tutorials, guides, and
-              resources that empower tech enthusiasts to take control of their
-              digital infrastructure and data. We believe in the power of
-              self-hosting and open-source solutions to create more private,
-              secure, and customizable technology experiences.
+              At UTechLabs, my goal is to <strong>Educate</strong> through
+              comprehensive tutorials, <strong> Innovate</strong> by exploring
+              new tools and methodologies, and <strong> Collaborate</strong>{" "}
+              with fellow tech enthusiasts.
             </p>
 
+            {/* Who We Are */}
             <h2 className="text-2xl font-bold mb-4 text-white">Who We Are</h2>
             <p className="text-gray-300 mb-6">
-              {siteConfig.title} was founded by a group of technology
-              enthusiasts with backgrounds in system administration, networking,
-              security, and software development. What started as a personal
-              blog to document homelab projects has grown into a community
-              resource for anyone interested in self-hosting and home server
-              setups.
+              With years of experience in software development, networking, and
+              system administration, I have worked on projects ranging from
+              small business solutions to large-scale enterprise systems. My
+              background has shaped UTechLabs into a resource for anyone
+              interested in modern technology and self-hosting solutions.
             </p>
 
+            {/* What We Cover */}
             <h2 className="text-2xl font-bold mb-4 text-white">
               What We Cover
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="bg-dark-sidebar p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  HomeLab Setups
+                  Cloud Computing
                 </h3>
                 <p className="text-gray-400">
-                  Hardware recommendations, build guides, and infrastructure
-                  planning for your home server environment.
+                  AWS, Azure, and GCP insights, reviews, and tutorials.
                 </p>
               </div>
               <div className="bg-dark-sidebar p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  Self-Hosting
+                  DevOps Practices
                 </h3>
                 <p className="text-gray-400">
-                  Tutorials on running your own services like media servers,
-                  password managers, git repositories, and more.
+                  CI/CD pipelines, automation, and containerization strategies.
                 </p>
               </div>
               <div className="bg-dark-sidebar p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  Security & Privacy
+                  Programming Languages
                 </h3>
                 <p className="text-gray-400">
-                  Best practices for securing your home network, servers, and
-                  protecting your digital privacy.
+                  Python, Go, and JavaScript development tips and best
+                  practices.
                 </p>
               </div>
               <div className="bg-dark-sidebar p-4 rounded-lg">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  Automation
+                  HomeLab Enthusiast
                 </h3>
                 <p className="text-gray-400">
-                  Guides on automating deployments, backups, and maintenance
-                  tasks using tools like Ansible, Docker, and more.
+                  Building and experimenting with home servers and self-hosted
+                  solutions.
                 </p>
               </div>
             </div>
 
+            {/* Get In Touch */}
             <h2 className="text-2xl font-bold mb-4 text-white">Get In Touch</h2>
-            <p className="text-gray-300">
-              Have questions, suggestions, or want to contribute? We&apos;d love
-              to hear from you! Reach out through any of our social channels or
-              send us an email.
+            <p className="text-gray-300 mb-6">
+              I'm always excited to connect with fellow tech enthusiasts. Have
+              questions or suggestions? Reach out through any of these channels:
             </p>
+            <div className="flex items-center space-x-4">
+              {siteConfig.socialLinks.map((social) => (
+                <a
+                  key={social.url}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-2xl text-primary hover:text-primary-dark transition-colors"
+                >
+                  <i className={social.icon} />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </motion.div>

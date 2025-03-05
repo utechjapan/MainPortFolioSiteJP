@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import TableOfContents from '../blog/TableOfContents';
-import { RecentPost, TocItem } from '../../types';
+import Link from "next/link";
+import { useRouter } from "next/router";
+import TableOfContents from "../blog/TableOfContents";
+import { RecentPost, TocItem } from "../../types";
 
 interface RightSidebarProps {
   recentPosts?: RecentPost[];
@@ -15,10 +15,12 @@ export default function RightSidebar({
   toc = null,
 }: RightSidebarProps) {
   const router = useRouter();
-  const isPostPage = router.pathname.startsWith('/blog/') && router.pathname !== '/blog';
+  const isPostPage =
+    router.pathname.startsWith("/blog/") && router.pathname !== "/blog";
 
   return (
-    <aside className="hidden lg:block fixed top-0 right-0 bottom-0 w-64 bg-dark-sidebar border-l border-gray-700 p-6 overflow-y-auto">
+    // No more fixed/h-64/hidden/etc. classes—just a normal aside
+    <aside className="h-full">
       {/* Table of contents for blog posts */}
       {isPostPage && toc && toc.length > 0 && (
         <div className="mb-10">
@@ -33,9 +35,15 @@ export default function RightSidebar({
         </h3>
         {recentPosts.length > 0 ? (
           <ul className="space-y-3">
-            {recentPosts.map(post => (
-              <li key={post.slug} className="transition-transform hover:translate-x-1">
-                <Link href={`/blog/${post.slug}`} className="text-gray-400 hover:text-primary text-sm">
+            {recentPosts.map((post) => (
+              <li
+                key={post.slug}
+                className="transition-transform hover:translate-x-1"
+              >
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="text-gray-400 hover:text-primary text-sm"
+                >
                   <i className="fas fa-angle-right mr-2 text-primary/70"></i>
                   {post.title}
                 </Link>
@@ -54,7 +62,7 @@ export default function RightSidebar({
         </h3>
         {tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {tags.map(tag => (
+            {tags.map((tag) => (
               <Link
                 key={tag}
                 href={`/blog/tag/${tag}`}
