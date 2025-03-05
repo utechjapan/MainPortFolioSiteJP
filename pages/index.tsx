@@ -10,16 +10,11 @@ import { useState } from 'react';
 import SearchBar from '../components/ui/SearchBar';
 import { siteConfig } from '../lib/siteConfig';
 import Tag from '../components/ui/Tag';
+import { Post, RecentPost } from '../types';
 
 interface HomeProps {
-  posts: {
-    slug: string;
-    frontMatter: any;
-  }[];
-  recentPosts: {
-    slug: string;
-    title: string;
-  }[];
+  posts: Post[];
+  recentPosts: RecentPost[];
   tags: string[];
 }
 
@@ -136,9 +131,9 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                     {post.frontMatter.description}
                   </p>
                   
-                  {post.frontMatter.tags && (
+                  {post.frontMatter.tags && post.frontMatter.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
-                      {post.frontMatter.tags.slice(0, 3).map((tag: string) => (
+                      {post.frontMatter.tags.slice(0, 3).map((tag) => (
                         <Tag key={tag} text={tag} />
                       ))}
                     </div>
@@ -207,7 +202,7 @@ export async function getStaticProps() {
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount: { [key: string]: number } = {};
+  const tagCount: Record<string, number> = {};
   
   // Count tag occurrences
   allTags.forEach(tag => {

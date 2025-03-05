@@ -1,24 +1,21 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import TableOfContents from '../blog/TableOfContents';
+import { RecentPost, TocItem } from '../../types';
 
 interface RightSidebarProps {
-  recentPosts?: any[];
+  recentPosts?: RecentPost[];
   tags?: string[];
-  toc?: any[] | null;
+  toc?: TocItem[] | null;
 }
 
 export default function RightSidebar({
-  recentPosts,
-  tags,
+  recentPosts = [],
+  tags = [],
   toc = null,
 }: RightSidebarProps) {
   const router = useRouter();
   const isPostPage = router.pathname.startsWith('/blog/') && router.pathname !== '/blog';
-
-  // Use props if available (server-rendered), otherwise use defaults.
-  const posts = recentPosts || [];
-  const tagList = tags || [];
 
   return (
     <aside className="hidden lg:block fixed top-0 right-0 bottom-0 w-64 bg-dark-sidebar border-l border-gray-700 p-6 overflow-y-auto">
@@ -34,9 +31,9 @@ export default function RightSidebar({
         <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-700 text-white">
           Recent Posts
         </h3>
-        {posts.length > 0 ? (
+        {recentPosts.length > 0 ? (
           <ul className="space-y-3">
-            {posts.map(post => (
+            {recentPosts.map(post => (
               <li key={post.slug} className="transition-transform hover:translate-x-1">
                 <Link href={`/blog/${post.slug}`} className="text-gray-400 hover:text-primary text-sm">
                   <i className="fas fa-angle-right mr-2 text-primary/70"></i>
@@ -55,9 +52,9 @@ export default function RightSidebar({
         <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-700 text-white">
           Trending Tags
         </h3>
-        {tagList.length > 0 ? (
+        {tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {tagList.map(tag => (
+            {tags.map(tag => (
               <Link
                 key={tag}
                 href={`/blog/tag/${tag}`}

@@ -1,11 +1,6 @@
 // components/blog/TableOfContents.tsx - Update to appear inside the right sidebar
 import { useState, useEffect } from 'react';
-
-interface TocItem {
-  id: string;
-  text: string;
-  level: number;
-}
+import { TocItem } from '../../types';
 
 interface TableOfContentsProps {
   toc: TocItem[];

@@ -7,12 +7,19 @@ import SearchBar from '../components/ui/SearchBar';
 import BlogCard from '../components/blog/BlogCard';
 import { getAllMDXContent } from '../lib/mdx';
 import { motion } from 'framer-motion';
+import { Post, RecentPost } from '../types';
 
-export default function Search({ allPosts, recentPosts, tags }) {
+interface SearchProps {
+  allPosts: Post[];
+  recentPosts: RecentPost[];
+  tags: string[];
+}
+
+export default function Search({ allPosts, recentPosts, tags }: SearchProps) {
   const router = useRouter();
   const { q } = router.query;
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<Post[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
@@ -22,7 +29,7 @@ export default function Search({ allPosts, recentPosts, tags }) {
     }
   }, [q]);
 
-  const performSearch = (term) => {
+  const performSearch = (term: string) => {
     setIsSearching(true);
     
     // Simple search logic: match against title, description, tags
@@ -125,7 +132,7 @@ export async function getStaticProps() {
   
   // Extract all tags
   const allTags = allPosts.flatMap(post => post.frontMatter.tags || []);
-  const tagCount = {};
+  const tagCount: Record<string, number> = {};
   
   // Count tag occurrences
   allTags.forEach(tag => {
