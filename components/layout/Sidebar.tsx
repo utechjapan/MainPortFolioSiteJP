@@ -2,23 +2,28 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
+import ThemeToggle from "../ui/ThemeToggle"; // Desktop theme toggle
 
 interface SidebarProps {
   isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
+export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const router = useRouter();
+  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <aside
@@ -101,6 +106,4 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
       </div>
     </aside>
   );
-};
-
-export default Sidebar;
+}
