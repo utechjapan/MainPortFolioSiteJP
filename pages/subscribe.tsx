@@ -17,13 +17,6 @@ export default function Subscribe() {
     setError("");
 
     try {
-      // In a real implementation, you would call your API here
-      // const response = await fetch('/api/subscribe', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, name }),
-      // });
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -45,7 +38,7 @@ export default function Subscribe() {
         <meta name="description" content="Subscribe to my newsletter" />
       </Head>
 
-      <div className="max-w-3xl mx-auto py-10">
+      <div className="max-w-3xl mx-auto py-10 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -54,6 +47,15 @@ export default function Subscribe() {
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
             Subscribe to My Newsletter
           </h1>
+
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 flex items-center justify-center bg-primary/20 rounded-full">
+              <i
+                className="fa-solid fa-envelope fa-fw text-primary text-3xl"
+                aria-hidden="true"
+              ></i>
+            </div>
+          </div>
 
           <p className="text-lg mb-10 text-gray-700 dark:text-gray-300">
             Get the latest updates on tech tutorials, projects, and insights
@@ -140,7 +142,7 @@ export default function Subscribe() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 flex justify-center items-center"
+                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center"
                 >
                   {loading ? (
                     <svg

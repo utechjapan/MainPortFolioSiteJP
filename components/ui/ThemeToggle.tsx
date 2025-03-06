@@ -10,12 +10,10 @@ export default function ThemeToggle({ className = "" }: ThemeToggleProps) {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
 
-  // Only execute client-side
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return null;
 
-  // Determine actual theme
   const currentTheme = theme === "system" ? resolvedTheme : theme;
 
   const toggleTheme = () => {
@@ -30,11 +28,9 @@ export default function ThemeToggle({ className = "" }: ThemeToggleProps) {
       onClick={toggleTheme}
     >
       {currentTheme === "dark" ? (
-        // Sun icon for dark mode
-        <i className="fas fa-sun text-yellow-500"></i>
+        <i className="fa-solid fa-sun text-yellow-500 text-xl"></i>
       ) : (
-        // Moon icon for light mode
-        <i className="fas fa-moon text-gray-800"></i>
+        <i className="fa-solid fa-moon text-gray-800 text-xl"></i>
       )}
     </button>
   );

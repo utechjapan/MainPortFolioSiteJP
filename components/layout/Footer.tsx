@@ -6,7 +6,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="mt-20 pt-10 border-t border-gray-300 dark:border-gray-700 transition-colors">
+    <footer className="mt-20 pt-10 border-t border-gray-300 dark:border-gray-700 transition-colors">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center">
           <span className="text-gray-600 dark:text-gray-400 text-sm transition-colors">
@@ -21,10 +21,13 @@ export default function Footer() {
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
               aria-label={social.name}
             >
-              <i className={`${social.icon} text-lg`} aria-hidden="true"></i>
+              <i
+                className={`${social.icon} fa-fw text-lg`}
+                aria-hidden="true"
+              ></i>
             </a>
           ))}
         </div>
@@ -56,6 +59,6 @@ export default function Footer() {
           </Link>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

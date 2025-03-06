@@ -5,56 +5,18 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        {/* FontAwesome - Make sure it's loaded properly with the correct integrity hash */}
+        {/* FontAwesome stylesheet */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          integrity="sha512-iecdLmaskl7CVpOaEUAB+CXzKavmELwJ8WTUzXSUk3i/G9FJjqEUXe9VpKpJI9S9I62JG728QhMM+MEulOLDgQ=="
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
         />
-
-        {/* Font preloading for performance */}
+        {/* Google Fonts */}
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
-        <link
-          rel="preload"
-          as="font"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-          crossOrigin=""
-        />
-
-        {/* Meta tags for SEO and social media */}
-        <meta charSet="utf-8" />
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="author" content="Chikara Inohara" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="UTechLab" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:creator" content="@_utechlab" />
-        <link rel="icon" href="/favicon.ico" />
-
-        {/* Script for applying theme early to avoid theme flashing */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  // Check for saved theme in localStorage
-                  const theme = localStorage.getItem('theme') || 'dark';
-                  document.documentElement.classList.add(theme);
-                } catch (e) {
-                  // Fallback to dark theme if localStorage is not available
-                  document.documentElement.classList.add('dark');
-                }
-              })();
-            `,
-          }}
-        />
       </Head>
-      <body className="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-100">
+      <body>
         <Main />
         <NextScript />
       </body>

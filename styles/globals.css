@@ -36,32 +36,15 @@
     @apply text-gray-900 dark:text-gray-100;
   }
 
-  /* Ensure all Font Awesome icons show correctly - Updated */
+  /* Fix for FontAwesome icon display */
   .fas,
   .fa-solid,
   .far,
   .fa-regular,
   .fab,
-  .fa-brands,
-  .fa {
-    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
-    font-style: normal !important;
-    display: inline-block !important;
-  }
-
-  .fas,
-  .fa-solid {
-    font-weight: 900 !important;
-  }
-
-  .far,
-  .fa-regular {
-    font-weight: 400 !important;
-  }
-
-  .fab,
   .fa-brands {
-    font-weight: 400 !important;
+    display: inline-block !important;
+    font-style: normal !important;
   }
 }
 
@@ -312,14 +295,15 @@ pre > code {
   }
 }
 
-/* Fixed font awesome icon display - Specific fix for theme toggle */
+/* Special fix for theme toggle button */
 button[aria-label="Toggle Dark Mode"] i {
   display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  font-size: 1rem !important;
-  width: auto !important;
-  height: auto !important;
+}
+
+/* Fix for social and navigation icons */
+.social-icon i,
+.nav-icon i {
+  display: inline-block !important;
 }
 
 /* Ensure consistency in dark mode across components */

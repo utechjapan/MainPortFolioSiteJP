@@ -2,14 +2,14 @@
 export const siteConfig = {
   // Site information
   title: "UTechLab",
-  description: "Innovating Technology",
+  description: "Portfolio and documentations by Chikara Inohara",
   siteUrl: "https://www.utechjapan.net",
 
   // Author information
   author: {
     name: "Chikara Inohara",
     avatar: "/images/profile.jpg",
-    bio: "Tech enthusiast and self-hosting advocate",
+    bio: "Innovating Technology",
   },
 
   // Navigation links

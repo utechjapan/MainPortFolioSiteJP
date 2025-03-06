@@ -36,9 +36,9 @@ export default function About() {
           </div>
 
           <div className="p-8">
-            {/* Our Mission */}
+            {/* My Mission */}
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-              Our Mission
+              My Mission
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
               I'm{" "}
@@ -70,7 +70,7 @@ export default function About() {
 
             {/* Who We Are */}
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-              Who We Are
+              Who I am
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
               With years of experience in software development, networking, and
@@ -82,7 +82,7 @@ export default function About() {
 
             {/* What We Cover */}
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-              What We Cover
+              What I Cover
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">

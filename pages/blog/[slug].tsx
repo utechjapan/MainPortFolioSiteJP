@@ -1,4 +1,4 @@
-// pages/blog/[slug].tsx - Improved responsiveness and dark mode text
+// pages/blog/[slug].tsx - Improved responsiveness and dark mode text for code blocks
 import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -139,7 +139,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           <div className="relative group">
             <pre
               {...props}
-              className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-6 py-6 transition-colors"
+              className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 p-4 rounded-lg overflow-x-auto mb-6 py-6 transition-colors"
             >
               {props.children}
             </pre>
@@ -219,7 +219,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      {/* Match 'About' style: fade-in + max-w + card container */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -227,7 +226,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         className="w-full max-w-4xl mx-auto px-4 sm:px-0"
       >
         <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
-          {/* Cover image */}
           {frontMatter.image && (
             <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px]">
               <Image
@@ -240,7 +238,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
             </div>
           )}
 
-          {/* Post content */}
           <div className="p-4 sm:p-6 md:p-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 transition-colors leading-tight break-words">
               {frontMatter.title}
@@ -253,7 +250,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
               />
             </div>
 
-            {/* Optional tags */}
             {frontMatter.tags && frontMatter.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {frontMatter.tags.map((tag) => (
@@ -262,7 +258,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
               </div>
             )}
 
-            {/* Table of Contents on mobile */}
             {toc && toc.length > 0 && (
               <div className="lg:hidden mb-8">
                 <details className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
@@ -276,14 +271,12 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
               </div>
             )}
 
-            {/* Actual MDX content */}
             <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words">
               <MDXRemote {...source} components={components} />
             </div>
           </div>
         </div>
 
-        {/* Comments in a separate card */}
         <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
           <GiscusComments slug={slug} />
         </div>
@@ -292,9 +285,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   );
 }
 
-//
-// getStaticPaths
-//
 export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = getAllMDXSlugs("blog");
   return {
@@ -303,41 +293,31 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-//
-// getStaticProps
-//
 export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({
   params,
 }) => {
-  // Make sure we don't proceed if 'slug' is missing
   if (!params?.slug) {
     return {
       notFound: true,
     };
   }
 
-  // Load the MDX file for this particular slug
   const { content, frontMatter, toc } = await getMDXContent(
     "blog",
     params.slug
   );
-
-  // Load all blog posts to generate 'recentPosts' + 'popularTags'
   const allPosts = await getAllMDXContent("blog");
 
-  // Extract all tags
   const allTags = allPosts.flatMap((post) => post.frontMatter.tags || []);
   const tagCount: { [key: string]: number } = {};
   allTags.forEach((tag) => {
     tagCount[tag] = (tagCount[tag] || 0) + 1;
   });
-  // Sort by count and take top 10
   const popularTags = Object.entries(tagCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([tag]) => tag);
 
-  // Prepare MDX
   const mdxSource = await serialize(content, {
     mdxOptions: {
       rehypePlugins: [
@@ -349,7 +329,6 @@ export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({
     },
   });
 
-  // Return props
   return {
     props: {
       post: {

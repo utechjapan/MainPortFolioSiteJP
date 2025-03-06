@@ -7,7 +7,6 @@ import { format, parseISO } from "date-fns";
 import { getAllMDXContent } from "../lib/mdx";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import SearchBar from "../components/ui/SearchBar";
 import { siteConfig } from "../lib/siteConfig";
 import Tag from "../components/ui/Tag";
 import { Post, RecentPost } from "../types";
@@ -21,17 +20,10 @@ interface HomeProps {
 export default function Home({ posts, recentPosts, tags }: HomeProps) {
   const [activeTag, setActiveTag] = useState("all");
 
-  // Filter posts by tag
   const filteredPosts =
     activeTag === "all"
       ? posts
       : posts.filter((post) => post.frontMatter.tags?.includes(activeTag));
-
-  // Extract all unique tags
-  const allTags = [
-    "all",
-    ...new Set(posts.flatMap((post) => post.frontMatter.tags || [])),
-  ];
 
   return (
     <Layout recentPosts={recentPosts} tags={tags}>
@@ -43,10 +35,10 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
       </Head>
 
       <div className="space-y-16">
-        {/* Hero section - Simplified design without the intro text */}
+        {/* Hero Section */}
         <section className="mb-10">
           <motion.div
-            className="bg-light-card dark:bg-dark-card rounded-lg p-8 shadow-md dark:shadow-none"
+            className="bg-light-card dark:bg-dark-card rounded-lg p-8 shadow-md dark:shadow-none text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -60,19 +52,22 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                 Explore technical guides, tutorials, and best practices for
                 modern IT infrastructure and development.
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 justify-center">
                 <Link
                   href="/blog"
                   className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center"
                 >
-                  <i className="fas fa-book-open mr-2" aria-hidden="true"></i>
+                  <i
+                    className="fa-solid fa-book-open mr-2"
+                    aria-hidden="true"
+                  ></i>
                   Read Articles
                 </Link>
                 <Link
                   href="/about"
                   className="border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-lg transition-colors inline-flex items-center"
                 >
-                  <i className="fas fa-user mr-2" aria-hidden="true"></i>
+                  <i className="fa-solid fa-user mr-2" aria-hidden="true"></i>
                   About Me
                 </Link>
               </div>
@@ -93,7 +88,10 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="text-primary hover:text-primary-dark flex items-center transition-colors"
             >
               View all posts
-              <i className="fas fa-arrow-right ml-2" aria-hidden="true"></i>
+              <i
+                className="fa-solid fa-arrow-right ml-2"
+                aria-hidden="true"
+              ></i>
             </Link>
           </div>
 
@@ -124,14 +122,17 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                       className="flex items-center"
                     >
                       <i
-                        className="fas fa-calendar-alt mr-2"
+                        className="fa-solid fa-calendar-alt mr-2"
                         aria-hidden="true"
                       ></i>
                       {format(parseISO(post.frontMatter.date), "MMMM d, yyyy")}
                     </time>
                     <span className="mx-2">•</span>
                     <span className="flex items-center">
-                      <i className="fas fa-clock mr-2" aria-hidden="true"></i>
+                      <i
+                        className="fa-solid fa-clock mr-2"
+                        aria-hidden="true"
+                      ></i>
                       {post.frontMatter.readingTime || "5 min read"}
                     </span>
                   </div>
@@ -165,7 +166,10 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
             >
               View More Posts
-              <i className="fas fa-arrow-right ml-2" aria-hidden="true"></i>
+              <i
+                className="fa-solid fa-arrow-right ml-2"
+                aria-hidden="true"
+              ></i>
             </Link>
           </div>
         </section>
@@ -173,9 +177,9 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
         {/* Subscribe section */}
         <section className="bg-light-card dark:bg-dark-card rounded-lg p-8 text-center shadow-md dark:shadow-none transition-colors">
           <div className="flex justify-center mb-6">
-            <div className="bg-primary/20 p-4 rounded-full">
+            <div className="w-16 h-16 flex items-center justify-center bg-primary/20 rounded-full">
               <i
-                className="fas fa-envelope text-primary text-3xl"
+                className="fa-solid fa-envelope fa-fw text-primary text-3xl"
                 aria-hidden="true"
               ></i>
             </div>
@@ -202,7 +206,10 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="w-full bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-md flex items-center justify-center transition-colors"
             >
               Subscribe Now
-              <i className="fas fa-arrow-right ml-2" aria-hidden="true"></i>
+              <i
+                className="fa-solid fa-arrow-right fa-fw ml-2"
+                aria-hidden="true"
+              ></i>
             </button>
           </form>
         </section>
@@ -215,16 +222,13 @@ export async function getStaticProps() {
   const allPosts = await getAllMDXContent("blog");
   const featuredPosts = allPosts.slice(0, 4);
 
-  // Extract all tags
   const allTags = allPosts.flatMap((post) => post.frontMatter.tags || []);
   const tagCount: Record<string, number> = {};
 
-  // Count tag occurrences
   allTags.forEach((tag) => {
     tagCount[tag] = (tagCount[tag] || 0) + 1;
   });
 
-  // Sort by count and take top 10
   const popularTags = Object.entries(tagCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)

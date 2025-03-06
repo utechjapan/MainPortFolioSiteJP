@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
+import ThemeToggle from "../ui/ThemeToggle"; // Desktop theme toggle
 
 interface SidebarProps {
   isOpen: boolean;
@@ -16,7 +17,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // When mounted on client, now we can show the UI
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -27,7 +27,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
   return (
     <aside
-      className={`fixed top-0 left-0 bottom-0 w-72 bg-light-sidebar dark:bg-dark-sidebar border-r border-light-border dark:border-dark-border transition-all duration-300 z-30 ${
+      className={`fixed top-0 left-0 bottom-0 w-72 bg-light-sidebar dark:bg-dark-sidebar border-r border-gray-300 dark:border-dark-border transition-all duration-300 z-30 ${
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       }`}
     >
@@ -48,7 +48,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
               {siteConfig.title}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+            {/* Centered description */}
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 text-center">
               {siteConfig.description}
             </p>
           </div>
@@ -68,7 +69,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                     onClick={() => setIsOpen(false)}
                   >
                     <i
-                      className={`${link.icon} w-5 text-center mr-3`}
+                      className={`${link.icon} fa-fw w-5 text-center mr-3`}
                       aria-hidden="true"
                     ></i>
                     <span>{link.label}</span>
@@ -77,6 +78,11 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               ))}
             </ul>
           </nav>
+        </div>
+
+        {/* Desktop Theme Toggle */}
+        <div className="hidden md:flex justify-center mb-4">
+          <ThemeToggle />
         </div>
 
         {/* Social links */}
@@ -88,10 +94,13 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
                 aria-label={social.name}
               >
-                <i className={`${social.icon} text-xl`} aria-hidden="true"></i>
+                <i
+                  className={`${social.icon} fa-fw text-xl`}
+                  aria-hidden="true"
+                ></i>
               </a>
             ))}
           </div>
