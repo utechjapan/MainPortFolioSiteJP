@@ -1,7 +1,7 @@
+// components/layout/Sidebar.tsx
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
 
@@ -12,7 +12,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const router = useRouter();
-  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

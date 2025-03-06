@@ -1,5 +1,5 @@
+// components/layout/Layout.tsx
 import React, { ReactNode, useState } from "react";
-import { useTheme } from "next-themes";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import MobileMenu from "./MobileMenu";
@@ -24,14 +24,13 @@ const Layout: React.FC<LayoutProps> = ({
   toc = null,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme } = useTheme();
 
   return (
     <div className="min-h-screen flex bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-colors">
       {/* Sidebar */}
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Mobile Header */}
+      {/* Mobile Header with theme toggle */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center">
         <button
           className="p-2 rounded-md bg-primary/80 backdrop-blur-sm text-white hover:bg-primary transition-colors"
@@ -75,7 +74,7 @@ const Layout: React.FC<LayoutProps> = ({
           UTechLab
         </span>
 
-        {/* Mobile Theme Toggle */}
+        {/* Mobile Theme Toggle remains */}
         <div className="md:hidden">
           <ThemeToggle />
         </div>
@@ -83,10 +82,7 @@ const Layout: React.FC<LayoutProps> = ({
 
       <MobileMenu isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Fixed Desktop Theme Toggle */}
-      <div className="hidden md:block fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
+      {/* No fixed desktop theme toggle */}
 
       <main className="flex-1 ml-0 md:ml-72 transition-all duration-300 ease-in-out pt-14 md:pt-0">
         <div className={`p-6 md:p-8 lg:p-10 ${rightSidebar ? "lg:mr-64" : ""}`}>
