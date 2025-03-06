@@ -1,17 +1,16 @@
-// components/layout/Sidebar.tsx
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
 
-interface SidebarComponentProps {
+interface SidebarProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
 }
 
-export default function Sidebar({ isOpen, setIsOpen }: SidebarComponentProps) {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const router = useRouter();
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -103,4 +102,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarComponentProps) {
       </div>
     </aside>
   );
-}
+};
+
+export default Sidebar;

@@ -1,5 +1,4 @@
-// components/layout/Layout.tsx
-import { ReactNode, useState, useEffect } from "react";
+import React, { ReactNode, useState } from "react";
 import { useTheme } from "next-themes";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
@@ -17,13 +16,13 @@ interface LayoutProps {
   toc?: TocItem[] | null;
 }
 
-export default function Layout({
+const Layout: React.FC<LayoutProps> = ({
   children,
   rightSidebar = true,
   recentPosts = [],
   tags = [],
   toc = null,
-}: LayoutProps) {
+}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme } = useTheme();
 
@@ -103,4 +102,6 @@ export default function Layout({
       <BackToTop />
     </div>
   );
-}
+};
+
+export default Layout;
