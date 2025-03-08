@@ -350,3 +350,14 @@ table {
     overflow-x: initial;
   }
 }
+
+/* Additional adjustments for mobile bullet list styling */
+@media (max-width: 640px) {
+  .prose ul,
+  .prose ol {
+    margin-left: 0.5rem;
+    padding-left: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}

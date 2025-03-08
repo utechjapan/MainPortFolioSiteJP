@@ -4,8 +4,6 @@ import { useTheme } from "next-themes";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import MobileMenu from "./MobileMenu";
-import ThemeToggle from "../ui/ThemeToggle";
-import LanguageToggle from "../ui/LanguageToggle";
 import Footer from "./Footer";
 import BackToTop from "../ui/BackToTop";
 import { RecentPost, TocItem } from "../../types";
@@ -37,7 +35,7 @@ export default function Layout({
     <div className="min-h-screen flex flex-col bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-theme">
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Mobile Header: only visible on mobile screens */}
+      {/* Mobile Header – toggles removed so it only shows a menu toggle */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme">
         <button
           className="p-2 rounded-md bg-primary/80 text-white hover:bg-primary transition-colors"
@@ -50,16 +48,10 @@ export default function Layout({
             <i className="fa-solid fa-bars h-6 w-6" aria-hidden="true"></i>
           )}
         </button>
-
         <span className="text-lg font-bold text-gray-900 dark:text-white transition-theme">
           UTechLab
         </span>
-
-        {/* Both toggles appear on mobile header */}
-        <div className="flex space-x-2">
-          {mounted && <LanguageToggle />}
-          {mounted && <ThemeToggle />}
-        </div>
+        <div></div>
       </div>
 
       <MobileMenu isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
@@ -81,4 +73,3 @@ export default function Layout({
     </div>
   );
 }
-
