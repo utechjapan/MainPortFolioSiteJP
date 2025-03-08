@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 export default function LanguageToggle() {
   const router = useRouter();
   const { asPath } = router;
-  const [currentHost, setCurrentHost] = useState("");
+  const [currentHost, setCurrentHost] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -12,11 +12,12 @@ export default function LanguageToggle() {
     }
   }, []);
 
-  if (!asPath) return null; // Safety check
+  // Wait until mounted and hostname is available
+  if (!asPath || !currentHost) return null;
 
   // If current host starts with "en.", then we are on the English version
   const isEnglish = currentHost.startsWith("en.");
-  // Toggle: if currently English, redirect to Japanese; otherwise, redirect to English
+  // Toggle: if currently English, redirect to Japanese; otherwise, to English
   const targetHost = isEnglish ? "utechjapan.net" : "en.utechjapan.net";
   const targetUrl = `https://${targetHost}${asPath}`;
   const label = isEnglish ? "日本語" : "EN";
@@ -31,3 +32,4 @@ export default function LanguageToggle() {
     </button>
   );
 }
+

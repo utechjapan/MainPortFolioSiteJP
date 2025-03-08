@@ -1,7 +1,6 @@
 import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
-  // Use the NEXT_PUBLIC_SITE_LANG environment variable; default to Japanese ("ja")
   const lang = process.env.NEXT_PUBLIC_SITE_LANG || "ja";
   return (
     <Html lang={lang}>
