@@ -7,8 +7,8 @@ export default function Terms() {
   return (
     <Layout rightSidebar={false} toc={null}>
       <Head>
-        <title>Terms of Service | My Portfolio</title>
-        <meta name="description" content="Terms of Service for My Portfolio" />
+        <title>利用規約 | My Portfolio</title>
+        <meta name="description" content="My Portfolioの利用規約" />
       </Head>
 
       <div className="max-w-3xl mx-auto py-10">
@@ -18,17 +18,14 @@ export default function Terms() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-            Terms of Service
+            利用規約
           </h1>
 
           <p className="text-lg mb-10 text-gray-700 dark:text-gray-300">
-            Please read these terms of service carefully before using our
-            website. By accessing or using the site, you agree to be bound by
-            these terms. If you do not agree to all the terms, then you may not
-            access the site or use any of its services.
+            本サイトをご利用になる前に、以下の利用規約をよくお読みください。サイトへのアクセスまたは利用は、これらの規約に同意したものとみなされます。すべての規約に同意いただけない場合は、サイトのご利用をお控えください。
           </p>
 
-          {/* Add more detailed terms of service text as needed */}
+          {/* 詳細な利用規約の内容をここに記述 */}
         </motion.div>
       </div>
     </Layout>

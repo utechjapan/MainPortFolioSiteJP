@@ -28,10 +28,10 @@ export default function Subscribe() {
         setEmail("");
         setName("");
       } else {
-        setError(data.error || "Something went wrong. Please try again.");
+        setError(data.error || "エラーが発生しました。再度お試しください。");
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError("エラーが発生しました。再度お試しください。");
       console.error(err);
     } finally {
       setLoading(false);
@@ -41,8 +41,8 @@ export default function Subscribe() {
   return (
     <Layout rightSidebar={false} toc={null}>
       <Head>
-        <title>Subscribe | My Portfolio</title>
-        <meta name="description" content="Subscribe to my newsletter" />
+        <title>ニュースレター登録 | My Portfolio</title>
+        <meta name="description" content="ニュースレターに登録して最新情報を受け取りましょう" />
       </Head>
 
       <div className="max-w-3xl mx-auto py-10 text-center">
@@ -52,7 +52,7 @@ export default function Subscribe() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-            Subscribe to My Newsletter
+            ニュースレター登録
           </h1>
 
           <div className="flex justify-center mb-6">
@@ -65,8 +65,7 @@ export default function Subscribe() {
           </div>
 
           <p className="text-lg mb-10 text-gray-700 dark:text-gray-300">
-            Get the latest updates on tech tutorials, projects, and insights
-            delivered straight to your inbox.
+            最新の技術チュートリアル、プロジェクト、インサイトをお届けします。
           </p>
 
           {submitted ? (
@@ -90,16 +89,16 @@ export default function Subscribe() {
                 />
               </svg>
               <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">
-                Thanks for subscribing!
+                ご登録ありがとうございます！
               </h3>
               <p className="text-gray-700 dark:text-gray-300">
-                You'll receive updates when new content is published.
+                新しいコンテンツが公開されるとお知らせいたします。
               </p>
               <button
                 onClick={() => setSubmitted(false)}
                 className="mt-6 text-primary hover:text-primary-dark"
               >
-                Subscribe another email
+                別のメールアドレスで登録する
               </button>
             </motion.div>
           ) : (
@@ -110,13 +109,13 @@ export default function Subscribe() {
                     htmlFor="name"
                     className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
-                    Your Name
+                    お名前
                   </label>
                   <input
                     type="text"
                     id="name"
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                    placeholder="John Doe"
+                    placeholder="山田 太郎"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -127,7 +126,7 @@ export default function Subscribe() {
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
-                    Email Address
+                    メールアドレス
                   </label>
                   <input
                     type="email"
@@ -173,11 +172,11 @@ export default function Subscribe() {
                       ></path>
                     </svg>
                   ) : null}
-                  {loading ? "Subscribing..." : "Subscribe"}
+                  {loading ? "登録中..." : "登録する"}
                 </button>
 
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
-                  I respect your privacy. No spam, ever. Unsubscribe anytime.
+                  プライバシーを尊重します。スパムは一切ありません。いつでも購読解除できます。
                 </p>
               </form>
             </div>

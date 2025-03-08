@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center">
           <span className="text-gray-600 dark:text-gray-400 text-sm transition-colors">
-            &copy; {currentYear} {siteConfig.title}. All rights reserved.
+            &copy; {currentYear} {siteConfig.title}. 全著作権所有。
           </span>
         </div>
 
@@ -35,27 +35,19 @@ export default function Footer() {
 
       <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-500">
         <p>
-          Made with{" "}
-          <i className="fas fa-heart text-primary" aria-hidden="true"></i> and
-          open-source tech
+          愛情とオープンソース技術で作られました
         </p>
         <div className="mt-2">
           <Link href="/subscribe" className="text-primary hover:underline">
-            Subscribe
+            登録する
           </Link>
           <span className="mx-2">•</span>
-          <Link
-            href="/privacy"
-            className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
-          >
-            Privacy
+          <Link href="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">
+            プライバシー
           </Link>
           <span className="mx-2">•</span>
-          <Link
-            href="/terms"
-            className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
-          >
-            Terms
+          <Link href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">
+            利用規約
           </Link>
         </div>
       </div>

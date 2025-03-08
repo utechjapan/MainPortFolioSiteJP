@@ -1,3 +1,4 @@
+// pages/about.tsx
 import Head from "next/head";
 import Image from "next/image";
 import Layout from "../components/layout/Layout";
@@ -8,10 +9,10 @@ export default function About() {
   return (
     <Layout rightSidebar={false}>
       <Head>
-        <title>About | {siteConfig.title}</title>
+        <title>私について | {siteConfig.title}</title>
         <meta
           name="description"
-          content="Learn more about Chikara Inohara and UTechLabs, where we explore cutting-edge technologies."
+          content="千賀 井野原とUTechLabsについて。最先端技術の探求と知識の共有の場です。"
         />
       </Head>
 
@@ -22,112 +23,86 @@ export default function About() {
         className="max-w-3xl mx-auto"
       >
         <h1 className="text-4xl font-bold mb-8 text-gray-900 dark:text-white transition-colors">
-          About
+          私について
         </h1>
 
         <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           <div className="relative h-64 w-full">
             <Image
               src="/images/about-cover.jpg"
-              alt="About us cover"
+              alt="私についてのカバー画像"
               fill
               className="object-cover"
             />
           </div>
 
           <div className="p-8">
-            {/* My Mission */}
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-              My Mission
+              私の使命
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
-              I'm{" "}
+              私は{" "}
               <strong className="text-gray-900 dark:text-white">
                 Chikara Inohara
               </strong>
-              , a technology enthusiast and innovator based in Japan. I created{" "}
-              <strong className="text-gray-900 dark:text-white">
-                UTechLabs
-              </strong>{" "}
-              as a platform to document my journey through the ever-evolving
-              world of technology.
+              です。日本を拠点とする技術愛好家であり革新者として、UTechLabsを
+              テクノロジーの最新情報や知識の共有の場として立ち上げました。
             </p>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
-              At UTechLabs, my goal is to{" "}
-              <strong className="text-gray-900 dark:text-white">Educate</strong>{" "}
-              through comprehensive tutorials,{" "}
-              <strong className="text-gray-900 dark:text-white">
-                {" "}
-                Innovate
-              </strong>{" "}
-              by exploring new tools and methodologies, and{" "}
-              <strong className="text-gray-900 dark:text-white">
-                {" "}
-                Collaborate
-              </strong>{" "}
-              with fellow tech enthusiasts.
+              UTechLabsでは、包括的なチュートリアル、最新ツールの探求、そして
+              技術愛好家とのコラボレーションを通じて、知識の普及と技術の革新を目指しています。
             </p>
 
-            {/* Who We Are */}
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-              Who I am
+              私とは
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
-              With years of experience in software development, networking, and
-              system administration, I have worked on projects ranging from
-              small business solutions to large-scale enterprise systems. My
-              background has shaped UTechLabs into a resource for anyone
-              interested in modern technology and self-hosting solutions.
+              ソフトウェア開発、ネットワーク、システム管理の分野で培った経験を活かし、UTechLabsは最新技術やセルフホスティングに関心のある皆様にとって貴重なリソースとなっています。
             </p>
 
-            {/* What We Cover */}
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-              What I Cover
+              取り扱っている内容
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  Cloud Computing
+                  クラウドコンピューティング
                 </h3>
                 <p className="text-gray-700 dark:text-gray-400 transition-colors">
-                  AWS, Azure, and GCP insights, reviews, and tutorials.
+                  AWS、Azure、GCPのレビュー、解説、チュートリアル
                 </p>
               </div>
               <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  DevOps Practices
+                  DevOpsプラクティス
                 </h3>
                 <p className="text-gray-700 dark:text-gray-400 transition-colors">
-                  CI/CD pipelines, automation, and containerization strategies.
+                  CI/CDパイプライン、自動化、コンテナ化戦略の実践方法
                 </p>
               </div>
               <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  Programming Languages
+                  プログラミング言語
                 </h3>
                 <p className="text-gray-700 dark:text-gray-400 transition-colors">
-                  Python, Go, and JavaScript development tips and best
-                  practices.
+                  Python、Go、JavaScriptのコーディングのコツやベストプラクティス
                 </p>
               </div>
               <div className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                 <h3 className="font-bold text-lg mb-2 text-primary">
-                  HomeLab Enthusiast
+                  ホームラボ愛好家
                 </h3>
                 <p className="text-gray-700 dark:text-gray-400 transition-colors">
-                  Building and experimenting with home servers and self-hosted
-                  solutions.
+                  ホームサーバーやセルフホスティングの構築事例や実験レポート
                 </p>
               </div>
             </div>
 
-            {/* Get In Touch */}
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-              Get In Touch
+              お問い合わせ
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
-              I'm always excited to connect with fellow tech enthusiasts. Have
-              questions or suggestions? Reach out through any of these channels:
+              技術に関するご質問やご提案がございましたら、下記のSNSリンクよりお気軽にご連絡ください。
             </p>
             <div className="flex items-center space-x-4">
               {siteConfig.socialLinks.map((social) => (

@@ -7,8 +7,8 @@ export default function Privacy() {
   return (
     <Layout rightSidebar={false} toc={null}>
       <Head>
-        <title>Privacy Policy | My Portfolio</title>
-        <meta name="description" content="Privacy Policy for My Portfolio" />
+        <title>プライバシーポリシー | My Portfolio</title>
+        <meta name="description" content="My Portfolioのプライバシーポリシー" />
       </Head>
 
       <div className="max-w-3xl mx-auto py-10">
@@ -18,16 +18,14 @@ export default function Privacy() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-            Privacy Policy
+            プライバシーポリシー
           </h1>
 
           <p className="text-lg mb-10 text-gray-700 dark:text-gray-300">
-            Your privacy is important to us. This page outlines how we collect,
-            use, and protect your personal data. Please review this policy
-            carefully and contact us if you have any questions.
+            お客様のプライバシーは私たちにとって非常に重要です。本ページでは、個人情報の収集、利用、保護方法について説明します。ご不明な点がございましたら、お問い合わせください。
           </p>
 
-          {/* Add more detailed privacy policy text as needed */}
+          {/* 詳細なプライバシーポリシーの内容をここに記述 */}
         </motion.div>
       </div>
     </Layout>
