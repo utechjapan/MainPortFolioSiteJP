@@ -3,17 +3,22 @@ import { useEffect, useState } from "react";
 
 export default function LanguageToggle() {
   const router = useRouter();
+  const { asPath } = router;
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
   const [label, setLabel] = useState<string>("");
 
   useEffect(() => {
+    // Ensure this code runs only on the client.
     if (typeof window !== "undefined") {
       const currentHost = window.location.hostname;
-      const asPath = router.asPath;
-      const isEnglish = currentHost.startsWith("en.");
-      const targetHost = isEnglish ? "utechjapan.net" : "en.utechjapan.net";
+      // Use a simple heuristic: if the hostname includes "jp" or "japan", assume Japanese.
+      const isJapanese = currentHost.includes("jp") || currentHost.includes("japan");
+      // Map domains accordingly.
+      const targetHost = isJapanese
+        ? "main-port-folio-site.vercel.app" // target English domain
+        : "main-port-folio-site-jp.vercel.app"; // target Japanese domain
       setTargetUrl(`https://${targetHost}${asPath}`);
-      setLabel(isEnglish ? "日本語" : "EN");
+      setLabel(isJapanese ? "EN" : "日本語");
     }
   }, [router.asPath]);
 
