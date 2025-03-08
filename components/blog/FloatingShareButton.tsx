@@ -11,9 +11,11 @@ export default function FloatingShareButton() {
   }, []);
 
   const handleShare = () => {
+    // Updated share message: a more compelling message in Japanese
+    const shareText = "この記事をチェック！";
     const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       currentUrl
-    )}&text=${encodeURIComponent("Check out this post!")}`;
+    )}&text=${encodeURIComponent(shareText)}`;
     window.open(shareUrl, "_blank");
   };
 
