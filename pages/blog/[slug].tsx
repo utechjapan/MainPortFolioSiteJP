@@ -1,4 +1,5 @@
 // pages/blog/[slug].tsx
+import type { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -52,6 +53,7 @@ interface Params extends ParsedUrlQuery {
 export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
 
+  // Define custom components for MDX rendering
   const components = useMemo(
     () => ({
       h1: (props: any) => (
@@ -295,9 +297,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({
-  params,
-}) => {
+export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({ params }) => {
   if (!params?.slug) {
     return { notFound: true };
   }
