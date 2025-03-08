@@ -7,6 +7,7 @@ import GithubSlugger from "github-slugger";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeCodeTitles from "rehype-code-titles";
 import rehypePrism from "rehype-prism-plus";
+import { GetStaticPaths, GetStaticProps } from "next";
 
 import Layout from "../../components/layout/Layout";
 import TableOfContents from "../../components/blog/TableOfContents";
@@ -15,23 +16,28 @@ import BlogMeta from "../../components/blog/BlogMeta";
 import Tag from "../../components/ui/Tag";
 import CopyButton from "../../components/ui/CopyButton";
 
-import {
-  getMDXContent,
-  getAllMDXSlugs,
-  getAllMDXContent,
-} from "../../lib/mdx";
+import { getMDXContent, getAllMDXSlugs, getAllMDXContent } from "../../lib/mdx";
 import { siteConfig } from "../../lib/siteConfig";
 
-export default function BlogPost({ post, recentPosts, tags }) {
+interface BlogPostProps {
+  post: {
+    frontMatter: any;
+    source: any;
+    slug: string;
+    toc: any[];
+  };
+  recentPosts: { slug: string; title: string }[];
+  tags: string[];
+}
+
+export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
 
   // Create a GithubSlugger instance to generate consistent id attributes
   const slugger = useMemo(() => new GithubSlugger(), []);
-
-  // Reset slugger for every render to ensure consistent ids
   slugger.reset();
 
-  // Custom MDX components with generated id attributes for headings
+  // Define custom MDX components with generated id attributes for headings
   const components = useMemo(
     () => ({
       h1: (props: any) => {
@@ -90,8 +96,8 @@ export default function BlogPost({ post, recentPosts, tags }) {
         <a
           {...props}
           className="text-primary hover:text-primary-dark underline transition-colors break-words"
-          target={props.href.startsWith("http") ? "_blank" : undefined}
-          rel={props.href.startsWith("http") ? "noopener noreferrer" : undefined}
+          target={props.href && props.href.startsWith("http") ? "_blank" : undefined}
+          rel={props.href && props.href.startsWith("http") ? "noopener noreferrer" : undefined}
         />
       ),
       code: (props: any) => {
@@ -210,7 +216,7 @@ export default function BlogPost({ post, recentPosts, tags }) {
 
             {frontMatter.tags && frontMatter.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
-                {frontMatter.tags.map((tag) => (
+                {frontMatter.tags.map((tag: string) => (
                   <Tag key={tag} text={tag} href={`/blog/tag/${tag}`} />
                 ))}
               </div>
@@ -243,29 +249,29 @@ export default function BlogPost({ post, recentPosts, tags }) {
   );
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = getAllMDXSlugs("blog");
   return {
-    paths: slugs.map((slug) => ({ params: { slug } })),
+    paths: slugs.map((slug: string) => ({ params: { slug } })),
     fallback: false,
   };
-}
+};
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (!params?.slug) {
     return { notFound: true };
   }
   const { content, frontMatter, toc } = await getMDXContent("blog", params.slug);
   const allPosts = await getAllMDXContent("blog");
 
-  const recentPosts = allPosts.slice(0, 5).map((post) => ({
+  const recentPosts = allPosts.slice(0, 5).map((post: any) => ({
     slug: post.slug,
     title: post.frontMatter.title,
   }));
 
-  const allTags = allPosts.flatMap((post) => post.frontMatter.tags || []);
-  const tagCount = {};
-  allTags.forEach((tag) => {
+  const allTags = allPosts.flatMap((post: any) => post.frontMatter.tags || []);
+  const tagCount: Record<string, number> = {};
+  allTags.forEach((tag: string) => {
     tagCount[tag] = (tagCount[tag] || 0) + 1;
   });
   const popularTags = Object.entries(tagCount)
@@ -273,13 +279,9 @@ export async function getStaticProps({ params }) {
     .slice(0, 10)
     .map(([tag]) => tag);
 
-  // Remove rehypeAutolinkHeadings to ensure our custom headings generate ids correctly.
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      rehypePlugins: [
-        rehypeCodeTitles,
-        [rehypePrism, { showLineNumbers: true }],
-      ],
+      rehypePlugins: [rehypeCodeTitles, [rehypePrism, { showLineNumbers: true }]],
     },
   });
 
@@ -288,11 +290,12 @@ export async function getStaticProps({ params }) {
       post: {
         source: mdxSource,
         frontMatter,
-        slug: params.slug,
+        slug: params.slug as string,
         toc,
       },
       recentPosts,
       tags: popularTags,
     },
   };
-}
+};
+
