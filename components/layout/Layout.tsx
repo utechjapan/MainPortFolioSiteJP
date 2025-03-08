@@ -63,7 +63,11 @@ export default function Layout({
       <MobileMenu isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
       <main className="flex-1 ml-0 md:ml-72 transition-all duration-300 ease-in-out pt-16 md:pt-0">
-        <div className={`p-4 md:p-6 lg:p-8 ${rightSidebar ? "lg:mr-64" : ""} max-w-full overflow-hidden`}>
+        <div
+          className={`p-4 md:p-6 lg:p-8 ${
+            rightSidebar ? "lg:mr-64" : ""
+          } max-w-full overflow-hidden`}
+        >
           {children}
           <Footer />
         </div>

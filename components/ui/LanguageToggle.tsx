@@ -3,24 +3,21 @@ import { useEffect, useState } from "react";
 
 export default function LanguageToggle() {
   const router = useRouter();
-  const { asPath } = router;
-  const [currentHost, setCurrentHost] = useState<string | null>(null);
+  const [targetUrl, setTargetUrl] = useState<string | null>(null);
+  const [label, setLabel] = useState<string>("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setCurrentHost(window.location.hostname);
+      const currentHost = window.location.hostname;
+      const asPath = router.asPath;
+      const isEnglish = currentHost.startsWith("en.");
+      const targetHost = isEnglish ? "utechjapan.net" : "en.utechjapan.net";
+      setTargetUrl(`https://${targetHost}${asPath}`);
+      setLabel(isEnglish ? "日本語" : "EN");
     }
-  }, []);
+  }, [router.asPath]);
 
-  // Wait until mounted and hostname is available
-  if (!asPath || !currentHost) return null;
-
-  // If current host starts with "en.", then we are on the English version
-  const isEnglish = currentHost.startsWith("en.");
-  // Toggle: if currently English, redirect to Japanese; otherwise, to English
-  const targetHost = isEnglish ? "utechjapan.net" : "en.utechjapan.net";
-  const targetUrl = `https://${targetHost}${asPath}`;
-  const label = isEnglish ? "日本語" : "EN";
+  if (!targetUrl) return null;
 
   return (
     <button
@@ -32,4 +29,3 @@ export default function LanguageToggle() {
     </button>
   );
 }
-
