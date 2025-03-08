@@ -1,3 +1,4 @@
+// components/layout/Layout.tsx
 import { ReactNode, useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Sidebar from "./Sidebar";
@@ -36,7 +37,7 @@ export default function Layout({
     <div className="min-h-screen flex flex-col bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-theme">
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Mobile Header */}
+      {/* Mobile Header: only visible on mobile screens */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme">
         <button
           className="p-2 rounded-md bg-primary/80 text-white hover:bg-primary transition-colors"
@@ -54,9 +55,10 @@ export default function Layout({
           UTechLab
         </span>
 
+        {/* Both toggles appear on mobile header */}
         <div className="flex space-x-2">
-          {mounted && <ThemeToggle />}
           {mounted && <LanguageToggle />}
+          {mounted && <ThemeToggle />}
         </div>
       </div>
 
@@ -79,3 +81,4 @@ export default function Layout({
     </div>
   );
 }
+

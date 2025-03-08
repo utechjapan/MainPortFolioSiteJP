@@ -1,9 +1,11 @@
+// components/layout/Sidebar.tsx
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
+import LanguageToggle from "../ui/LanguageToggle";
 import ThemeToggle from "../ui/ThemeToggle";
 
 interface SidebarProps {
@@ -20,10 +22,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
-  const navLinks = siteConfig.navLinks || []; // Fallback to empty array
-  const author = siteConfig.author || { avatar: "/images/default-avatar.png", name: "Your Name", description: "" };
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <aside
@@ -38,8 +39,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             <Link href="/" className="mb-4" onClick={() => setIsOpen(false)}>
               <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-primary/50 hover:border-primary transition-colors duration-300">
                 <Image
-                  src={author.avatar}
-                  alt={author.name}
+                  src={siteConfig.author.avatar}
+                  alt={siteConfig.author.name}
                   fill
                   className="object-cover"
                 />
@@ -48,15 +49,21 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
               {siteConfig.title}
             </h1>
+            {/* Centered description */}
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 text-center">
               {siteConfig.description}
             </p>
+            {/* New toggle section below the description */}
+            <div className="flex justify-center space-x-2 mt-4">
+              <LanguageToggle />
+              <ThemeToggle />
+            </div>
           </div>
 
           {/* Navigation */}
           <nav className="mb-8">
             <ul className="space-y-2">
-              {navLinks.map((link) => (
+              {siteConfig.navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -67,7 +74,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
-                    <i className={`${link.icon} fa-fw w-5 text-center mr-3`} aria-hidden="true"></i>
+                    <i
+                      className={`${link.icon} fa-fw w-5 text-center mr-3`}
+                      aria-hidden="true"
+                    ></i>
                     <span>{link.label}</span>
                   </Link>
                 </li>
@@ -79,21 +89,24 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         {/* Social links */}
         <div className="px-6">
           <div className="flex justify-center space-x-4">
-            {(siteConfig.socialLinks || []).map((social) => (
+            {siteConfig.socialLinks.map((social) => (
               <a
-                key={social.name || social.url}
+                key={social.name}
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
                 aria-label={social.name}
               >
-                <i className={`${social.icon} fa-fw text-xl`} aria-hidden="true"></i>
+                <i
+                  className={`${social.icon} fa-fw text-xl`}
+                  aria-hidden="true"
+                ></i>
               </a>
             ))}
           </div>
           <div className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">
-            &copy; {new Date().getFullYear()} {siteConfig.title}
+            &copy; 2025 UTechLab. All rights reserved.
           </div>
         </div>
       </div>

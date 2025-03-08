@@ -1,4 +1,4 @@
-// pages/search.tsx - Fixed theme toggle issue
+// pages/search.tsx
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -24,7 +24,6 @@ export default function Search({ allPosts, recentPosts, tags }: SearchProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Handle client-side mounting
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -40,21 +39,13 @@ export default function Search({ allPosts, recentPosts, tags }: SearchProps) {
     if (!mounted) return;
 
     setIsSearching(true);
-
-    // Simple search logic: match against title, description, tags
     const results = allPosts.filter((post) => {
       const title = post.frontMatter.title.toLowerCase();
       const description = (post.frontMatter.description || "").toLowerCase();
       const tags = (post.frontMatter.tags || []).join(" ").toLowerCase();
       const searchTermLower = term.toLowerCase();
-
-      return (
-        title.includes(searchTermLower) ||
-        description.includes(searchTermLower) ||
-        tags.includes(searchTermLower)
-      );
+      return title.includes(searchTermLower) || description.includes(searchTermLower) || tags.includes(searchTermLower);
     });
-
     setSearchResults(results);
     setIsSearching(false);
   };
@@ -67,36 +58,27 @@ export default function Search({ allPosts, recentPosts, tags }: SearchProps) {
     <Layout rightSidebar={true} recentPosts={recentPosts} tags={tags}>
       <Head>
         <title>
-          Search Results | {searchTerm ? `"${searchTerm}"` : "Search"} |{" "}
-          {siteConfig.title}
+          検索結果 | {searchTerm ? `"${searchTerm}"` : "検索"} | {siteConfig.title}
         </title>
         <meta
           name="description"
-          content={`Search for blog posts and tutorials on ${siteConfig.title}`}
+          content={`「${siteConfig.title}」内の記事を検索`}
         />
       </Head>
 
       <div className="mb-10">
         <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white transition-colors">
-          Search Posts
+          記事検索
         </h1>
-        <SearchBar
-          placeholder="Search for titles, content, or tags..."
-          className="max-w-3xl"
-        />
+        <SearchBar placeholder="タイトル、内容、タグで検索…" className="max-w-3xl" />
       </div>
 
       {searchTerm && (
         <div className="mb-8">
           <h2 className="text-xl text-gray-700 dark:text-gray-400 transition-colors">
-            {isSearching ? (
-              "Searching..."
-            ) : (
-              <>
-                {searchResults.length} results for{" "}
-                <span className="text-primary">"{searchTerm}"</span>
-              </>
-            )}
+            {isSearching
+              ? "検索中..."
+              : `${searchResults.length} 件の結果が見つかりました: "${searchTerm}"`}
           </h2>
         </div>
       )}
@@ -131,18 +113,17 @@ export default function Search({ allPosts, recentPosts, tags }: SearchProps) {
               />
             </svg>
             <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white transition-colors">
-              No results found
+              該当する記事が見つかりませんでした
             </h3>
             <p className="text-gray-700 dark:text-gray-400 mb-6 transition-colors">
-              We couldn't find any posts matching your search. Try different
-              keywords or browse our categories.
+              別のキーワードで検索するか、カテゴリーからご覧ください。
             </p>
             <div className="flex justify-center">
               <button
                 onClick={() => router.push("/")}
                 className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md transition-colors"
               >
-                Browse Categories
+                カテゴリーを閲覧する
               </button>
             </div>
           </div>
@@ -152,13 +133,13 @@ export default function Search({ allPosts, recentPosts, tags }: SearchProps) {
       {!searchTerm && (
         <div className="bg-light-card dark:bg-dark-card p-8 rounded-lg transition-colors">
           <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-            Search Tips
+            検索のヒント
           </h2>
           <ul className="text-gray-700 dark:text-gray-300 space-y-2 transition-colors">
-            <li>• Use specific keywords related to what you're looking for</li>
-            <li>• Try searching for categories like "homelab" or "docker"</li>
-            <li>• Search for technologies like "proxmox" or "kubernetes"</li>
-            <li>• You can also search by post titles or descriptions</li>
+            <li>• 関連するキーワードを具体的に入力してください</li>
+            <li>• 「homelab」や「docker」などカテゴリー名で検索する</li>
+            <li>• 「proxmox」や「kubernetes」など技術名で検索する</li>
+            <li>• 記事タイトルや説明文から検索することも可能です</li>
           </ul>
         </div>
       )}
@@ -167,23 +148,16 @@ export default function Search({ allPosts, recentPosts, tags }: SearchProps) {
 }
 
 export async function getStaticProps() {
-  const allPosts = await getAllMDXContent("blog");
-
-  // Extract all tags
+  const allPosts = (await getAllMDXContent("blog")) || [];
   const allTags = allPosts.flatMap((post) => post.frontMatter.tags || []);
   const tagCount: Record<string, number> = {};
-
-  // Count tag occurrences
   allTags.forEach((tag) => {
     tagCount[tag] = (tagCount[tag] || 0) + 1;
   });
-
-  // Sort by count and take top 10
   const popularTags = Object.entries(tagCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([tag]) => tag);
-
   return {
     props: {
       allPosts: allPosts.map((post) => ({

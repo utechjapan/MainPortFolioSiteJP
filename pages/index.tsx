@@ -1,3 +1,4 @@
+// pages/index.tsx
 import Head from "next/head";
 import Layout from "../components/layout/Layout";
 import Image from "next/image";
@@ -8,6 +9,7 @@ import { useState } from "react";
 import { siteConfig } from "../lib/siteConfig";
 import Tag from "../components/ui/Tag";
 import { Post, RecentPost } from "../types";
+import { getAllMDXContent } from "../lib/mdx";
 
 interface HomeProps {
   posts: Post[];
@@ -15,25 +17,23 @@ interface HomeProps {
   tags: string[];
 }
 
-export default function Home({ posts, recentPosts, tags }: HomeProps) {
+export default function Home({ posts = [], recentPosts = [], tags = [] }: HomeProps) {
   const [activeTag, setActiveTag] = useState("all");
 
   const filteredPosts =
     activeTag === "all"
-      ? posts
-      : posts.filter((post) => post.frontMatter.tags?.includes(activeTag));
+      ? posts || []
+      : (posts || []).filter((post) => post.frontMatter.tags?.includes(activeTag));
 
   return (
     <Layout recentPosts={recentPosts} tags={tags}>
       <Head>
-        <title>
-          {siteConfig.title} | {siteConfig.description}
-        </title>
+        <title>{siteConfig.title} | {siteConfig.description}</title>
         <meta name="description" content={siteConfig.description} />
       </Head>
 
       <div className="space-y-16">
-        {/* ヒーローセクション */}
+        {/* Hero Section */}
         <section className="mb-10">
           <motion.div
             className="bg-light-card dark:bg-dark-card rounded-lg p-8 shadow-md dark:shadow-none text-center"
@@ -43,20 +43,17 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
           >
             <div>
               <h1 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-                {siteConfig.title}へようこそ
+                Welcome to my Portfolio and Blog Site!
               </h1>
               <p className="text-base text-gray-700 dark:text-gray-300 mb-4">
-                最新のITインフラ、開発技術、チュートリアル、そしてベストプラクティスをお届けします。
+                最新の技術ガイド、チュートリアル、そして最先端のITインフラや開発に関するベストプラクティスを探索してください。
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <Link
                   href="/blog"
                   className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center"
                 >
-                  <i
-                    className="fa-solid fa-book-open mr-2"
-                    aria-hidden="true"
-                  ></i>
+                  <i className="fa-solid fa-book-open mr-2" aria-hidden="true"></i>
                   記事を読む
                 </Link>
                 <Link
@@ -71,7 +68,7 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
           </motion.div>
         </section>
 
-        {/* 最新の投稿 */}
+        {/* Latest Posts */}
         <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">
@@ -84,14 +81,12 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="text-primary hover:text-primary-dark flex items-center transition-colors"
             >
               すべての投稿を見る
-              <i
-                className="fa-solid fa-arrow-right ml-2"
-                aria-hidden="true"
-              ></i>
+              <i className="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Updated grid layout using auto-fit */}
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
             {filteredPosts.map((post, index) => (
               <motion.article
                 key={post.slug}
@@ -113,22 +108,13 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
 
                 <div className="p-6">
                   <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-3 transition-colors">
-                    <time
-                      dateTime={post.frontMatter.date}
-                      className="flex items-center"
-                    >
-                      <i
-                        className="fa-solid fa-calendar-alt mr-2"
-                        aria-hidden="true"
-                      ></i>
+                    <time dateTime={post.frontMatter.date} className="flex items-center">
+                      <i className="fa-solid fa-calendar-alt mr-2" aria-hidden="true"></i>
                       {format(parseISO(post.frontMatter.date), "yyyy年M月d日")}
                     </time>
                     <span className="mx-2">•</span>
                     <span className="flex items-center">
-                      <i
-                        className="fa-solid fa-clock mr-2"
-                        aria-hidden="true"
-                      ></i>
+                      <i className="fa-solid fa-clock mr-2" aria-hidden="true"></i>
                       {post.frontMatter.readingTime || "5分"}
                     </span>
                   </div>
@@ -143,14 +129,13 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
                     {post.frontMatter.description}
                   </p>
 
-                  {post.frontMatter.tags &&
-                    post.frontMatter.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {post.frontMatter.tags.slice(0, 3).map((tag) => (
-                          <Tag key={tag} text={tag} href={`/blog/tag/${tag}`} />
-                        ))}
-                      </div>
-                    )}
+                  {post.frontMatter.tags && post.frontMatter.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {post.frontMatter.tags.map((tag) => (
+                        <Tag key={tag} text={tag} href={`/blog/tag/${tag}`} />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </motion.article>
             ))}
@@ -162,53 +147,38 @@ export default function Home({ posts, recentPosts, tags }: HomeProps) {
               className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
             >
               もっと見る
-              <i
-                className="fa-solid fa-arrow-right ml-2"
-                aria-hidden="true"
-              ></i>
+              <i className="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
             </Link>
           </div>
-        </section>
-
-        {/* ニュースレター登録セクション */}
-        <section className="bg-light-card dark:bg-dark-card rounded-lg p-8 text-center shadow-md dark:shadow-none transition-colors">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 flex items-center justify-center bg-primary/20 rounded-full">
-              <i
-                className="fa-solid fa-envelope fa-fw text-primary text-3xl"
-                aria-hidden="true"
-              ></i>
-            </div>
-          </div>
-          <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
-            最新情報を受け取る
-          </h2>
-          <p className="text-gray-700 dark:text-gray-400 mb-8 max-w-2xl mx-auto transition-colors">
-            ニュースレターに登録して、最新のチュートリアルや更新情報を直接受け取りましょう。
-          </p>
-
-          <form className="max-w-md mx-auto">
-            <div className="mb-4">
-              <input
-                type="email"
-                placeholder="メールアドレス"
-                className="w-full px-4 py-3 rounded-md bg-white dark:bg-dark-sidebar border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-md flex items-center justify-center transition-colors"
-            >
-              登録する
-              <i
-                className="fa-solid fa-arrow-right fa-fw ml-2"
-                aria-hidden="true"
-              ></i>
-            </button>
-          </form>
         </section>
       </div>
     </Layout>
   );
+}
+
+export async function getStaticProps() {
+  const allPosts = (await getAllMDXContent("blog")) || [];
+  const featuredPosts = allPosts.slice(0, 4);
+  const allTags = allPosts.flatMap((post) => post.frontMatter.tags || []);
+  const tagCount: Record<string, number> = {};
+  allTags.forEach((tag) => {
+    tagCount[tag] = (tagCount[tag] || 0) + 1;
+  });
+  const popularTags = Object.entries(tagCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([tag]) => tag);
+  return {
+    props: {
+      posts: featuredPosts.map((post) => ({
+        slug: post.slug,
+        frontMatter: post.frontMatter,
+      })),
+      recentPosts: allPosts.slice(0, 5).map((post) => ({
+        slug: post.slug,
+        title: post.frontMatter.title,
+      })),
+      tags: popularTags,
+    },
+  };
 }

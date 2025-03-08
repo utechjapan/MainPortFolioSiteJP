@@ -1,4 +1,4 @@
-//pages/api/subscribe.ts
+// pages/api/subscribe.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {

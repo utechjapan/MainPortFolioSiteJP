@@ -2,24 +2,24 @@
 export const siteConfig = {
   // Site information
   title: "UTechLab",
-  description: "Portfolio and documentations by Chikara Inohara",
+  description: "井ノ原力によるポートフォリオと勉強ブログサイト",
   siteUrl: "https://www.utechjapan.net",
 
   // Author information
   author: {
     name: "Chikara Inohara",
     avatar: "/images/profile.jpg",
-    bio: "Innovating Technology",
+    bio: "技術革新に挑む",
   },
 
   // Navigation links
   navLinks: [
-    { href: "/", label: "HOME", icon: "fas fa-home" },
-    { href: "/about", label: "ABOUT", icon: "fas fa-info-circle" },
-    { href: "/blog", label: "BLOG", icon: "fas fa-blog" },
-    { href: "/portfolio", label: "PORTFOLIO", icon: "fas fa-laptop-code" },
-    { href: "/search", label: "SEARCH", icon: "fas fa-search" },
-    { href: "/subscribe", label: "SUBSCRIBE", icon: "fas fa-envelope" },
+    { href: "/", label: "ホーム", icon: "fas fa-home" },
+    { href: "/about", label: "自分について", icon: "fas fa-info-circle" },
+    { href: "/blog", label: "ブログ", icon: "fas fa-blog" },
+    { href: "/portfolio", label: "ポートフォリオ", icon: "fas fa-laptop-code" },
+    { href: "/search", label: "検索", icon: "fas fa-search" },
+    { href: "/subscribe", label: "登録", icon: "fas fa-envelope" },
   ],
 
   // Categories
@@ -28,29 +28,29 @@ export const siteConfig = {
       name: "HomeLab",
       icon: "/images/categories/homelab.png",
       slug: "homelab",
-      description: "Building and managing home server setups",
+      description: "ホームサーバーの構築と管理",
     },
     {
       name: "Tutorials",
       icon: "/images/categories/tutorials.png",
       slug: "tutorials",
-      description: "Step-by-step guides for various tech topics",
+      description: "各種技術トピックの手順ガイド",
     },
     {
       name: "Automation",
       icon: "/images/categories/automation.png",
       slug: "automation",
-      description: "Scripts, tools, and systems for automating tasks",
+      description: "タスク自動化のスクリプトとツール",
     },
     {
       name: "Security",
       icon: "/images/categories/security.png",
       slug: "security",
-      description: "Protecting your systems, networks, and data",
+      description: "システム、ネットワーク、データの保護",
     },
   ],
 
-  // Social links
+  // Social links (remain in English)
   socialLinks: [
     {
       name: "GitHub",
@@ -92,14 +92,12 @@ export const siteConfig = {
 
   // Analytics (optional)
   analytics: {
-    googleAnalyticsId: "G-M4CBBS8KGS", // Google Analytics measurement ID
+    googleAnalyticsId: "G-M4CBBS8KGS",
   },
 
-  // Newsletter (for Subscribe functionality)
+  // Newsletter (Mailchimp)
   newsletter: {
-    // Provider can be 'custom', 'convertkit', 'mailchimp', etc.
     provider: "mailchimp",
-    // API endpoint for subscription
     endpoint: "/api/subscribe",
   },
 };
