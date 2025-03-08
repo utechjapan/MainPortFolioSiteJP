@@ -1,5 +1,4 @@
 // pages/blog/[slug].tsx
-import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -19,6 +18,7 @@ import BlogMeta from "../../components/blog/BlogMeta";
 import Tag from "../../components/ui/Tag";
 import CopyButton from "../../components/ui/CopyButton";
 import BlogPostActions from "../../components/blog/BlogPostActions";
+import FloatingShareButton from "../../components/blog/FloatingShareButton";
 
 import {
   getMDXContent,
@@ -41,10 +41,7 @@ interface MDXPost {
 
 interface BlogPostProps {
   post: MDXPost;
-  recentPosts: {
-    slug: string;
-    title: string;
-  }[];
+  recentPosts: { slug: string; title: string }[];
   tags: string[];
 }
 
@@ -55,7 +52,6 @@ interface Params extends ParsedUrlQuery {
 export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
 
-  // Define custom components for MDX
   const components = useMemo(
     () => ({
       h1: (props: any) => (
@@ -274,11 +270,14 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           </div>
         </div>
 
-        {/* Blog Post Actions for desktop */}
+        {/* Desktop version: Inline share bar */}
         <div className="hidden md:flex">
           <BlogPostActions />
         </div>
       </motion.div>
+
+      {/* Mobile version: Floating share button */}
+      <FloatingShareButton />
 
       {/* Comments Section */}
       <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
@@ -300,9 +299,7 @@ export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({
   params,
 }) => {
   if (!params?.slug) {
-    return {
-      notFound: true,
-    };
+    return { notFound: true };
   }
 
   const { content, frontMatter, toc } = await getMDXContent("blog", params.slug);
@@ -331,12 +328,7 @@ export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({
 
   return {
     props: {
-      post: {
-        source: mdxSource,
-        frontMatter,
-        slug: params.slug,
-        toc,
-      },
+      post: { source: mdxSource, frontMatter, slug: params.slug, toc },
       recentPosts: allPosts.slice(0, 5).map((post) => ({
         slug: post.slug,
         title: post.frontMatter.title,
