@@ -16,6 +16,7 @@ import GiscusComments from "../../components/blog/GiscusComments";
 import BlogMeta from "../../components/blog/BlogMeta";
 import Tag from "../../components/ui/Tag";
 import CopyButton from "../../components/ui/CopyButton";
+import FloatingShareButton from "../../components/blog/FloatingShareButton";
 
 import { getMDXContent, getAllMDXSlugs, getAllMDXContent } from "../../lib/mdx";
 import { siteConfig } from "../../lib/siteConfig";
@@ -34,11 +35,11 @@ interface BlogPostProps {
 export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
 
-  // Create a GithubSlugger instance to generate fallback id attributes
+  // Create a GithubSlugger instance for generating fallback id attributes
   const slugger = useMemo(() => new GithubSlugger(), []);
   slugger.reset();
 
-  // Custom MDX components: use props.id if provided (by rehype-slug), otherwise generate one.
+  // Custom MDX components
   const components = useMemo(
     () => ({
       h1: (props: any) => {
@@ -242,6 +243,9 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           </div>
         </div>
 
+        {/* Floating share button for mobile */}
+        <FloatingShareButton />
+
         <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
           <GiscusComments slug={slug} />
         </div>
@@ -282,7 +286,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .slice(0, 10)
     .map(([tag]) => tag);
 
-  // Serialize MDX content with rehypeSlug to set id attributes on headings
+  // Serialize MDX content with rehypeSlug so headings have proper id attributes.
   const mdxSource = await serialize(content, {
     mdxOptions: {
       rehypePlugins: [rehypeSlug, rehypeCodeTitles, [rehypePrism, { showLineNumbers: true }]],

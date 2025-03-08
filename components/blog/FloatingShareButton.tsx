@@ -1,4 +1,3 @@
-// components/blog/FloatingShareButton.tsx
 import { useEffect, useState } from "react";
 
 export default function FloatingShareButton() {
@@ -12,7 +11,7 @@ export default function FloatingShareButton() {
 
   const handleShare = () => {
     // Updated share message: a more compelling message in Japanese
-    const shareText = "この記事をチェック！";
+    const shareText = "この記事をシェアしよう！";
     const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       currentUrl
     )}&text=${encodeURIComponent(shareText)}`;
@@ -20,7 +19,7 @@ export default function FloatingShareButton() {
   };
 
   return (
-    <div className="md:hidden fixed bottom-5 left-5 z-[100]">
+    <div className="md:hidden fixed bottom-5 left-1/2 transform -translate-x-1/2 z-[100]">
       <button
         onClick={handleShare}
         className="bg-white dark:bg-dark-bg shadow-lg p-3 rounded-full border border-gray-300 dark:border-gray-700 focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
