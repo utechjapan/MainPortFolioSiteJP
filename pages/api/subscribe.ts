@@ -1,6 +1,26 @@
 // pages/api/subscribe.ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import mailchimp from "@mailchimp/mailchimp_marketing";
+
+// Load environment variables when not in production
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
+const mailchimp = require("@mailchimp/mailchimp_marketing");
+
+// Use environment variables if available, otherwise fallback to hardcoded values.
+const API_KEY = process.env.MAILCHIMP_API_KEY || "086ed7f8b171a05fb4fd2070a8010252-us9";
+const SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX || "us9";
+// Replace 'YOUR_DEFAULT_LIST_ID' with a valid List ID if you wish to fallback
+const LIST_ID = process.env.MAILCHIMP_LIST_ID || "YOUR_DEFAULT_LIST_ID";
+
+mailchimp.setConfig({
+  apiKey: API_KEY,
+  server: SERVER_PREFIX,
+});
+
+// Debug: Uncomment the line below to verify configuration during local testing
+// console.log("Mailchimp Config:", { API_KEY, SERVER_PREFIX, LIST_ID });
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,23 +32,18 @@ export default async function handler(
   }
 
   const { email, name } = req.body;
+
   if (!email) {
     return res.status(400).json({ error: "Email is required" });
   }
 
-  // Use the environment variables from Vercel
-  const API_KEY = process.env.MAILCHIMP_API_KEY;
-  const LIST_ID = process.env.MAILCHIMP_LIST_ID;
-
   if (!API_KEY || !LIST_ID) {
-    return res.status(500).json({ error: "Mailchimp configuration error" });
+    return res
+      .status(500)
+      .json({ error: "Mailchimp configuration error: missing API key or List ID" });
   }
 
-  const parts = API_KEY.split("-");
-  const DATACENTER = parts[1];
-
-  const url = `https://${DATACENTER}.api.mailchimp.com/3.0/lists/${LIST_ID}/members`;
-
+  // Prepare the data for subscription
   const data = {
     email_address: email,
     status: "subscribed",
@@ -37,10 +52,14 @@ export default async function handler(
     },
   };
 
+  // Construct the endpoint URL using the server prefix
+  const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members`;
+
   const options = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      // Mailchimp requires Basic Auth where the username can be any string.
       Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}`,
     },
     body: JSON.stringify(data),
