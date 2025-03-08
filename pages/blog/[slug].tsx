@@ -1,4 +1,4 @@
-// pages/blog/[slug].tsx - Improved responsiveness and dark mode text for code blocks
+// pages/blog/[slug].tsx
 import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -18,6 +18,7 @@ import GiscusComments from "../../components/blog/GiscusComments";
 import BlogMeta from "../../components/blog/BlogMeta";
 import Tag from "../../components/ui/Tag";
 import CopyButton from "../../components/ui/CopyButton";
+import BlogPostActions from "../../components/blog/BlogPostActions";
 
 import {
   getMDXContent,
@@ -111,9 +112,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           {...props}
           className="text-primary hover:text-primary-dark underline transition-colors break-words"
           target={props.href.startsWith("http") ? "_blank" : undefined}
-          rel={
-            props.href.startsWith("http") ? "noopener noreferrer" : undefined
-          }
+          rel={props.href.startsWith("http") ? "noopener noreferrer" : undefined}
         />
       ),
       code: (props: any) => {
@@ -133,7 +132,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         );
       },
       pre: (props: any) => {
-        // Extract plain text from <pre> so CopyButton can use it
         const textContent = props.children?.props?.children || "";
         return (
           <div className="relative group">
@@ -197,7 +195,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
             `${frontMatter.title} - ${siteConfig.title}`
           }
         />
-        {/* Add OpenGraph tags for better social sharing */}
         <meta
           property="og:title"
           content={`${frontMatter.title} | ${siteConfig.title}`}
@@ -262,7 +259,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
               <div className="lg:hidden mb-8">
                 <details className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
                   <summary className="text-lg font-bold cursor-pointer text-gray-900 dark:text-white transition-colors">
-                    Table of Contents
+                    目次
                   </summary>
                   <div className="pt-4">
                     <TableOfContents toc={toc} />
@@ -277,10 +274,16 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           </div>
         </div>
 
-        <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
-          <GiscusComments slug={slug} />
+        {/* Blog Post Actions for desktop */}
+        <div className="hidden md:flex">
+          <BlogPostActions />
         </div>
       </motion.div>
+
+      {/* Comments Section */}
+      <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
+        <GiscusComments slug={slug} />
+      </div>
     </Layout>
   );
 }
@@ -302,10 +305,7 @@ export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({
     };
   }
 
-  const { content, frontMatter, toc } = await getMDXContent(
-    "blog",
-    params.slug
-  );
+  const { content, frontMatter, toc } = await getMDXContent("blog", params.slug);
   const allPosts = await getAllMDXContent("blog");
 
   const allTags = allPosts.flatMap((post) => post.frontMatter.tags || []);
@@ -337,9 +337,9 @@ export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({
         slug: params.slug,
         toc,
       },
-      recentPosts: allPosts.slice(0, 5).map((p) => ({
-        slug: p.slug,
-        title: p.frontMatter.title,
+      recentPosts: allPosts.slice(0, 5).map((post) => ({
+        slug: post.slug,
+        title: post.frontMatter.title,
       })),
       tags: popularTags,
     },
