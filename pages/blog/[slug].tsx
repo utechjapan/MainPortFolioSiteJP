@@ -261,7 +261,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (!params?.slug) {
     return { notFound: true };
   }
-  const { content, frontMatter, toc } = await getMDXContent("blog", params.slug);
+  // Ensure slug is a string (if array, take the first element)
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  const { content, frontMatter, toc } = await getMDXContent("blog", slug);
   const allPosts = await getAllMDXContent("blog");
 
   const recentPosts = allPosts.slice(0, 5).map((post: any) => ({
@@ -290,7 +292,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       post: {
         source: mdxSource,
         frontMatter,
-        slug: params.slug as string,
+        slug,
         toc,
       },
       recentPosts,
@@ -298,4 +300,3 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   };
 };
-
