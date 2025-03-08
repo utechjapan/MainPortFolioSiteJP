@@ -20,22 +20,23 @@ export default async function handler(
     return res.status(400).json({ error: "Email is required" });
   }
 
-  // Trim environment variables to ensure no stray spaces cause issues
+  // Trim the environment variables to remove stray spaces
   const API_KEY = process.env.MAILCHIMP_API_KEY?.trim();
   const LIST_ID = process.env.MAILCHIMP_LIST_ID?.trim();
 
-  // Fallback for development if environment variables are missing
   if (!API_KEY || !LIST_ID) {
-    console.warn("Mailchimp configuration error: API_KEY or LIST_ID missing.");
-    return res
-      .status(200)
-      .json({ message: "Successfully subscribed (simulated)!" });
+    console.error("Mailchimp configuration error: API_KEY or LIST_ID missing.");
+    return res.status(500).json({ error: "Mailchimp configuration error" });
   }
 
-  // Extract the datacenter from the API key (Mailchimp API keys are in the format key-datacenter)
+  // Verify API key format (should contain a hyphen)
   const parts = API_KEY.split("-");
-  const DATACENTER = parts[1];
+  if (parts.length < 2) {
+    console.error("Mailchimp API key format is invalid:", API_KEY);
+    return res.status(500).json({ error: "Mailchimp configuration error" });
+  }
 
+  const DATACENTER = parts[1];
   const url = `https://${DATACENTER}.api.mailchimp.com/3.0/lists/${LIST_ID}/members`;
 
   const data = {
@@ -50,6 +51,7 @@ export default async function handler(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      // Basic Auth with any username and the API key as the password (base64 encoded)
       Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}`,
     },
     body: JSON.stringify(data),
@@ -59,14 +61,15 @@ export default async function handler(
     const response = await fetch(url, options);
     const json = await response.json();
 
-    if (response.status >= 400) {
-      return res.status(400).json({
+    if (!response.ok) {
+      console.error("Mailchimp API error response:", json);
+      return res.status(response.status).json({
         error: json.detail || "There was an error subscribing.",
       });
     }
 
     return res.status(201).json({ message: "Successfully subscribed!" });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error subscribing:", error);
     return res.status(500).json({ error: "Something went wrong." });
   }
