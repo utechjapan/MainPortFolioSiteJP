@@ -17,12 +17,19 @@ export default function Subscribe() {
     setError("");
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setSubmitted(true);
-      setEmail("");
-      setName("");
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSubmitted(true);
+        setEmail("");
+        setName("");
+      } else {
+        setError(data.error || "Something went wrong. Please try again.");
+      }
     } catch (err) {
       setError("Something went wrong. Please try again.");
       console.error(err);
@@ -86,7 +93,7 @@ export default function Subscribe() {
                 Thanks for subscribing!
               </h3>
               <p className="text-gray-700 dark:text-gray-300">
-                You&apos;ll receive updates when new content is published.
+                You'll receive updates when new content is published.
               </p>
               <button
                 onClick={() => setSubmitted(false)}

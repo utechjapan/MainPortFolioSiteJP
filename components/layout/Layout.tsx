@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import MobileMenu from "./MobileMenu";
 import ThemeToggle from "../ui/ThemeToggle";
+import LanguageToggle from "../ui/LanguageToggle";
 import Footer from "./Footer";
 import BackToTop from "../ui/BackToTop";
 import { RecentPost, TocItem } from "../../types";
@@ -54,7 +55,10 @@ export default function Layout({
           UTechLab
         </span>
 
-        {mounted && <ThemeToggle />}
+        <div className="flex space-x-2">
+          {mounted && <ThemeToggle />}
+          {mounted && <LanguageToggle />}
+        </div>
       </div>
 
       <MobileMenu isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />

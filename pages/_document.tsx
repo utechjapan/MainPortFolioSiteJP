@@ -2,8 +2,9 @@
 import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
+  const lang = process.env.NEXT_PUBLIC_SITE_LANG || "en";
   return (
-    <Html lang="en">
+    <Html lang={lang}>
       <Head>
         {/* FontAwesome stylesheet */}
         <link
