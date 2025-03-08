@@ -6,17 +6,21 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const mailchimp = require("@mailchimp/mailchimp_marketing");
+// Import Mailchimp SDK
+import mailchimp from "@mailchimp/mailchimp_marketing";
 
-// Get environment variables (do not fallback to hardcoded values)
+// Get environment variables
 const API_KEY = process.env.MAILCHIMP_API_KEY;
 const SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX;
 const LIST_ID = process.env.MAILCHIMP_LIST_ID;
 
-mailchimp.setConfig({
-  apiKey: API_KEY,
-  server: SERVER_PREFIX,
-});
+// Configure the Mailchimp client
+if (API_KEY && SERVER_PREFIX) {
+  mailchimp.setConfig({
+    apiKey: API_KEY,
+    server: SERVER_PREFIX,
+  });
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,6 +33,8 @@ export default async function handler(
   }
 
   const { email, name } = req.body;
+  
+  // Validate email is present
   if (!email) {
     return res.status(400).json({ error: "Email is required" });
   }
@@ -40,49 +46,34 @@ export default async function handler(
     });
   }
 
-  const parts = API_KEY.split("-");
-  // Validate that the API key is formatted correctly
-  if (parts.length < 2) {
-    return res.status(500).json({
-      error: "Invalid Mailchimp API key format.",
-    });
-  }
-  const DATACENTER = parts[1];
-
-  // Construct the Mailchimp endpoint URL
-  const url = `https://${DATACENTER}.api.mailchimp.com/3.0/lists/${LIST_ID}/members`;
-
-  const data = {
-    email_address: email,
-    status: "subscribed",
-    merge_fields: {
-      FNAME: name,
-    },
-  };
-
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // Mailchimp requires basic authentication with any username.
-      Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}`,
-    },
-    body: JSON.stringify(data),
-  };
-
   try {
-    const response = await fetch(url, options);
-    const json = await response.json();
+    // Using the mailchimp-marketing library
+    const response = await mailchimp.lists.addListMember(LIST_ID, {
+      email_address: email,
+      status: "subscribed",
+      merge_fields: {
+        FNAME: name || "",
+      },
+    });
 
-    if (response.status >= 400) {
-      return res.status(400).json({
-        error: json.detail || "There was an error subscribing.",
-      });
-    }
-
-    return res.status(201).json({ message: "Successfully subscribed!" });
+    return res.status(201).json({ 
+      message: "Successfully subscribed!",
+      memberId: response.id
+    });
   } catch (error) {
     console.error("Error subscribing:", error);
-    return res.status(500).json({ error: "Something went wrong." });
+    
+    // If it's a Mailchimp API error, it might have more details
+    if (error.response && error.response.body) {
+      const mailchimpError = error.response.body;
+      return res.status(400).json({
+        error: mailchimpError.title || mailchimpError.detail || "There was an error subscribing."
+      });
+    }
+    
+    // Generic error
+    return res.status(500).json({ 
+      error: "Something went wrong with the subscription process." 
+    });
   }
 }
