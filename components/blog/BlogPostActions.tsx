@@ -1,9 +1,14 @@
 // components/blog/BlogPostActions.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function BlogPostActions() {
-  // Use window.location.href if available; otherwise fallback to empty string.
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const [currentUrl, setCurrentUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
+    }
+  }, []);
 
   const handleShare = () => {
     const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
@@ -25,8 +30,11 @@ export default function BlogPostActions() {
         </button>
       </div>
 
-      {/* Mobile version: fixed bottom bar with share button */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-bg border-t border-gray-300 dark:border-gray-700 flex justify-around items-center py-3 z-50">
+      {/* Mobile version: fixed bottom share bar with safe-area padding */}
+      <div
+        className="block md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-dark-bg border-t border-gray-300 dark:border-gray-700 flex justify-around items-center py-3 z-50"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         <button
           onClick={handleShare}
           className="flex flex-col items-center text-gray-600 hover:text-primary transition-colors"

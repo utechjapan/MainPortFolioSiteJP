@@ -1,131 +1,146 @@
 ---
-title: "ホームラボ向けProxmox VEサーバー導入完全ガイド"
+title: "Deploying a Proxmox VE Server for Virtualization in Your HomeLab"
 date: "2025-03-01"
-description: "ホームラボ環境でProxmox VEを使った仮想化およびコンテナ管理を始めるための完全ガイド"
-image: "/images/proxmox-cover.jpg"
-tags:
-  - ホームラボ
-  - Proxmox
-  - 仮想化
-  - サーバー
-categories:
-  - ホームラボガイド
+description: "A comprehensive guide to deploying a Proxmox VE server for virtualization and container management in your homelab."
+image: /images/proxmox-cover.jpg
+tags: ["homelab", "Proxmox", "virtualization", "servers"]
+categories: ["Homelab Guides"]
 draft: false
 showToc: true
 ---
 
-import Image from 'next/image';
-
-## Proxmox VEとは？
-
-Proxmox Virtual Environment（Proxmox VE）は、仮想マシン（VM）とコンテナ（LXC）の管理が可能な、オープンソースの仮想化プラットフォームです。ホームラボにおいて、シンプルかつ効率的に環境構築を行えるため、実験や学習に最適です。本ガイドでは、Proxmox VEサーバーのインストールから基本的な操作までを網羅的に説明します。
+## Deploying a Proxmox VE Server for Virtualization in Your HomeLab
 
 ---
 
-## 準備するもの
-
-- 専用マシン（推奨要件：64ビットプロセッサ、8GB以上のRAM、64GB以上のストレージ）
-- [Proxmox公式サイト](https://www.proxmox.com/ja/downloads)でダウンロードしたISOファイル
-- ブート可能なUSBドライブ（8GB以上推奨）
-- 安定したインターネット環境
+Proxmox Virtual Environment (Proxmox VE) is a powerful, open-source platform for virtualization. It allows you to run virtual machines (VMs) and containers efficiently, making it perfect for homelabs. This guide walks you through deploying a Proxmox VE server, enabling you to consolidate workloads and experiment with virtualized environments.
 
 ---
 
-## ステップ 1: インストールメディア作成
+## What You’ll Need
 
-1. Proxmox VEのISOファイルをダウンロードします。
+- A dedicated machine for Proxmox VE (minimum specs: 4 GB RAM, 64-bit processor, and 32 GB storage).
+- Proxmox VE ISO file from the [Proxmox download page](https://www.proxmox.com/en/downloads).
+- A USB drive (at least 8 GB) for creating bootable media.
+- A reliable internet connection.
+
+---
+
+## Step 1: Prepare the Installation Media
+
+1. Download the Proxmox VE ISO file from the official website.  
    ![Proxmox Interface](/images/downloadsproxmox.png)
-2. [Rufus](https://rufus.ie/)や [balenaEtcher](https://www.balena.io/etcher/)を使用し、USBドライブをブータブルにします。
+2. Use a tool like [Rufus](https://rufus.ie/) or [balenaEtcher](https://www.balena.io/etcher/) to create a bootable USB drive with the Proxmox ISO.
 
 ---
 
-## ステップ 2: Proxmox VEのインストール
+## Step 2: Install Proxmox VE
 
-1. 作成したUSBでサーバーを起動します。
-2. インストールウィザードに従い、以下の設定を行います：
-   - ライセンス同意
-   - インストールディスク選択
-   - rootパスワードおよびメールアドレスの入力
-   - 固定IPなどのネットワーク設定
-3. インストール後、USBを抜き再起動します。
+1. Insert the bootable USB into your server and boot from it.
+2. Follow the installation wizard:
 
----
+   - Accept the license agreement.
+   - Select the target disk for installation.
+   - Configure the root password and email address.
+   - Set the network configuration (assign a static IP address for easier access).
 
-## ステップ 3: Webインターフェースへのアクセス
-
-1. 他のデバイスからウェブブラウザを開き、`https://<ProxmoxサーバーIP>:8006` にアクセスします。
-2. 設定したrootユーザーでログインします。
+3. Complete the installation and reboot the server. Remove the USB drive during the reboot.
 
 ---
 
-## ステップ 4: Proxmox VEの初期設定と更新
+## Step 3: Access the Proxmox Web Interface
 
-1. システムを最新化します。
-```bash
-apt update && apt full-upgrade -y
-```
-2. エンタープライズリポジトリを無効化します。
-```bash
-sed -i 's|deb https://enterprise.proxmox.com/debian|#deb https://enterprise.proxmox.com/debian|' /etc/apt/sources.list.d/pve-enterprise.list
-```
-3. コミュニティリポジトリを追加します。
-```bash
-echo "deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription" | sudo tee /etc/apt/sources.list.d/pve-no-subscription.list
-```
-4. 再度システムを更新します。
-```bash
-apt update && apt full-upgrade -y
-```
+1. On another device, open a web browser and go to:
+   ```
+   https://<your_proxmox_ip>:8006
+   ```
+2. Log in using the root credentials set during installation.
 
 ---
 
-## ステップ 5: ストレージの設定
+## Step 4: Update and Configure Proxmox VE
 
-Webインターフェースの **Datacenter** からストレージ（ローカルまたはネットワーク）を追加します。
+1. Update Proxmox VE to ensure it has the latest features and security patches:
+   ```
+   apt update && apt full-upgrade -y
+   ```
+2. Disable the enterprise repository (if you're not using a subscription):
+   ```
+   sed -i 's|deb https://enterprise.proxmox.com/debian|#deb https://enterprise.proxmox.com/debian|' /etc/apt/sources.list.d/pve-enterprise.list
+   ```
+3. Add the Proxmox community repository:
+   ```
+   echo "deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription" | sudo tee /etc/apt/sources.list.d/pve-no-subscription.list
+   ```
+4. Refresh package lists and update:
+   ```
+   apt update && apt full-upgrade -y
+   ```
 
 ---
 
-## ステップ 6: 仮想マシン（VM）の作成
+## Step 5: Set Up Storage
 
-1. ISOイメージをアップロードします。
-   - **Datacenter** → **Storage** → **ISO Images** → **Upload**
+1. Navigate to the **Datacenter** section in the web interface.
+2. Configure storage for VMs and containers:
+   - Add local storage for ISO images and backups.
+   - Add networked storage (NFS, CIFS) if needed.
+
+---
+
+## Step 6: Create Your First Virtual Machine (VM)
+
+1. Upload an ISO image (e.g., Ubuntu) to your Proxmox storage:
+   - Go to **Datacenter** > **Storage** > **ISO Images** > **Upload**.  
      ![ISO Upload Location](/images/proxmoxiso.png)
-2. VMを作成します。
-   - **Create VM** をクリックして、リソースを設定します。
-3. VMを起動し、OSをインストールします。
+2. Create a new VM:
+   - Navigate to **Create VM** in the Proxmox web interface.
+   - Follow the wizard to assign resources like CPU, RAM, and disk space.
+3. Start the VM and install the operating system.
 
 ---
 
-## ステップ 7: コンテナの利用（オプション）
+## Step 7: Configure Containers (Optional)
 
-1. コンテナテンプレートをダウンロードします。
-   - **Datacenter** → **Storage** → **CT Templates** → **Download**
-2. コンテナを作成します。
-   - **Create CT** をクリックして設定します。
+Proxmox VE supports LXC containers, which are lightweight alternatives to VMs.
 
----
-
-## ステップ 8: バックアップとリストア
-
-1. VMやコンテナをバックアップします。
-   - **Datacenter** → **Backup** → **Add** で設定
-2. 必要に応じてリストアします。
+1. Download container templates:
+   - Go to **Datacenter** > **Storage** > **CT Templates** > **Templates** > **Download**.
+2. Create a container:
+   - Navigate to **Create CT** and follow the wizard.
 
 ---
 
-## よくある質問
+## Step 8: Backup and Restore
 
-- **仮想マシンとコンテナの違いは？**
-  - 仮想マシンは完全なOSを持ち、コンテナはホストのカーネルを共有するため軽量です。
+1. Set up backups to ensure data safety:
+   - Go to **Datacenter** > **Backup** > **Add** to schedule backups.
+2. Restore VMs or containers by selecting **Restore** from the backup menu.
 
-- **Raspberry Piで動作する？**
-  - いいえ、Proxmox VEはx86_64アーキテクチャ専用です。
+---
 
-- **GPUパススルー対応は？**
-  - はい、対応しています。
+## FAQs
 
-- **仮想マシンへのアクセス方法は？**
-  - Webコンソール、SSH、RDP、VNCなどを利用可能です。
+**Q: What is the difference between a VM and a container in Proxmox VE?**  
+A: VMs emulate an entire operating system, while containers share the host kernel, making them more lightweight and faster to deploy.
 
-- **Proxmoxを仮想環境で試すことは可能？**
-  - 可能ですが、ネスト仮想化のサポートが必要です。
+**Q: Can I use Proxmox VE on a Raspberry Pi?**  
+A: No, Proxmox VE requires a 64-bit x86 processor, which Raspberry Pis do not support.
+
+**Q: How do I add a second storage drive to Proxmox VE?**  
+A: Use the web interface to configure storage:
+
+- Go to **Datacenter** > **Storage** > **Add** and choose the storage type (e.g., Directory, LVM, NFS).
+
+**Q: Does Proxmox VE support GPU passthrough?**  
+A: Yes, Proxmox VE supports GPU passthrough for VMs, allowing direct access to the GPU for intensive workloads.
+
+**Q: How do I access VMs from another device?**  
+A: Use the Proxmox web interface to access VMs via the integrated console or configure network access to the VM for SSH, RDP, or VNC.
+
+**Q: Can I run Proxmox VE as a VM itself?**  
+A: Yes, Proxmox VE can run as a VM for testing purposes, but nested virtualization must be supported by the host.
+
+---
+
+Proxmox VE is a versatile platform that can turn your homelab into a virtualization powerhouse. Experiment, learn, and unlock the full potential of your homelab!
