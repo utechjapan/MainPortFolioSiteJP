@@ -43,17 +43,17 @@ export default function About() {
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
               <strong className="text-gray-900 dark:text-white">井ノ原 力</strong>
-              と申します。自治体向けネットワークとサーバーインフラの設計・構築・運用に携わるITエンジニアです。技術の探求と知識の共有を通じて、ITインフラの価値を高めることに情熱を持っています。
+              と申します。自治体向けネットワークとサーバーインフラの設計・構築・運用に携わるITエンジニアです。技術の探究と知識の共有を通じて、ITインフラの価値を高めることに情熱を持っています。
             </p>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
-              このUTechLabでは、私が日々の業務や自己学習で得た知識、特にネットワーク技術、サーバー構築、監視システム、クラウドサービスなどに関する情報を発信していきます。実践的なチュートリアルやトラブルシューティングの経験共有を通じて、皆さんのITインフラ運用にお役立ていただければ幸いです。
+              このUTechLabでは、私が日々の業務や自己学習を通じて得た知識、特にネットワーク技術、サーバー構築、監視システム、クラウドサービスなどに関する情報を発信していきます。実践的なチュートリアルやトラブルシューティングの経験共有を通じて、皆さんのITインフラ運用にお役立ていただければ幸いです。
             </p>
 
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
               経歴と専門分野
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
-              現在は西日本電信電話株式会社への派遣社員として、自治体向けネットワーク構築と監視システムの設計・運用に従事しています。CCNAやITパスポート、AWS認定クラウドプラクティショナーなどの資格を取得し、特にCisco製ネットワーク機器、Hinemosなどの監視ツール、Windows ServerとLinuxサーバーの運用に強みを持っています。
+              通信事業者での勤務経験を活かし、現在は自治体向けネットワーク構築と監視システムの設計・運用に従事しています。CCNAやITパスポート、AWS認定クラウドプラクティショナーなどの資格を取得し、特にCisco製ネットワーク機器、Hinemosなどの監視ツール、Windows ServerとLinuxサーバーの運用に強みを持っています。
             </p>
 
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
@@ -85,6 +85,13 @@ export default function About() {
                 </p>
               </div>
             </div>
+
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
+              趣味と興味
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
+              技術以外では、読書とドローン操縦を趣味としています。特に技術書や科学系のノンフィクション本を通じて知識を広げることが好きです。また、DJI製ドローンの免許を持っており、休日には風景写真の撮影を楽しんでいます。新しい技術や考え方に触れることを常に大切にしています。
+            </p>
 
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors">
               お問い合わせ
