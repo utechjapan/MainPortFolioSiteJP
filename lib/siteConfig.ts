@@ -59,7 +59,7 @@ export const siteConfig = {
     },
     {
       name: "LinkedIn",
-      url: "https://www.linkedin.com/in/chikara-inohara-a26bb9143",
+      url: "www.linkedin.com/in/chikara-inohara",
       icon: "fab fa-linkedin",
     },
     {
