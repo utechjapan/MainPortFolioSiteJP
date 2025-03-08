@@ -1,4 +1,3 @@
-// pages/index.tsx
 import Head from "next/head";
 import Layout from "../components/layout/Layout";
 import Image from "next/image";

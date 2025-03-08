@@ -1,4 +1,3 @@
-// components/layout/Layout.tsx
 import { ReactNode, useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Sidebar from "./Sidebar";
@@ -65,9 +64,7 @@ export default function Layout({
 
       <main className="flex-1 ml-0 md:ml-72 transition-all duration-300 ease-in-out pt-16 md:pt-0">
         <div
-          className={`p-4 md:p-6 lg:p-8 ${
-            rightSidebar ? "lg:mr-64" : ""
-          } max-w-full overflow-hidden`}
+          className={`p-4 md:p-6 lg:p-8 ${rightSidebar ? "lg:mr-64" : ""} max-w-full overflow-hidden`}
         >
           {children}
           <Footer />

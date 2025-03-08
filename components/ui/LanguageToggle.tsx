@@ -1,4 +1,3 @@
-// components/ui/LanguageToggle.tsx
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -13,9 +12,11 @@ export default function LanguageToggle() {
     }
   }, []);
 
+  if (!asPath) return null; // Safety check
+
   // If current host starts with "en.", then we are on the English version
   const isEnglish = currentHost.startsWith("en.");
-  // Toggle: if currently English, go to Japanese domain; otherwise go to English domain
+  // Toggle: if currently English, redirect to Japanese; otherwise, redirect to English
   const targetHost = isEnglish ? "utechjapan.net" : "en.utechjapan.net";
   const targetUrl = `https://${targetHost}${asPath}`;
   const label = isEnglish ? "日本語" : "EN";

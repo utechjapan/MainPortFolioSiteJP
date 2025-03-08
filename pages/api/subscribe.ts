@@ -1,4 +1,3 @@
-// pages/api/subscribe.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -21,7 +20,6 @@ export default async function handler(
     return res.status(400).json({ error: "Email is required" });
   }
 
-  // Mailchimp configuration from environment variables
   const API_KEY = process.env.MAILCHIMP_API_KEY;
   const LIST_ID = process.env.MAILCHIMP_LIST_ID;
 
@@ -29,7 +27,6 @@ export default async function handler(
     return res.status(500).json({ error: "Mailchimp configuration error" });
   }
 
-  // Extract data center from API key (format: <key>-<dc>)
   const parts = API_KEY.split("-");
   const DATACENTER = parts[1];
 
@@ -47,10 +44,7 @@ export default async function handler(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      // Mailchimp uses basic auth with any username and the API key as the password
-      Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString(
-        "base64"
-      )}`,
+      Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}`,
     },
     body: JSON.stringify(data),
   };
