@@ -2,55 +2,55 @@
 export const siteConfig = {
   // Site information
   title: "UTechLab",
-  description: "井ノ原力によるポートフォリオと勉強ブログサイト",
+  description: "井ノ原力のテックブログ＆ポートフォリオサイト",
   siteUrl: "https://www.utechjapan.net",
 
   // Author information
   author: {
-    name: "Chikara Inohara",
+    name: "井ノ原 力",
     avatar: "/images/profile.jpg",
-    bio: "技術革新に挑む",
+    bio: "自治体向けITインフラエンジニア｜新技術探求中",
   },
 
   // Navigation links
   navLinks: [
     { href: "/", label: "ホーム", icon: "fas fa-home" },
-    { href: "/about", label: "自分について", icon: "fas fa-info-circle" },
+    { href: "/about", label: "自己紹介", icon: "fas fa-info-circle" },
     { href: "/blog", label: "ブログ", icon: "fas fa-blog" },
     { href: "/portfolio", label: "ポートフォリオ", icon: "fas fa-laptop-code" },
     { href: "/search", label: "検索", icon: "fas fa-search" },
-    { href: "/subscribe", label: "登録", icon: "fas fa-envelope" },
+    { href: "/subscribe", label: "購読", icon: "fas fa-envelope" },
   ],
 
   // Categories
   categories: [
     {
-      name: "HomeLab",
+      name: "ホームラボ",
       icon: "/images/categories/homelab.png",
       slug: "homelab",
-      description: "ホームサーバーの構築と管理",
+      description: "自宅サーバー環境の構築と運用について",
     },
     {
-      name: "Tutorials",
+      name: "チュートリアル",
       icon: "/images/categories/tutorials.png",
       slug: "tutorials",
-      description: "各種技術トピックの手順ガイド",
+      description: "様々な技術の実践ガイドと解説",
     },
     {
-      name: "Automation",
+      name: "自動化",
       icon: "/images/categories/automation.png",
       slug: "automation",
-      description: "タスク自動化のスクリプトとツール",
+      description: "業務効率化のためのスクリプトとツール",
     },
     {
-      name: "Security",
+      name: "セキュリティ",
       icon: "/images/categories/security.png",
       slug: "security",
-      description: "システム、ネットワーク、データの保護",
+      description: "ネットワークとデータを守るための対策",
     },
   ],
 
-  // Social links (remain in English)
+  // Social links (英語のままにしています)
   socialLinks: [
     {
       name: "GitHub",
@@ -59,7 +59,7 @@ export const siteConfig = {
     },
     {
       name: "LinkedIn",
-      url: "www.linkedin.com/in/chikara-inohara",
+      url: "https://www.linkedin.com/in/chikara-inohara",
       icon: "fab fa-linkedin",
     },
     {
@@ -69,7 +69,7 @@ export const siteConfig = {
     },
     {
       name: "YouTube",
-      url: "https://www.youtube.com/channel/UCWlf8tLDjoS07y3yHKqRVww",
+      url: "https://www.youtube.com/channel/UCWlf8tLDjoS07y3yKqRVww",
       icon: "fab fa-youtube",
     },
     {
