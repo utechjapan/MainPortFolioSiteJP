@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { MDXRemote } from "next-mdx-remote";
 import GithubSlugger from "github-slugger";
 import { serialize } from "next-mdx-remote/serialize";
+import rehypeSlug from "rehype-slug";
 import rehypeCodeTitles from "rehype-code-titles";
 import rehypePrism from "rehype-prism-plus";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -33,16 +34,16 @@ interface BlogPostProps {
 export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
 
-  // Create a GithubSlugger instance to generate consistent id attributes
+  // Create a GithubSlugger instance to generate fallback id attributes
   const slugger = useMemo(() => new GithubSlugger(), []);
   slugger.reset();
 
-  // Define custom MDX components with generated id attributes for headings
+  // Custom MDX components: use props.id if provided (by rehype-slug), otherwise generate one.
   const components = useMemo(
     () => ({
       h1: (props: any) => {
         const text = React.Children.toArray(props.children).join(" ");
-        const id = slugger.slug(text);
+        const id = props.id || slugger.slug(text);
         return (
           <h1
             id={id}
@@ -53,7 +54,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       },
       h2: (props: any) => {
         const text = React.Children.toArray(props.children).join(" ");
-        const id = slugger.slug(text);
+        const id = props.id || slugger.slug(text);
         return (
           <h2
             id={id}
@@ -64,7 +65,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       },
       h3: (props: any) => {
         const text = React.Children.toArray(props.children).join(" ");
-        const id = slugger.slug(text);
+        const id = props.id || slugger.slug(text);
         return (
           <h3
             id={id}
@@ -281,9 +282,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .slice(0, 10)
     .map(([tag]) => tag);
 
+  // Serialize MDX content with rehypeSlug to set id attributes on headings
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      rehypePlugins: [rehypeCodeTitles, [rehypePrism, { showLineNumbers: true }]],
+      rehypePlugins: [rehypeSlug, rehypeCodeTitles, [rehypePrism, { showLineNumbers: true }]],
     },
   });
 
