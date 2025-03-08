@@ -1,14 +1,10 @@
-// pages/blog/[slug].tsx
-import type { GetStaticPaths, GetStaticProps } from "next";
+import React, { useMemo } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ParsedUrlQuery } from "querystring";
-import { useMemo } from "react";
 import { MDXRemote } from "next-mdx-remote";
+import GithubSlugger from "github-slugger";
 import { serialize } from "next-mdx-remote/serialize";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeCodeTitles from "rehype-code-titles";
 import rehypePrism from "rehype-prism-plus";
 
@@ -18,62 +14,59 @@ import GiscusComments from "../../components/blog/GiscusComments";
 import BlogMeta from "../../components/blog/BlogMeta";
 import Tag from "../../components/ui/Tag";
 import CopyButton from "../../components/ui/CopyButton";
-import BlogPostActions from "../../components/blog/BlogPostActions";
-import FloatingShareButton from "../../components/blog/FloatingShareButton";
 
 import {
   getMDXContent,
   getAllMDXSlugs,
   getAllMDXContent,
-  MDXFrontMatter,
 } from "../../lib/mdx";
 import { siteConfig } from "../../lib/siteConfig";
 
-interface MDXPost {
-  source: any;
-  frontMatter: MDXFrontMatter;
-  slug: string;
-  toc: {
-    id: string;
-    text: string;
-    level: number;
-  }[];
-}
-
-interface BlogPostProps {
-  post: MDXPost;
-  recentPosts: { slug: string; title: string }[];
-  tags: string[];
-}
-
-interface Params extends ParsedUrlQuery {
-  slug: string;
-}
-
-export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
+export default function BlogPost({ post, recentPosts, tags }) {
   const { frontMatter, source, slug, toc } = post;
 
-  // Define custom components for MDX rendering
+  // Create a GithubSlugger instance to generate consistent id attributes
+  const slugger = useMemo(() => new GithubSlugger(), []);
+
+  // Reset slugger for every render to ensure consistent ids
+  slugger.reset();
+
+  // Custom MDX components with generated id attributes for headings
   const components = useMemo(
     () => ({
-      h1: (props: any) => (
-        <h1
-          {...props}
-          className="text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
-        />
-      ),
-      h2: (props: any) => (
-        <h2
-          {...props}
-          className="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
-        />
-      ),
-      h3: (props: any) => (
-        <h3
-          {...props}
-          className="text-xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors break-words"
-        />
-      ),
+      h1: (props: any) => {
+        const text = React.Children.toArray(props.children).join(" ");
+        const id = slugger.slug(text);
+        return (
+          <h1
+            id={id}
+            {...props}
+            className="text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
+          />
+        );
+      },
+      h2: (props: any) => {
+        const text = React.Children.toArray(props.children).join(" ");
+        const id = slugger.slug(text);
+        return (
+          <h2
+            id={id}
+            {...props}
+            className="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
+          />
+        );
+      },
+      h3: (props: any) => {
+        const text = React.Children.toArray(props.children).join(" ");
+        const id = slugger.slug(text);
+        return (
+          <h3
+            id={id}
+            {...props}
+            className="text-xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors break-words"
+          />
+        );
+      },
       p: (props: any) => (
         <p
           {...props}
@@ -93,18 +86,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         />
       ),
       li: (props: any) => <li {...props} className="mb-1 break-words" />,
-      img: (props: any) => (
-        <div className="my-8 relative w-full rounded-lg overflow-hidden">
-          <Image
-            src={props.src}
-            alt={props.alt || ""}
-            width={800}
-            height={450}
-            className="object-cover max-w-full h-auto mx-auto"
-            style={{ maxHeight: "500px" }}
-          />
-        </div>
-      ),
       a: (props: any) => (
         <a
           {...props}
@@ -149,12 +130,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           className="border-l-4 border-primary pl-4 italic my-6 text-gray-600 dark:text-gray-400 transition-colors break-words"
         />
       ),
-      strong: (props: any) => (
-        <strong
-          {...props}
-          className="font-bold text-gray-900 dark:text-gray-100 transition-colors"
-        />
-      ),
       table: (props: any) => (
         <div className="overflow-x-auto mb-6">
           <table
@@ -176,7 +151,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         />
       ),
     }),
-    []
+    [slugger]
   );
 
   return (
@@ -187,18 +162,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         </title>
         <meta
           name="description"
-          content={
-            frontMatter.description ||
-            frontMatter.excerpt ||
-            `${frontMatter.title} - ${siteConfig.title}`
-          }
-        />
-        <meta
-          property="og:title"
-          content={`${frontMatter.title} | ${siteConfig.title}`}
-        />
-        <meta
-          property="og:description"
           content={
             frontMatter.description ||
             frontMatter.excerpt ||
@@ -272,41 +235,36 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           </div>
         </div>
 
-        {/* Desktop version: Inline share bar */}
-        <div className="hidden md:flex">
-          <BlogPostActions />
+        <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
+          <GiscusComments slug={slug} />
         </div>
       </motion.div>
-
-      {/* Mobile version: Floating share button */}
-      <FloatingShareButton />
-
-      {/* Comments Section */}
-      <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
-        <GiscusComments slug={slug} />
-      </div>
     </Layout>
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function getStaticPaths() {
   const slugs = getAllMDXSlugs("blog");
   return {
     paths: slugs.map((slug) => ({ params: { slug } })),
     fallback: false,
   };
-};
+}
 
-export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({ params }) => {
+export async function getStaticProps({ params }) {
   if (!params?.slug) {
     return { notFound: true };
   }
-
   const { content, frontMatter, toc } = await getMDXContent("blog", params.slug);
   const allPosts = await getAllMDXContent("blog");
 
+  const recentPosts = allPosts.slice(0, 5).map((post) => ({
+    slug: post.slug,
+    title: post.frontMatter.title,
+  }));
+
   const allTags = allPosts.flatMap((post) => post.frontMatter.tags || []);
-  const tagCount: { [key: string]: number } = {};
+  const tagCount = {};
   allTags.forEach((tag) => {
     tagCount[tag] = (tagCount[tag] || 0) + 1;
   });
@@ -315,11 +273,10 @@ export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({ pa
     .slice(0, 10)
     .map(([tag]) => tag);
 
+  // Remove rehypeAutolinkHeadings to ensure our custom headings generate ids correctly.
   const mdxSource = await serialize(content, {
     mdxOptions: {
       rehypePlugins: [
-        rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: "wrap" }],
         rehypeCodeTitles,
         [rehypePrism, { showLineNumbers: true }],
       ],
@@ -328,12 +285,14 @@ export const getStaticProps: GetStaticProps<BlogPostProps, Params> = async ({ pa
 
   return {
     props: {
-      post: { source: mdxSource, frontMatter, slug: params.slug, toc },
-      recentPosts: allPosts.slice(0, 5).map((post) => ({
-        slug: post.slug,
-        title: post.frontMatter.title,
-      })),
+      post: {
+        source: mdxSource,
+        frontMatter,
+        slug: params.slug,
+        toc,
+      },
+      recentPosts,
       tags: popularTags,
     },
   };
-};
+}

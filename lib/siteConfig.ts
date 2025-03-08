@@ -1,28 +1,28 @@
 // lib/siteConfig.ts
 export const siteConfig = {
-  // Site information
+  // サイト情報
   title: "UTechLab",
   description: "井ノ原力のテックブログ＆ポートフォリオサイト",
   siteUrl: "https://www.utechjapan.net",
 
-  // Author information
+  // 著者情報
   author: {
     name: "井ノ原 力",
     avatar: "/images/profile.jpg",
-    bio: "自治体向けITインフラエンジニア｜新技術探求中",
+    bio: "自治体向けITインフラエンジニア | クラウド・ネットワーク技術探究者",
   },
 
-  // Navigation links
+  // ナビゲーションリンク
   navLinks: [
     { href: "/", label: "ホーム", icon: "fas fa-home" },
-    { href: "/about", label: "自己紹介", icon: "fas fa-info-circle" },
+    { href: "/about", label: "自己紹介", icon: "fas fa-user" },
     { href: "/blog", label: "ブログ", icon: "fas fa-blog" },
-    { href: "/portfolio", label: "ポートフォリオ", icon: "fas fa-laptop-code" },
+    { href: "/portfolio", label: "ポートフォリオ", icon: "fas fa-briefcase" },
     { href: "/search", label: "検索", icon: "fas fa-search" },
     { href: "/subscribe", label: "購読", icon: "fas fa-envelope" },
   ],
 
-  // Categories
+  // カテゴリー
   categories: [
     {
       name: "ホームラボ",
@@ -37,10 +37,10 @@ export const siteConfig = {
       description: "様々な技術の実践ガイドと解説",
     },
     {
-      name: "自動化",
+      name: "インフラ管理",
       icon: "/images/categories/automation.png",
-      slug: "automation",
-      description: "業務効率化のためのスクリプトとツール",
+      slug: "infrastructure",
+      description: "ネットワークとサーバーの構築・運用ノウハウ",
     },
     {
       name: "セキュリティ",
@@ -48,19 +48,31 @@ export const siteConfig = {
       slug: "security",
       description: "ネットワークとデータを守るための対策",
     },
+    {
+      name: "クラウド技術",
+      icon: "/images/categories/cloud.png",
+      slug: "cloud",
+      description: "AWSやAzureなどのクラウドサービス活用法",
+    },
+    {
+      name: "キャリア",
+      icon: "/images/categories/career.png",
+      slug: "career",
+      description: "ITエンジニアとしてのキャリア構築",
+    },
   ],
 
-  // Social links (英語のままにしています)
+  // ソーシャルリンク
   socialLinks: [
-    {
-      name: "GitHub",
-      url: "https://github.com/utechjapan",
-      icon: "fab fa-github",
-    },
     {
       name: "LinkedIn",
       url: "https://www.linkedin.com/in/chikara-inohara",
       icon: "fab fa-linkedin",
+    },
+    {
+      name: "GitHub",
+      url: "https://github.com/utechjapan",
+      icon: "fab fa-github",
     },
     {
       name: "Twitter",
@@ -73,29 +85,29 @@ export const siteConfig = {
       icon: "fab fa-youtube",
     },
     {
-      name: "Discord",
-      url: "https://discord.gg/yourinvite",
-      icon: "fab fa-discord",
+      name: "Blog",
+      url: "https://utechjapan.net",
+      icon: "fas fa-rss",
     },
   ],
 
-  // Giscus comments configuration
+  // Giscusコメント設定
   comments: {
     provider: "giscus",
     giscusConfig: {
-      repo: "utechjapan/MainPortFolioSite",
+      repo: "utechjapan/blog-comments",
       repoId: "R_kgDOODVR4Q",
       category: "General",
       categoryId: "DIC_kwDOODVR4c4Cnkk9",
     },
   },
 
-  // Analytics (optional)
+  // アナリティクス
   analytics: {
     googleAnalyticsId: "G-M4CBBS8KGS",
   },
 
-  // Newsletter (Mailchimp)
+  // ニュースレター
   newsletter: {
     provider: "mailchimp",
     endpoint: "/api/subscribe",
