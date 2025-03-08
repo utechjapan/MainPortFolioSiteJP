@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center">
           <span className="text-gray-600 dark:text-gray-400 text-sm transition-colors">
-            &copy; {currentYear} {siteConfig.title}. 全著作権所有。
+            &copy; {currentYear} {siteConfig.title}.  All rights reserved.
           </span>
         </div>
 
@@ -30,7 +30,7 @@ export default function Footer() {
       </div>
 
       <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-500">
-        <p>愛情とオープンソース技術で作られました</p>
+        <p>Made with [heart icon] and open-source tech</p>
         <div className="mt-2">
           <Link href="/subscribe" className="text-primary hover:underline">
             登録する

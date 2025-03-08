@@ -13,16 +13,11 @@ interface TimelineItemProps {
 export default function TimelineItem({ event, index }: TimelineItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const containerVariants = {
+  // Each item animates in from below with no individual delay here;
+  // The parent container already staggers children.
+  const itemVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        delay: index * 0.2,
-      },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
   return (
@@ -30,12 +25,9 @@ export default function TimelineItem({ event, index }: TimelineItemProps) {
       className={`flex items-center justify-center mb-16 ${
         event.side === "left" ? "md:flex-row-reverse" : "md:flex-row"
       }`}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={containerVariants}
+      variants={itemVariants}
     >
-      {/* Date */}
+      {/* Date (desktop only) */}
       <div className="hidden md:block w-5/12 px-6">
         <h3
           className={`text-xl font-bold ${
@@ -57,18 +49,17 @@ export default function TimelineItem({ event, index }: TimelineItemProps) {
 
       {/* Content card */}
       <div className="w-full md:w-5/12 px-6">
+        {/* Date for mobile */}
         <div className="mb-2 md:hidden">
           <h3 className="text-xl font-bold">{event.date}</h3>
         </div>
 
         <div className="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-3">{event.title}</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
+          <p className="text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-line">
             {isExpanded
               ? event.description
-              : `${event.description.slice(0, 150)}${
-                  event.description.length > 150 ? "..." : ""
-                }`}
+              : `${event.description.slice(0, 150)}${event.description.length > 150 ? "..." : ""}`}
           </p>
 
           {event.description.length > 150 && (
@@ -76,11 +67,11 @@ export default function TimelineItem({ event, index }: TimelineItemProps) {
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-primary hover:text-primary-dark mb-4"
             >
-              {isExpanded ? "Show less" : "Read more"}
+              {isExpanded ? "折りたたむ" : "続きを読む"}
             </button>
           )}
 
-          {/* Image gallery */}
+          {/* Optional image gallery */}
           {event.images && event.images.length > 0 && (
             <div className="grid grid-cols-3 gap-2 mb-4">
               {event.images.map((img, i) => (
