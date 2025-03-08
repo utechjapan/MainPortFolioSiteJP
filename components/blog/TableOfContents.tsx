@@ -1,4 +1,3 @@
-// components/blog/TableOfContents.tsx
 import { useState, useEffect } from "react";
 import { TocItem } from "../../types";
 
@@ -23,7 +22,7 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
       { rootMargin: "-100px 0px -40% 0px", threshold: 0.1 }
     );
 
-    // Observe all section headings
+    // Observe all headings (h2, h3, h4) in the blog content
     const headings = document.querySelectorAll("h2, h3, h4");
     headings.forEach((heading) => observer.observe(heading));
 
@@ -32,22 +31,20 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
     };
   }, [toc]);
 
-  // Handle click to scroll to heading
   const handleClick = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      // Get header height for offset calculation
-      const headerOffset = window.innerWidth < 768 ? 60 : 0; // Mobile header height is about 60px
-      const elementPosition =
-        element.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - headerOffset - 20; // Extra 20px padding
+      // Set a fixed offset (e.g., header height) so the heading isn't hidden behind a fixed header
+      const headerOffset = 80; // adjust this value as needed
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - headerOffset;
 
       window.scrollTo({
         top: offsetPosition,
         behavior: "smooth",
       });
 
-      // Set active ID immediately for better UX
+      // Set the active TOC item immediately for better UX
       setActiveId(id);
     }
   };
@@ -57,7 +54,7 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
   return (
     <div className="mb-8 sticky top-4">
       <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white border-b border-gray-300 dark:border-gray-700 pb-2 transition-colors">
-        Contents
+        目次
       </h3>
       <nav className="overflow-y-auto max-h-[70vh]">
         <ul className="space-y-2">
