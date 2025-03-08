@@ -3,7 +3,7 @@ import { siteConfig } from "../../lib/siteConfig";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-
+  const socialLinks = siteConfig.socialLinks || []; // Fallback to empty array
   return (
     <footer className="mt-20 pt-10 border-t border-gray-300 dark:border-gray-700 transition-colors">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -14,9 +14,9 @@ export default function Footer() {
         </div>
 
         <div className="flex space-x-6">
-          {siteConfig.socialLinks.map((social) => (
+          {socialLinks.map((social) => (
             <a
-              key={social.name}
+              key={social.name || social.url}
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
