@@ -1,4 +1,6 @@
-/* styles/globals.css - Updated bullet point styling */
+/* styles/globals.css - Updated for improved mobile reading and compact lists */
+
+/* Import fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
@@ -15,9 +17,9 @@
   body {
     @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-colors duration-300;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    overflow-x: hidden;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
   }
   
   ::selection {
@@ -49,13 +51,11 @@
 
 /* Component Styles */
 @layer components {
-  /* Blog content container for better mobile reading */
+  /* Blog content container with minimal side padding */
   .blog-content-container {
     max-width: 100%;
     margin: 0 auto;
-    padding: 0 8px; /* minimal side padding */
-    line-height: 1.6;
-    font-size: 1rem;
+    padding: 0 4px;
   }
   
   /* Headings */
@@ -83,23 +83,16 @@
   
   /* Compact lists with reduced spacing */
   ul, ol {
-    margin-left: 0.75rem; /* reduced indent */
+    margin-left: 0.75rem;
     margin-bottom: 1rem;
-    list-style-position: outside; /* better alignment */
+    list-style-position: outside;
     @apply text-gray-700 dark:text-gray-300;
   }
   
-  /* Reduced spacing between list items */
   li {
-    margin-bottom: 0.3rem; /* reduced from 0.5rem */
-    padding-left: 0.25rem; /* add a bit of space after the bullet */
-    @apply text-gray-700 dark:text-gray-300;
-  }
-  
-  /* Nested lists */
-  li > ul, li > ol {
-    margin-top: 0.3rem;
     margin-bottom: 0.3rem;
+    padding-left: 0.25rem;
+    @apply text-gray-700 dark:text-gray-300;
   }
   
   /* Ensure all text elements respect dark mode */
@@ -107,58 +100,9 @@
     @apply text-gray-700 dark:text-gray-300 transition-colors;
   }
   
-  /* More compact mobile styles */
-  @media (max-width: 768px) {
-    .blog-content-container {
-      padding: 0 4px;
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-    h1 {
-      font-size: 1.75rem;
-      margin-bottom: 0.75rem;
-    }
-    h2 {
-      font-size: 1.4rem;
-      margin-bottom: 0.65rem;
-    }
-    h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-    }
-    ul, ol {
-      margin-left: 0.5rem; /* even less indent on mobile */
-    }
-    li {
-      margin-bottom: 0.2rem; /* even less space between items on mobile */
-    }
-  }
-  
-  /* Button styles (if used anywhere) */
-  .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors;
-  }
-  .btn-primary {
-    @apply bg-primary hover:bg-primary-dark text-white;
-  }
-  .btn-secondary {
-    @apply bg-gray-200 dark:bg-dark-sidebar hover:bg-gray-300 dark:hover:bg-dark-card text-gray-900 dark:text-white;
-  }
-  .btn-outline {
-    @apply border border-primary text-primary hover:bg-primary hover:text-white;
-  }
-  
-  /* Floating buttons positioning */
-  .floating-share-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 100;
-  }
-  
-  /* Enhanced code block experience */
+  /* Compact code block styling */
   pre {
-    @apply rounded-lg overflow-x-auto mb-6 py-6 transition-colors;
+    @apply rounded-lg overflow-x-auto mb-6 py-4 transition-colors;
     position: relative;
   }
   
@@ -176,24 +120,35 @@
     }
   }
   
-  /* Improved readability for blog content */
+  /* Improved readability for blog text */
   .blog-text {
     @apply leading-relaxed text-base sm:text-lg;
   }
   
-  /* Fix for bracketed text in dark mode */
-  .dark [class*="text-"] span,
-  .dark p span,
-  .dark li span,
-  .dark td span,
-  .dark th span,
-  .dark blockquote span,
-  .dark div span {
-    @apply text-gray-300 !important;
+  /* Additional compact styling for MDX content */
+  .prose ul, .prose ol {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .prose li {
+    margin-top: 0.2rem !important;
+    margin-bottom: 0.2rem !important;
+    padding-left: 0.25rem !important;
+  }
+  
+  .prose ul {
+    list-style-type: disc;
+    padding-left: 1.25rem !important;
+  }
+  
+  .prose ol {
+    list-style-type: decimal;
+    padding-left: 1.25rem !important;
   }
 }
 
-/* Specific dark mode fixes for bracket content and text */
+/* Specific dark mode fixes */
 .dark .prose,
 .dark .prose p,
 .dark .prose span,
@@ -215,12 +170,10 @@
   @apply text-gray-300 !important;
 }
 
-/* Keep links with the primary color */
 .dark .prose a:not(.anchor) {
   @apply text-primary !important;
 }
 
-/* Fix for bracketed texts like [具体的な取り組み] in dark mode */
 .dark span,
 .dark p > span,
 .dark li > span,
@@ -231,15 +184,7 @@
   color: #d1d5db !important;
 }
 
-/* Image display improvements */
-.blog-image {
-  @apply rounded-lg shadow-md dark:shadow-gray-800;
-  max-width: 100%;
-  height: auto;
-  margin: 1.5rem auto;
-}
-
-/* Table improvements */
+/* Table styling */
 table {
   @apply w-full border-collapse my-6;
 }
@@ -250,33 +195,4 @@ th, td {
 
 th {
   @apply bg-gray-100 dark:bg-gray-800;
-}
-
-/* Additional compact styling for MDX content */
-.prose ul, .prose ol {
-  margin-top: 0.5rem !important;
-  margin-bottom: 0.5rem !important;
-}
-
-.prose li {
-  margin-top: 0.2rem !important;
-  margin-bottom: 0.2rem !important;
-  padding-left: 0.25rem !important;
-}
-
-/* Tighter list spacing in blog content */
-.prose li p {
-  margin-top: 0.25rem !important;
-  margin-bottom: 0.25rem !important;
-}
-
-/* Adjust the bullets to be more compact */
-.prose ul {
-  list-style-type: disc;
-  padding-left: 1.25rem !important;
-}
-
-.prose ol {
-  list-style-type: decimal;
-  padding-left: 1.25rem !important;
 }

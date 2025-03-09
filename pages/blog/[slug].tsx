@@ -17,7 +17,6 @@ import GiscusComments from "../../components/blog/GiscusComments";
 import BlogMeta from "../../components/blog/BlogMeta";
 import Tag from "../../components/ui/Tag";
 import CopyButton from "../../components/ui/CopyButton";
-import FloatingShareButton from "../../components/blog/FloatingShareButton";
 import BlogPostActions from "../../components/blog/BlogPostActions";
 
 import { getMDXContent, getAllMDXSlugs, getAllMDXContent } from "../../lib/mdx";
@@ -61,7 +60,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         return (
           <h1
             id={id}
-            className="text-2xl sm:text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
+            className="text-2xl sm:text-3xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors break-words"
             {...props}
           />
         );
@@ -72,7 +71,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         return (
           <h2
             id={id}
-            className="text-xl sm:text-2xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors break-words border-b border-gray-200 dark:border-gray-700 pb-2"
+            className="text-xl sm:text-2xl font-bold mt-5 mb-2 text-gray-900 dark:text-white transition-colors break-words border-b border-gray-200 dark:border-gray-700 pb-2"
             {...props}
           />
         );
@@ -83,26 +82,26 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         return (
           <h3
             id={id}
-            className="text-lg sm:text-xl font-bold mt-5 mb-2 text-gray-900 dark:text-white transition-colors break-words"
+            className="text-lg sm:text-xl font-bold mt-4 mb-2 text-gray-900 dark:text-white transition-colors break-words"
             {...props}
           />
         );
       },
       p: (props: any) => (
         <p
-          className="mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words leading-relaxed"
+          className="mb-4 text-base sm:text-base text-gray-700 dark:text-gray-300 transition-colors break-words leading-relaxed"
           {...props}
         />
       ),
       ul: (props: any) => (
         <ul
-          className="list-disc pl-4 mb-2 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
+          className="list-disc pl-4 mb-2 text-base sm:text-base text-gray-700 dark:text-gray-300 transition-colors break-words"
           {...props}
         />
       ),
       ol: (props: any) => (
         <ol
-          className="list-decimal pl-4 mb-2 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
+          className="list-decimal pl-4 mb-2 text-base sm:text-base text-gray-700 dark:text-gray-300 transition-colors break-words"
           {...props}
         />
       ),
@@ -142,7 +141,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           <div className="relative group">
             <pre
               {...props}
-              className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 p-4 rounded-lg overflow-x-auto mb-6 py-6 transition-colors"
+              className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 p-4 rounded-lg overflow-x-auto mb-6 py-4 transition-colors"
             >
               {props.children}
             </pre>
@@ -265,14 +264,12 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
                 </details>
               </div>
             )}
-            <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words text-gray-700 dark:text-gray-300">
+            <div className="blog-content-container prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words text-gray-700 dark:text-gray-300">
               <MDXRemote {...source} components={components} />
             </div>
             <BlogPostActions />
           </div>
         </div>
-        {/* Floating share button appears on mobile */}
-        <FloatingShareButton />
         <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
           <GiscusComments slug={slug} />
         </div>
