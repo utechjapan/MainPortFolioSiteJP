@@ -185,12 +185,12 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      {/* Updated container: on mobile, no horizontal padding; on md and above, add padding */}
+      {/* Updated container: horizontal padding removed for all breakpoints */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-0 md:px-4"
+        className="w-full max-w-4xl mx-auto px-0"
       >
         <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           {frontMatter.image && (
