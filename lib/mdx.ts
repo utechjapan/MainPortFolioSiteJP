@@ -19,36 +19,59 @@ export interface MDXFrontMatter {
   readingTime?: string;
 }
 
+// Create a safe ID from text
+function createSafeId(text: string): string {
+  // Create a simplified version that works for both English and Japanese
+  const safeId = text
+    .trim()
+    .toLowerCase()
+    // Replace non-alphanumeric characters with hyphens
+    .replace(/[^\w\s]/g, '')
+    // Replace whitespace with hyphens
+    .replace(/\s+/g, '-')
+    // Remove consecutive hyphens
+    .replace(/-+/g, '-')
+    // Remove leading and trailing hyphens
+    .replace(/^-+|-+$/g, '');
+  
+  // Ensure the ID is not empty and doesn't start with a number (for CSS selector validity)
+  if (!safeId) {
+    return 'section';
+  }
+  
+  // Prepend 'heading-' to IDs that start with numbers
+  if (/^\d/.test(safeId)) {
+    return `heading-${safeId}`;
+  }
+  
+  return safeId;
+}
+
 // Extract headings from markdown content
 function extractHeadings(content: string) {
   const headingRegex = /^(#{2,4})\s+(.*)$/gm;
   const headings: { id: string; text: string; level: number }[] = [];
   let match: RegExpExecArray | null;
+  const idMap = new Map<string, number>(); // Track duplicate IDs
 
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1].length;
     const text = match[2].trim();
-    const id = text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/\s+/g, "-");
+    let id = createSafeId(text);
+    
+    // Handle duplicate IDs
+    if (idMap.has(id)) {
+      const count = idMap.get(id)! + 1;
+      idMap.set(id, count);
+      id = `${id}-${count}`;
+    } else {
+      idMap.set(id, 1);
+    }
 
     headings.push({ id, text, level });
   }
 
   return headings;
-}
-// Fix brackets text color issue in dark mode
-function preprocessContent(content: string) {
-  // Replace problematic bracket text patterns with spans that have proper dark mode styling
-  const bracketPattern = /\[(.*?)\]/g;
-  return content.replace(bracketPattern, (match, text) => {
-    if (text.startsWith('images/')) {
-      // This is likely an image reference, don't modify it
-      return match;
-    }
-    return `<span className="text-gray-900 dark:text-gray-200">${match}</span>`;
-  });
 }
 
 // Get all MDX files in a directory
@@ -102,12 +125,10 @@ export async function getMDXContent(contentType: string, slug: string) {
   const fileContent = fs.readFileSync(filePath, "utf8");
 
   const { content, data } = matter(fileContent);
-  // Apply preprocessing to fix bracket text in dark mode
-  const processedContent = preprocessContent(content);
-  const toc = extractHeadings(processedContent);
+  const toc = extractHeadings(content);
 
   // Calculate reading time
-  const readingStats = readingTime(processedContent);
+  const readingStats = readingTime(content);
 
   // Construct a complete frontMatter object with default values if properties are missing
   const frontMatter: MDXFrontMatter = {
@@ -123,7 +144,7 @@ export async function getMDXContent(contentType: string, slug: string) {
     readingTime: readingStats.text,
   };
 
-  return { content: processedContent, frontMatter, toc };
+  return { content, frontMatter, toc };
 }
 
 // Get all MDX files with their frontmatter

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TocItem } from "../../types";
 
 interface TableOfContentsProps {
@@ -8,29 +8,20 @@ interface TableOfContentsProps {
 export default function TableOfContents({ toc }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
 
-  useEffect(() => {
-    if (toc.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-100px 0px -40% 0px", threshold: 0.1 }
-    );
-
-    // Observe all headings (h2, h3, h4) in the blog content
-    const headings = document.querySelectorAll("h2, h3, h4");
-    headings.forEach((heading) => observer.observe(heading));
-
-    return () => {
-      headings.forEach((heading) => observer.unobserve(heading));
+  // Throttle function to prevent too many updates
+  const throttle = (func: Function, delay: number) => {
+    let lastCall = 0;
+    return (...args: any[]) => {
+      const now = new Date().getTime();
+      if (now - lastCall < delay) {
+        return;
+      }
+      lastCall = now;
+      return func(...args);
     };
-  }, [toc]);
+  };
 
+  // Handle click on TOC item
   const handleClick = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -49,7 +40,39 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
     }
   };
 
-  if (toc.length === 0) return null;
+  // Observe headings to update active TOC item
+  useEffect(() => {
+    if (!toc || toc.length === 0) return;
+
+    // Simple approach - just observe all headings
+    const observer = new IntersectionObserver(
+      throttle((entries: IntersectionObserverEntry[]) => {
+        // Find the first visible heading
+        const visibleHeadings = entries.filter(
+          entry => entry.isIntersecting && entry.target.id
+        );
+        
+        if (visibleHeadings.length > 0) {
+          const firstVisibleHeading = visibleHeadings[0];
+          setActiveId(firstVisibleHeading.target.id);
+        }
+      }, 100),
+      { rootMargin: "-100px 0px -40% 0px", threshold: 0.1 }
+    );
+
+    // Observe all h2, h3, h4 headings directly
+    const headings = document.querySelectorAll("h2, h3, h4");
+    headings.forEach(heading => {
+      if (heading) observer.observe(heading);
+    });
+
+    // Cleanup function to disconnect observer
+    return () => {
+      observer.disconnect();
+    };
+  }, [toc]);
+
+  if (!toc || toc.length === 0) return null;
 
   return (
     <div className="mb-8 sticky top-4">
