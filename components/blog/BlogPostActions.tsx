@@ -37,7 +37,7 @@ export default function BlogPostActions() {
       >
         <button
           onClick={handleShare}
-          className="flex flex-col items-center text-gray-600 hover:text-primary transition-colors"
+          className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors"
         >
           <i className="fa-solid fa-share-alt text-xl" aria-hidden="true"></i>
           <span className="text-xs">Share</span>

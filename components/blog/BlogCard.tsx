@@ -52,7 +52,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           </h3>
         </Link>
 
-        <p className="text-gray-700 dark:text-gray-400 mb-4 line-clamp-2 flex-grow transition-colors break-words">
+        <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3 flex-grow transition-colors break-words">
           {post.frontMatter.description}
         </p>
 

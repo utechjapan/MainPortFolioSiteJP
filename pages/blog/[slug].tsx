@@ -94,7 +94,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           className="list-decimal ml-4 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
-      li: (props: any) => <li {...props} className="mb-1 break-words" />,
+      li: (props: any) => <li {...props} className="mb-1 break-words text-gray-700 dark:text-gray-300" />,
       a: (props: any) => (
         <a
           {...props}
@@ -231,7 +231,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
                 </details>
               </div>
             )}
-            <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words">
+            <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words text-gray-700 dark:text-gray-300">
               <MDXRemote {...source} components={components} />
             </div>
           </div>

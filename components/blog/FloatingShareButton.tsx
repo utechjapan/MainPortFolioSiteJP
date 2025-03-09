@@ -19,13 +19,13 @@ export default function FloatingShareButton() {
   };
 
   return (
-    <div className="md:hidden fixed bottom-5 left-1/2 transform -translate-x-1/2 z-[100]">
+    <div className="md:hidden fixed bottom-5 right-5 z-[100]">
       <button
         onClick={handleShare}
         className="bg-white dark:bg-dark-bg shadow-lg p-3 rounded-full border border-gray-300 dark:border-gray-700 focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label="Share"
       >
-        <i className="fa-solid fa-share-alt text-xl text-gray-600"></i>
+        <i className="fa-solid fa-share-alt text-xl text-gray-600 dark:text-gray-300"></i>
       </button>
     </div>
   );

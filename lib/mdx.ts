@@ -38,6 +38,18 @@ function extractHeadings(content: string) {
 
   return headings;
 }
+// Fix brackets text color issue in dark mode
+function preprocessContent(content: string) {
+  // Replace problematic bracket text patterns with spans that have proper dark mode styling
+  const bracketPattern = /\[(.*?)\]/g;
+  return content.replace(bracketPattern, (match, text) => {
+    if (text.startsWith('images/')) {
+      // This is likely an image reference, don't modify it
+      return match;
+    }
+    return `<span className="text-gray-900 dark:text-gray-200">${match}</span>`;
+  });
+}
 
 // Get all MDX files in a directory
 export function getAllMDXSlugs(contentType: string): string[] {
@@ -90,10 +102,12 @@ export async function getMDXContent(contentType: string, slug: string) {
   const fileContent = fs.readFileSync(filePath, "utf8");
 
   const { content, data } = matter(fileContent);
-  const toc = extractHeadings(content);
+  // Apply preprocessing to fix bracket text in dark mode
+  const processedContent = preprocessContent(content);
+  const toc = extractHeadings(processedContent);
 
   // Calculate reading time
-  const readingStats = readingTime(content);
+  const readingStats = readingTime(processedContent);
 
   // Construct a complete frontMatter object with default values if properties are missing
   const frontMatter: MDXFrontMatter = {
@@ -109,7 +123,7 @@ export async function getMDXContent(contentType: string, slug: string) {
     readingTime: readingStats.text,
   };
 
-  return { content, frontMatter, toc };
+  return { content: processedContent, frontMatter, toc };
 }
 
 // Get all MDX files with their frontmatter

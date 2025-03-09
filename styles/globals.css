@@ -12,7 +12,7 @@
   }
   
   body {
-    @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-100 transition-colors duration-300;
+    @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-colors duration-300;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     overflow-x: hidden;
     margin: 0;
@@ -61,28 +61,39 @@
   h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
+    @apply text-gray-900 dark:text-white;
   }
   h2 {
     font-size: 1.5rem;
     margin-bottom: 0.75rem;
+    @apply text-gray-900 dark:text-white;
   }
   h3 {
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
+    @apply text-gray-900 dark:text-white;
   }
   
   /* Paragraphs and Lists */
   p {
     margin-bottom: 1rem;
+    @apply text-gray-700 dark:text-gray-300;
   }
   ul,
   ol {
     margin-left: 1rem; /* reduce default indent */
     margin-bottom: 1rem;
     list-style-position: inside;
+    @apply text-gray-700 dark:text-gray-300;
   }
   li {
     margin-bottom: 0.5rem;
+    @apply text-gray-700 dark:text-gray-300;
+  }
+  
+  /* Fixed style for content in square brackets */
+  p span, li span, td span, th span, blockquote span {
+    @apply text-gray-700 dark:text-gray-300 !important;
   }
   
   /* For mobile screens, reduce font sizes and spacing */
@@ -127,12 +138,17 @@
     @apply border border-primary text-primary hover:bg-primary hover:text-white;
   }
   
-  /* Floating share button (for mobile, if you want to adjust its position) */
+  /* Floating buttons positioning */
   .floating-share-button {
     position: fixed;
-    bottom: 70px; /* adjust so it doesn't overlap the back-to-top button */
-    left: 5%;
+    bottom: 20px;
+    right: 20px;
     z-index: 100;
+  }
+  
+  /* Ensure text in bracketed notes in blogs gets proper dark mode treatment */
+  [class*="text-"] {
+    @apply transition-colors;
   }
 }
 
@@ -144,9 +160,32 @@
       padding: 0;
     }
   }
+  
+  /* Fix for code blocks and inline code in dark mode */
+  .dark pre, .dark code {
+    @apply text-gray-300 !important;
+  }
+  
+  /* Fix for text in brackets */
+  .dark [class*="text-"] {
+    @apply text-gray-300 !important;
+  }
 }
 
-/* Existing Tailwind directives (if any) */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Added dark mode text color overrides for inline elements */
+.dark .prose strong,
+.dark .prose em,
+.dark .prose span,
+.dark .prose a:not(.anchor),
+.dark .prose p,
+.dark .prose li,
+.dark .prose td,
+.dark .prose th,
+.dark .prose blockquote {
+  @apply text-gray-300 !important;
+}
+
+/* Keep links with the primary color */
+.dark .prose a {
+  @apply text-primary !important;
+}
