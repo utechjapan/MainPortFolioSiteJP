@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
 @layer base {
   html {
     @apply scroll-smooth;
@@ -14,6 +15,8 @@
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     overflow-x: hidden;
+    font-size: 1rem; /* Base font size: 16px */
+    line-height: 1.6;
   }
 
   ::selection {
@@ -30,13 +33,13 @@
     @apply box-border;
   }
 
-  /* Fix for bold text in dark mode */
+  /* Bold text fix in dark mode */
   strong,
   b {
     @apply text-gray-900 dark:text-gray-100;
   }
 
-  /* Fix for FontAwesome icon display */
+  /* FontAwesome icon display fix */
   .fas,
   .fa-solid,
   .far,
@@ -48,49 +51,42 @@
   }
 }
 
+/* Component layer overrides */
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors;
   }
-
   .btn-primary {
     @apply bg-primary hover:bg-primary-dark text-white;
   }
-
   .btn-secondary {
     @apply bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white;
   }
-
   .btn-outline {
     @apply border border-primary text-primary hover:bg-primary hover:text-white;
   }
-
-  /* Utility class for theme transitions */
+  /* Utility for theme transitions */
   .transition-theme {
     @apply transition-colors duration-300 ease-in-out;
   }
-
-  /* Responsive container for blog post content */
+  /* Responsive container for blog content */
   .blog-content-container {
     @apply w-full mx-auto max-w-full overflow-x-hidden break-words;
   }
-
   /* Make links more accessible */
   a:not(.no-underline) {
     @apply hover:underline;
   }
 }
 
-/* Padding for fixed mobile header */
+/* Mobile adjustments */
 @media (max-width: 768px) {
   body {
     padding-top: 60px;
   }
-
   html {
     scroll-behavior: smooth;
   }
-
   .fixed-mobile-header {
     position: fixed;
     top: 0;
@@ -101,7 +97,6 @@
     border-bottom: 1px solid;
     border-color: var(--tw-border-opacity-border);
   }
-
   aside[class*="fixed top-0"] {
     top: 60px !important;
     height: calc(100vh - 60px) !important;
@@ -109,7 +104,7 @@
   }
 }
 
-/* Improved top bar styles */
+/* Top bar styles */
 .top-bar {
   @apply fixed top-0 left-0 right-0 z-50 bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme;
 }
@@ -122,23 +117,18 @@ pre {
   white-space: pre-wrap;
   word-break: break-word;
 }
-
 pre::-webkit-scrollbar {
   @apply h-2;
 }
-
 pre::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
-
 pre::-webkit-scrollbar-thumb {
   @apply bg-primary/30 rounded-full;
 }
-
 pre::-webkit-scrollbar-thumb:hover {
   @apply bg-primary/50;
 }
-
 pre > code {
   @apply font-mono text-sm text-gray-800 dark:text-gray-200 transition-colors;
   font-feature-settings: "calt" 1;
@@ -158,7 +148,7 @@ pre > code {
   word-break: break-word;
 }
 
-/* Dark mode improvements for prose */
+/* Dark mode improvements for prose elements */
 .dark .prose strong,
 .dark .prose h1,
 .dark .prose h2,
@@ -168,7 +158,6 @@ pre > code {
 .dark .prose h6 {
   @apply text-white;
 }
-
 .dark .prose p,
 .dark .prose li,
 .dark .prose blockquote {
@@ -182,11 +171,9 @@ pre > code {
 .token.cdata {
   @apply text-gray-500 dark:text-gray-400;
 }
-
 .token.punctuation {
   @apply text-gray-600 dark:text-gray-300;
 }
-
 .token.property,
 .token.tag,
 .token.constant,
@@ -194,12 +181,10 @@ pre > code {
 .token.deleted {
   @apply text-red-600 dark:text-red-300;
 }
-
 .token.boolean,
 .token.number {
   @apply text-amber-600 dark:text-amber-300;
 }
-
 .token.selector,
 .token.attr-name,
 .token.string,
@@ -208,7 +193,6 @@ pre > code {
 .token.inserted {
   @apply text-green-600 dark:text-green-300;
 }
-
 .token.operator,
 .token.entity,
 .token.url,
@@ -217,32 +201,26 @@ pre > code {
 .token.variable {
   @apply text-blue-600 dark:text-blue-300;
 }
-
 .token.atrule,
 .token.attr-value,
 .token.function,
 .token.class-name {
   @apply text-yellow-600 dark:text-yellow-200;
 }
-
 .token.keyword {
   @apply text-pink-600 dark:text-pink-300;
 }
-
 .token.regex,
 .token.important {
   @apply text-red-600 dark:text-red-400;
 }
-
 .token.important,
 .token.bold {
   @apply font-bold;
 }
-
 .token.italic {
   font-style: italic;
 }
-
 .token.entity {
   cursor: help;
 }
@@ -251,59 +229,51 @@ pre > code {
 .rehype-code-title {
   @apply px-5 py-2 font-mono text-sm font-bold text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 rounded-t-lg transition-colors;
 }
-
 .rehype-code-title + pre {
   @apply mt-0 rounded-t-none;
 }
-
 .code-highlight {
   @apply float-left min-w-full;
 }
-
 .code-line {
   @apply block px-4 py-0.5;
 }
-
 .code-line.inserted {
   @apply bg-green-100 dark:bg-green-800/50;
 }
-
 .code-line.deleted {
   @apply bg-red-100 dark:bg-red-800/50;
 }
-
 .highlight-line {
   @apply -mx-4 bg-gray-200 dark:bg-gray-700/50 border-l-4 border-primary;
 }
-
 .line-number::before {
   @apply inline-block w-4 mr-2 text-right text-gray-500;
   content: attr(line);
 }
 
-/* Improve mobile navigation */
+/* Mobile navigation improvements */
 @media (max-width: 640px) {
   .mobile-nav-container {
     @apply fixed top-0 left-0 w-full z-50 bg-light-bg dark:bg-dark-bg;
   }
-
   .mobile-center-text {
     @apply text-center w-full absolute left-1/2 transform -translate-x-1/2;
   }
 }
 
-/* Special fix for theme toggle button */
+/* Show theme toggle if not inside a container that already displays toggles */
 button[aria-label="Toggle Dark Mode"] i {
   display: inline-block !important;
 }
 
-/* Fix for social and navigation icons */
+/* Social and navigation icons */
 .social-icon i,
 .nav-icon i {
   display: inline-block !important;
 }
 
-/* Ensure consistency in dark mode across components */
+/* Consistent dark mode styles */
 .dark h1,
 .dark h2,
 .dark h3,
@@ -314,19 +284,16 @@ button[aria-label="Toggle Dark Mode"] i {
   @apply text-white;
 }
 
-/* Typography scale refinements */
+/* Typography for larger screens (default sizes similar to Qiita) */
 h1 {
-  @apply text-3xl sm:text-4xl md:text-5xl break-words;
+  @apply text-3xl sm:text-4xl md:text-4xl lg:text-5xl break-words;
 }
-
 h2 {
-  @apply text-2xl sm:text-3xl md:text-4xl break-words;
+  @apply text-2xl sm:text-3xl md:text-3xl lg:text-4xl break-words;
 }
-
 h3 {
-  @apply text-xl sm:text-2xl md:text-3xl break-words;
+  @apply text-xl sm:text-2xl md:text-2xl lg:text-3xl break-words;
 }
-
 p,
 li,
 a,
@@ -340,7 +307,6 @@ table {
   display: block;
   overflow-x: auto;
 }
-
 @media (min-width: 768px) {
   table {
     display: table;
@@ -351,19 +317,32 @@ table {
 /* Custom typography adjustments for mobile devices */
 @media (max-width: 640px) {
   .prose {
-    font-size: 0.85rem; /* slightly smaller font size */
-    line-height: 1.3;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.4;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
-  
-  body, p, li, a, h1, h2, h3, h4, h5, h6 {
-    font-size: 0.85rem;
-    line-height: 1.3;
+  /* Use slightly larger base fonts on mobile */
+  body, p, li, a {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.4;
   }
-  
-  /* Reduce bullet margin for better text width */
+  /* Adjust headings */
+  h1 {
+    font-size: 2rem; /* 32px */
+  }
+  h2 {
+    font-size: 1.5rem; /* 24px */
+  }
+  h3 {
+    font-size: 1.25rem; /* 20px */
+  }
+  /* Reduce bullet list spacing */
   ul, ol {
-    margin-left: 1rem;
+    margin-left: 0.75rem;
+    padding-left: 1rem;
+  }
+  li {
+    margin-bottom: 0.5rem;
   }
 }

@@ -9,7 +9,7 @@ draft: false
 showToc: true
 ---
 
-# 自宅ホームラボでの仮想化向けProxmox VEサーバー構築 〜現役SEの実践ガイド〜
+### 自宅ホームラボでの仮想化向けProxmox VEサーバー構築 〜現役SEの実践ガイド〜
 
 こんにちは、井ノ原力です。普段は公共機関向けネットワークやサーバーの構築・運用に携わるシステムエンジニアとして働いています。今回は、現場での経験を活かし、自宅でも本格的な仮想化環境を構築できるProxmox VEについて、実践的なガイドをお届けします。
 
@@ -20,9 +20,9 @@ Proxmox Virtual Environment (Proxmox VE) は、オープンソースの強力な
 ## 必要なもの
 
 - **Proxmox VE用の専用マシン**
-  - **最低スペック**: 4GB RAM、64bitプロセッサ、32GBストレージ
-  - **推奨スペック**: 16GB RAM以上、マルチコアCPU、SSD 128GB以上（できればNVMe）
-  - **現場視点**: 実務で使うサービスをテストするなら、メモリは多いほど便利です。私は中古サーバーを改造して使用しています。
+- **最低スペック**: 4GB RAM、64bitプロセッサ、32GBストレージ
+- **推奨スペック**: 16GB RAM以上、マルチコアCPU、SSD 128GB以上（できればNVMe）
+- **現場視点**: 実務で使うサービスをテストするなら、メモリは多いほど便利です。私は中古サーバーを改造して使用しています。
 
 - **Proxmox VE ISOファイル**: [Proxmoxダウンロードページ](https://www.proxmox.com/en/downloads)から入手できます。
 
@@ -38,8 +38,8 @@ Proxmox Virtual Environment (Proxmox VE) は、オープンソースの強力な
    [images/proxmox-download.jpg]
 
 2. USBブートメディアの作成ツールを利用してISOファイルを書き込みます。
-   - Windows環境では [Rufus](https://rufus.ie/)
-   - Mac/Linux環境では [balenaEtcher](https://www.balena.io/etcher/)
+- Windows環境では [Rufus](https://rufus.ie/)
+- Mac/Linux環境では [balenaEtcher](https://www.balena.io/etcher/)
    
    **実務Tips**: トラブル防止のため、USBドライブは書き込み前に完全フォーマットすることをお勧めします。現場でもメディア作成失敗は意外と多いので、丁寧に進めましょう。
 
@@ -49,10 +49,10 @@ Proxmox Virtual Environment (Proxmox VE) は、オープンソースの強力な
    - 多くのマシンでは起動時にF2, F10, F12, Delなどのキーでブートメニューにアクセスできます。
    
 2. インストールウィザードに沿って進めます：
-   - ライセンス契約に同意
-   - インストール先ディスクを選択（複数ディスクがある場合は、OSはSSDに、データストレージはHDDに割り当てると効率的です）
-   - ルートパスワードとメールアドレスの設定（**重要**: 管理者アカウントのパスワードは強固なものを設定し、必ず記録しておいてください）
-   - **ネットワーク設定**：自宅ネットワークでの安定した運用のために、静的IPアドレスの設定を強くお勧めします。ルーターのDHCPの割り当て範囲外のIPを選択しましょう。
+- ライセンス契約に同意
+- インストール先ディスクを選択（複数ディスクがある場合は、OSはSSDに、データストレージはHDDに割り当てると効率的です）
+- ルートパスワードとメールアドレスの設定（**重要**: 管理者アカウントのパスワードは強固なものを設定し、必ず記録しておいてください）
+- **ネットワーク設定**：自宅ネットワークでの安定した運用のために、静的IPアドレスの設定を強くお勧めします。ルーターのDHCPの割り当て範囲外のIPを選択しましょう。
    
    [images/proxmox-install.jpg]
    
@@ -102,14 +102,14 @@ Proxmox Virtual Environment (Proxmox VE) は、オープンソースの強力な
 
 2. VM用のストレージ設定を最適化します：
    - **システムパフォーマンス向上のポイント**: 
-     - ISOイメージ用ストレージ（ローカル）
-     - VM用高速ストレージ（SSD/NVMe：LVMまたはZFS）
-     - バックアップ用大容量ストレージ（HDD：NFS/CIFS）
+- ISOイメージ用ストレージ（ローカル）
+- VM用高速ストレージ（SSD/NVMe：LVMまたはZFS）
+- バックアップ用大容量ストレージ（HDD：NFS/CIFS）
      
    **実務での構成例**: 私は以下のような階層ストレージを構成しています：
-   - OS/システム用：500GB NVMe SSD (LVM-thin)
-   - VM/コンテナ用：1TB SSD (ZFS)
-   - バックアップ/イメージ用：4TB HDD (ZFS)
+- OS/システム用：500GB NVMe SSD (LVM-thin)
+- VM/コンテナ用：1TB SSD (ZFS)
+- バックアップ/イメージ用：4TB HDD (ZFS)
    
    これにより、パフォーマンスと容量を最適なバランスで利用できます。
 
@@ -118,66 +118,66 @@ Proxmox Virtual Environment (Proxmox VE) は、オープンソースの強力な
 ## ステップ6：初めての仮想マシン（VM）の作成
 
 1. ISOイメージのダウンロード
-   - **Datacenter** > **[ノード名]** > **local** (ストレージ) > **Content** > **Upload** からOSイメージ（Ubuntu、Windows等）をアップロード
+- **Datacenter** > **[ノード名]** > **local** (ストレージ) > **Content** > **Upload** からOSイメージ（Ubuntu、Windows等）をアップロード
    
    **効率化Tips**: よく使うISOイメージは予めダウンロードしておくと、何度もネットワーク経由でダウンロードする時間を節約できます。
 
 2. 新しいVMを作成
-   - **Create VM** ボタンをクリックし、ウィザードに従って設定
-   - **General**: 名前とVMIDを設定（VMIDは自動採番でOK）
-   - **OS**: アップロードしたISOを選択
-   - **System**: BIOS設定（EFI推奨）とQEMU Agent有効化
-   - **Disks**: VM用のディスク容量と形式を選択（Thin Provisioning推奨）
-   - **CPU**: プロセッサタイプとコア数の設定（Type: host推奨）
-   - **Memory**: RAM割り当て（動的メモリバルーニングを有効にすると効率的）
-   - **Network**: 仮想NICの設定（VirtIOドライバ推奨）
+- **Create VM** ボタンをクリックし、ウィザードに従って設定
+- **General**: 名前とVMIDを設定（VMIDは自動採番でOK）
+- **OS**: アップロードしたISOを選択
+- **System**: BIOS設定（EFI推奨）とQEMU Agent有効化
+- **Disks**: VM用のディスク容量と形式を選択（Thin Provisioning推奨）
+- **CPU**: プロセッサタイプとコア数の設定（Type: host推奨）
+- **Memory**: RAM割り当て（動的メモリバルーニングを有効にすると効率的）
+- **Network**: 仮想NICの設定（VirtIOドライバ推奨）
    
    [images/vm-creation.jpg]
    
    **パフォーマンスTips**: 資格取得で学んだ実務知識として、VMのネットワーク設定ではVLAN対応のブリッジ設定を推奨します。また、CPU設定では「host」タイプを選択することで、物理CPUの拡張命令セットがVMに継承されます。
 
 3. VMを起動し、コンソールからOSをインストール
-   - 作成したVMを選択 > **Start**
-   - **Console** タブからOSインストーラを操作
+- 作成したVMを選択 > **Start**
+- **Console** タブからOSインストーラを操作
 
 ## ステップ7：LXCコンテナの活用
 
 VMよりも軽量かつ高速な選択肢として、LinuxコンテナのLXCも非常に便利です。
 
 1. コンテナテンプレートのダウンロード方法:
-   - **Datacenter** > **[ノード名]** > **local** (ストレージ) > **CT Templates** > **Templates** > **Download**
+- **Datacenter** > **[ノード名]** > **local** (ストレージ) > **CT Templates** > **Templates** > **Download**
    
 2. コンテナの作成手順:
-   - **Create CT** をクリックし、ウィザードに従って設定
-   - 特に **Resources** タブでは、VMよりも少ないリソースでも快適に動作します
+- **Create CT** をクリックし、ウィザードに従って設定
+- 特に **Resources** タブでは、VMよりも少ないリソースでも快適に動作します
 
    [images/lxc-container.jpg]
 
    **実用的な使用例**: 私は以下のようにLXCコンテナを利用しています：
-   - ネットワーク監視用サーバー（CentOS）
-   - Web/DBサーバー（Ubuntu）
-   - 開発環境（Debian）
+- ネットワーク監視用サーバー（CentOS）
+- Web/DBサーバー（Ubuntu）
+- 開発環境（Debian）
    
    これらを1台のマシンで同時に稼働させても、リソース効率が高く快適です。
 
 ## ステップ8：実務レベルのバックアップと障害対策
 
 1. **障害時に備えたデータ保護策**:
-   - **Datacenter** > **Backup** > **Add** から定期バックアップの設定
-   - バックアップの保持ポリシー設定（世代管理）
-   - 可能であれば外部ストレージへのエクスポート
+- **Datacenter** > **Backup** > **Add** から定期バックアップの設定
+- バックアップの保持ポリシー設定（世代管理）
+- 可能であれば外部ストレージへのエクスポート
    
    **実務からの教訓**: 障害対応経験から言えることは、バックアップは「取得」だけでなく「復元テスト」まで行ってこそ意味があります。最低でも四半期に一度は復元テストを行いましょう。
 
 2. **障害発生時の復旧手順**:
-   - **Backup** > 復元したいバックアップを選択 > **Restore**
-   - またはシェルからQM（QEMU Manager）コマンドによる復元も可能
+- **Backup** > 復元したいバックアップを選択 > **Restore**
+- またはシェルからQM（QEMU Manager）コマンドによる復元も可能
 
    [images/backup-configuration.jpg]
 
 3. **高可用性設定** (複数ノード環境の場合):
-   - **Datacenter** > **HA** > **Resources** から重要VMの高可用性設定
-   - クォーラム設定と分断対策
+- **Datacenter** > **HA** > **Resources** から重要VMの高可用性設定
+- クォーラム設定と分断対策
 
 ## 実践的なユースケースと応用例
 
