@@ -65,7 +65,7 @@
     @apply border border-primary text-primary hover:bg-primary hover:text-white;
   }
 
-  /* Add a utility class for theme transitions */
+  /* Utility class for theme transitions */
   .transition-theme {
     @apply transition-colors duration-300 ease-in-out;
   }
@@ -81,7 +81,7 @@
   }
 }
 
-/* Padding for fixed mobile header - Updated to fix profile overlap issue */
+/* Padding for fixed mobile header */
 @media (max-width: 768px) {
   body {
     padding-top: 60px;
@@ -104,7 +104,7 @@
     border-color: var(--tw-border-opacity-border);
   }
 
-  /* Adjust sidebar for mobile - fixed to prevent header overlap */
+  /* Adjust sidebar for mobile */
   aside[class*="fixed top-0"] {
     top: 60px !important;
     height: calc(100vh - 60px) !important;
@@ -117,7 +117,7 @@
   @apply fixed top-0 left-0 right-0 z-50 bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme;
 }
 
-/* Code block styling - enhanced for better readability */
+/* Code block styling */
 pre {
   @apply relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto my-6 transition-colors p-4;
   scrollbar-width: thin;
@@ -147,7 +147,7 @@ pre > code {
   font-feature-settings: "calt" 1;
 }
 
-/* Fix responsive images */
+/* Responsive images */
 .responsive-img {
   max-width: 100%;
   height: auto;
@@ -161,7 +161,7 @@ pre > code {
   word-break: break-word;
 }
 
-/* Dark mode improvements */
+/* Dark mode improvements for prose */
 .dark .prose strong,
 .dark .prose h1,
 .dark .prose h2,
@@ -351,19 +351,17 @@ table {
   }
 }
 
-/* Additional adjustments for mobile bullet list styling */
+/* Custom typography for mobile devices to improve readability */
 @media (max-width: 640px) {
-  .prose ul,
-  .prose ol {
-    margin-left: 0.5rem;
+  .prose {
+    font-size: 0.9rem;
+    line-height: 1.4;
     padding-left: 1rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    padding-right: 1rem;
   }
-}
-
-/* Uniform text size for all content */
-body, h1, h2, h3, h4, h5, h6, p, li, a, blockquote {
-  font-size: 1rem;
-  line-height: 1.5rem;
+  
+  /* Adjust general text size on mobile */
+  body, p, li, a, h1, h2, h3, h4, h5, h6 {
+    font-size: 0.9rem;
+  }
 }
