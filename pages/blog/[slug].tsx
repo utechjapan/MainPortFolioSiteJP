@@ -4,6 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { MDXRemote } from "next-mdx-remote";
+import GithubSlugger from "github-slugger";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeSlug from "rehype-slug";
 import rehypeCodeTitles from "rehype-code-titles";
@@ -17,6 +18,7 @@ import BlogMeta from "../../components/blog/BlogMeta";
 import Tag from "../../components/ui/Tag";
 import CopyButton from "../../components/ui/CopyButton";
 import FloatingShareButton from "../../components/blog/FloatingShareButton";
+import BlogPostActions from "../../components/blog/BlogPostActions";
 
 import { getMDXContent, getAllMDXSlugs, getAllMDXContent } from "../../lib/mdx";
 import { siteConfig } from "../../lib/siteConfig";
@@ -34,32 +36,23 @@ interface BlogPostProps {
 
 // Helper function to create safe IDs for headings
 function createSafeId(text: string): string {
-  // Create a simplified version that works for both English and Japanese
   const safeId = text
     .trim()
     .toLowerCase()
-    .replace(/[^\w\s]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  
-  // Ensure the ID is not empty
-  if (!safeId) {
-    return 'section';
-  }
-  
-  // Prepend 'heading-' to IDs that start with numbers
-  if (/^\d/.test(safeId)) {
-    return `heading-${safeId}`;
-  }
-  
+    .replace(/[^\w\s]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  if (!safeId) return "section";
+  if (/^\d/.test(safeId)) return `heading-${safeId}`;
   return safeId;
 }
 
 export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
-  
-  // Customized MDX components with smaller heading sizes and reduced spacing for lists.
+  const slugger = useMemo(() => new GithubSlugger(), []);
+  slugger.reset();
+
   const components = useMemo(
     () => ({
       h1: (props: any) => {
@@ -68,8 +61,8 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         return (
           <h1
             id={id}
+            className="text-2xl sm:text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
             {...props}
-            className="text-2xl sm:text-3xl font-bold mt-4 mb-2 text-gray-900 dark:text-white transition-colors break-words"
           />
         );
       },
@@ -79,8 +72,8 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         return (
           <h2
             id={id}
+            className="text-xl sm:text-2xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors break-words border-b border-gray-200 dark:border-gray-700 pb-2"
             {...props}
-            className="text-xl sm:text-2xl font-bold mt-4 mb-2 text-gray-900 dark:text-white transition-colors break-words"
           />
         );
       },
@@ -90,30 +83,32 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         return (
           <h3
             id={id}
+            className="text-lg sm:text-xl font-bold mt-5 mb-2 text-gray-900 dark:text-white transition-colors break-words"
             {...props}
-            className="text-lg sm:text-xl font-bold mt-3 mb-1 text-gray-900 dark:text-white transition-colors break-words"
           />
         );
       },
       p: (props: any) => (
         <p
+          className="mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words leading-relaxed"
           {...props}
-          className="mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
       ul: (props: any) => (
         <ul
+          className="list-disc pl-5 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
           {...props}
-          className="list-disc ml-4 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
       ol: (props: any) => (
         <ol
+          className="list-decimal pl-5 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
           {...props}
-          className="list-decimal ml-4 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
-      li: (props: any) => <li {...props} className="mb-1 break-words text-gray-700 dark:text-gray-300" />,
+      li: (props: any) => (
+        <li className="mb-2 break-words text-gray-700 dark:text-gray-300 transition-colors" {...props} />
+      ),
       a: (props: any) => (
         <a
           {...props}
@@ -181,17 +176,16 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       img: (props: any) => (
         <div className="my-6">
           <img
-            {...props}
-            className="rounded-lg max-w-full mx-auto"
+            className="rounded-lg max-w-full mx-auto shadow-md"
             alt={props.alt || "Blog image"}
+            {...props}
           />
         </div>
       ),
-      // Special handling for bracket text in Japanese
       span: (props: any) => (
         <span
-          {...props}
           className="text-gray-700 dark:text-gray-300 transition-colors"
+          {...props}
         />
       ),
     }),
@@ -269,6 +263,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
             <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words text-gray-700 dark:text-gray-300">
               <MDXRemote {...source} components={components} />
             </div>
+            <BlogPostActions />
           </div>
         </div>
         {/* Floating share button appears on mobile */}
@@ -312,14 +307,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .slice(0, 10)
     .map(([tag]) => tag);
 
-  // Add rehype-slug to properly generate IDs for headings
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      rehypePlugins: [
-        rehypeSlug,
-        rehypeCodeTitles,
-        [rehypePrism, { showLineNumbers: true }],
-      ],
+      rehypePlugins: [rehypeSlug, rehypeCodeTitles, [rehypePrism, { showLineNumbers: true }]],
     },
   });
 

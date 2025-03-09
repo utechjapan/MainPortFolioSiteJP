@@ -29,7 +29,7 @@ function createSafeId(text: string): string {
     .replace(/[^\w\s]/g, '')
     // Replace whitespace with hyphens
     .replace(/\s+/g, '-')
-    // Remove consecutive hyphens
+    // Replace consecutive hyphens
     .replace(/-+/g, '-')
     // Remove leading and trailing hyphens
     .replace(/^-+|-+$/g, '');
@@ -72,6 +72,15 @@ function extractHeadings(content: string) {
   }
 
   return headings;
+}
+
+// Process MDX content to handle image references
+function processContent(content: string): string {
+  // Look for image references like [images/file.jpg] and convert them to HTML img tags with proper styling
+  const imgRefRegex = /\[images\/(.+?)\]/g;
+  return content.replace(imgRefRegex, (match, imgPath) => {
+    return `<img src="/images/${imgPath}" alt="${imgPath}" class="blog-image" />`;
+  });
 }
 
 // Get all MDX files in a directory
@@ -124,7 +133,9 @@ export async function getMDXContent(contentType: string, slug: string) {
 
   const fileContent = fs.readFileSync(filePath, "utf8");
 
-  const { content, data } = matter(fileContent);
+  const { content: rawContent, data } = matter(fileContent);
+  // Process content to handle image references
+  const content = processContent(rawContent);
   const toc = extractHeadings(content);
 
   // Calculate reading time

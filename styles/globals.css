@@ -1,3 +1,4 @@
+/* styles/globals.css */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
@@ -91,9 +92,9 @@
     @apply text-gray-700 dark:text-gray-300;
   }
   
-  /* Fixed style for content in square brackets */
-  p span, li span, td span, th span, blockquote span {
-    @apply text-gray-700 dark:text-gray-300 !important;
+  /* Ensure all text elements respect dark mode */
+  p, span, li, td, th, blockquote {
+    @apply text-gray-700 dark:text-gray-300 transition-colors;
   }
   
   /* For mobile screens, reduce font sizes and spacing */
@@ -146,9 +147,14 @@
     z-index: 100;
   }
   
-  /* Ensure text in bracketed notes in blogs gets proper dark mode treatment */
-  [class*="text-"] {
-    @apply transition-colors;
+  /* Enhanced code block experience */
+  pre {
+    @apply rounded-lg overflow-x-auto mb-6 py-6 transition-colors;
+    position: relative;
+  }
+  
+  code {
+    @apply font-mono text-sm;
   }
 }
 
@@ -161,31 +167,78 @@
     }
   }
   
-  /* Fix for code blocks and inline code in dark mode */
-  .dark pre, .dark code {
-    @apply text-gray-300 !important;
+  /* Improved readability for blog content */
+  .blog-text {
+    @apply leading-relaxed text-base sm:text-lg;
   }
   
-  /* Fix for text in brackets */
-  .dark [class*="text-"] {
+  /* Fix for bracketed text in dark mode */
+  .dark [class*="text-"] span,
+  .dark p span,
+  .dark li span,
+  .dark td span,
+  .dark th span,
+  .dark blockquote span,
+  .dark div span {
     @apply text-gray-300 !important;
   }
 }
 
-/* Added dark mode text color overrides for inline elements */
+/* Specific dark mode fixes for bracket content and text */
+.dark .prose,
+.dark .prose p,
+.dark .prose span,
 .dark .prose strong,
 .dark .prose em,
-.dark .prose span,
-.dark .prose a:not(.anchor),
-.dark .prose p,
 .dark .prose li,
-.dark .prose td,
+.dark .prose ul,
+.dark .prose ol,
+.dark .prose blockquote,
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6,
 .dark .prose th,
-.dark .prose blockquote {
+.dark .prose td,
+.dark [class*="text-"] {
   @apply text-gray-300 !important;
 }
 
 /* Keep links with the primary color */
-.dark .prose a {
+.dark .prose a:not(.anchor) {
   @apply text-primary !important;
+}
+
+/* Fix for bracketed texts like [具体的な取り組み] in dark mode */
+.dark span,
+.dark p > span,
+.dark li > span,
+.dark td > span,
+.dark th > span,
+.dark blockquote > span,
+.dark div > span {
+  color: #d1d5db !important;
+}
+
+/* Image display improvements */
+.blog-image {
+  @apply rounded-lg shadow-md dark:shadow-gray-800;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+}
+
+/* Table improvements */
+table {
+  @apply w-full border-collapse my-6;
+}
+
+th, td {
+  @apply border border-gray-300 dark:border-gray-700 px-4 py-2 text-left;
+}
+
+th {
+  @apply bg-gray-100 dark:bg-gray-800;
 }
