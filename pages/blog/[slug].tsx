@@ -1,3 +1,4 @@
+// pages/blog/[slug].tsx
 import React, { useMemo } from "react";
 import Head from "next/head";
 import Image from "next/image";
@@ -35,11 +36,11 @@ interface BlogPostProps {
 export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
 
-  // Create a GithubSlugger instance to generate fallback id attributes
+  // Create a GithubSlugger instance to generate consistent IDs for headings.
   const slugger = useMemo(() => new GithubSlugger(), []);
   slugger.reset();
 
-  // Custom MDX components: use props.id if provided (by rehype-slug), otherwise generate one.
+  // Customized MDX components with smaller heading sizes and reduced spacing for lists.
   const components = useMemo(
     () => ({
       h1: (props: any) => {
@@ -49,7 +50,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           <h1
             id={id}
             {...props}
-            className="text-3xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
+            className="text-2xl sm:text-3xl font-bold mt-4 mb-2 text-gray-900 dark:text-white transition-colors break-words"
           />
         );
       },
@@ -60,7 +61,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           <h2
             id={id}
             {...props}
-            className="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white transition-colors break-words"
+            className="text-xl sm:text-2xl font-bold mt-4 mb-2 text-gray-900 dark:text-white transition-colors break-words"
           />
         );
       },
@@ -71,26 +72,26 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           <h3
             id={id}
             {...props}
-            className="text-xl font-bold mt-6 mb-3 text-gray-900 dark:text-white transition-colors break-words"
+            className="text-lg sm:text-xl font-bold mt-3 mb-1 text-gray-900 dark:text-white transition-colors break-words"
           />
         );
       },
       p: (props: any) => (
         <p
           {...props}
-          className="mb-4 text-gray-700 dark:text-gray-300 transition-colors break-words"
+          className="mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
       ul: (props: any) => (
         <ul
           {...props}
-          className="list-disc ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors break-words"
+          className="list-disc ml-4 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
       ol: (props: any) => (
         <ol
           {...props}
-          className="list-decimal ml-6 mb-4 text-gray-700 dark:text-gray-300 transition-colors break-words"
+          className="list-decimal ml-4 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
         />
       ),
       li: (props: any) => <li {...props} className="mb-1 break-words" />,
@@ -165,9 +166,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   return (
     <Layout recentPosts={recentPosts} tags={tags} toc={toc}>
       <Head>
-        <title>
-          {frontMatter.title} | {siteConfig.title}
-        </title>
+        <title>{frontMatter.title} | {siteConfig.title}</title>
         <meta
           name="description"
           content={
@@ -184,13 +183,12 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         )}
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-
-      {/* Minimal horizontal padding, no extra side margin on mobile */}
+      {/* Container with zero horizontal padding on mobile */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-0"
+        className="w-full max-w-4xl mx-auto px-0 sm:px-4"
       >
         <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           {frontMatter.image && (
@@ -204,19 +202,16 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
               />
             </div>
           )}
-
           <div className="p-4 sm:p-6 md:p-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 transition-colors leading-tight break-words">
               {frontMatter.title}
             </h1>
-
             <div className="mb-4">
               <BlogMeta
                 date={frontMatter.date}
                 readingTime={frontMatter.readingTime}
               />
             </div>
-
             {frontMatter.tags && frontMatter.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {frontMatter.tags.map((tag: string) => (
@@ -224,7 +219,6 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
                 ))}
               </div>
             )}
-
             {toc && toc.length > 0 && (
               <div className="lg:hidden mb-8">
                 <details className="bg-light-sidebar dark:bg-dark-sidebar p-4 rounded-lg transition-colors">
@@ -237,19 +231,16 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
                 </details>
               </div>
             )}
-
             <div className="prose prose-lg dark:prose-invert max-w-none overflow-hidden break-words">
               <MDXRemote {...source} components={components} />
             </div>
           </div>
         </div>
-
+        {/* Floating share button appears on mobile */}
+        <FloatingShareButton />
         <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
           <GiscusComments slug={slug} />
         </div>
-
-        {/* Mobile-floating share button */}
-        <FloatingShareButton />
       </motion.div>
     </Layout>
   );
@@ -267,7 +258,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (!params?.slug) {
     return { notFound: true };
   }
-  // Ensure slug is a string (if array, take the first element)
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const { content, frontMatter, toc } = await getMDXContent("blog", slug);
   const allPosts = await getAllMDXContent("blog");
@@ -287,10 +277,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .slice(0, 10)
     .map(([tag]) => tag);
 
-  // Serialize MDX content with rehypeSlug so headings have id attributes.
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      rehypePlugins: [rehypeSlug, rehypeCodeTitles, [rehypePrism, { showLineNumbers: true }]],
+      rehypePlugins: [
+        rehypeSlug,
+        rehypeCodeTitles,
+        [rehypePrism, { showLineNumbers: true }],
+      ],
     },
   });
 

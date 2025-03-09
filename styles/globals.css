@@ -4,42 +4,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base styles */
+/* Base Styles */
 @layer base {
   html {
     @apply scroll-smooth;
+    font-size: 16px; /* Base font size */
   }
-
+  
   body {
     @apply bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-100 transition-colors duration-300;
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     overflow-x: hidden;
-    font-size: 1rem; /* Base font size: 16px */
-    line-height: 1.6;
+    margin: 0;
+    padding: 0;
   }
-
+  
   ::selection {
     @apply bg-primary/30 text-gray-900 dark:text-white;
   }
-
-  /* Improve image rendering */
+  
   img {
     @apply max-w-full h-auto;
   }
-
-  /* Fix any potential overflow issues */
+  
   * {
     @apply box-border;
   }
-
-  /* Bold text fix in dark mode */
-  strong,
-  b {
+  
+  strong, b {
     @apply text-gray-900 dark:text-gray-100;
   }
-
-  /* FontAwesome icon display fix */
+  
   .fas,
   .fa-solid,
   .far,
@@ -51,8 +46,74 @@
   }
 }
 
-/* Component layer overrides */
+/* Component Styles */
 @layer components {
+  /* Blog content container for better mobile reading */
+  .blog-content-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 8px; /* minimal side padding */
+    line-height: 1.6;
+    font-size: 1rem;
+  }
+  
+  /* Headings */
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Paragraphs and Lists */
+  p {
+    margin-bottom: 1rem;
+  }
+  ul,
+  ol {
+    margin-left: 1rem; /* reduce default indent */
+    margin-bottom: 1rem;
+    list-style-position: inside;
+  }
+  li {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* For mobile screens, reduce font sizes and spacing */
+  @media (max-width: 768px) {
+    .blog-content-container {
+      padding: 0 4px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.65rem;
+    }
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    ul,
+    ol {
+      margin-left: 0.75rem;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+  }
+  
+  /* Button styles (if used anywhere) */
   .btn {
     @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors;
   }
@@ -60,289 +121,32 @@
     @apply bg-primary hover:bg-primary-dark text-white;
   }
   .btn-secondary {
-    @apply bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white;
+    @apply bg-gray-200 dark:bg-dark-sidebar hover:bg-gray-300 dark:hover:bg-dark-card text-gray-900 dark:text-white;
   }
   .btn-outline {
     @apply border border-primary text-primary hover:bg-primary hover:text-white;
   }
-  /* Utility for theme transitions */
-  .transition-theme {
-    @apply transition-colors duration-300 ease-in-out;
-  }
-  /* Responsive container for blog content */
-  .blog-content-container {
-    @apply w-full mx-auto max-w-full overflow-x-hidden break-words;
-  }
-  /* Make links more accessible */
-  a:not(.no-underline) {
-    @apply hover:underline;
-  }
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  body {
-    padding-top: 60px;
-  }
-  html {
-    scroll-behavior: smooth;
-  }
-  .fixed-mobile-header {
+  
+  /* Floating share button (for mobile, if you want to adjust its position) */
+  .floating-share-button {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    background-color: var(--tw-bg-opacity-bg);
-    border-bottom: 1px solid;
-    border-color: var(--tw-border-opacity-border);
-  }
-  aside[class*="fixed top-0"] {
-    top: 60px !important;
-    height: calc(100vh - 60px) !important;
-    z-index: 30 !important;
+    bottom: 70px; /* adjust so it doesn't overlap the back-to-top button */
+    left: 5%;
+    z-index: 100;
   }
 }
 
-/* Top bar styles */
-.top-bar {
-  @apply fixed top-0 left-0 right-0 z-50 bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme;
-}
-
-/* Code block styling */
-pre {
-  @apply relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto my-6 transition-colors p-4;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(138, 99, 210, 0.5) transparent;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-pre::-webkit-scrollbar {
-  @apply h-2;
-}
-pre::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-pre::-webkit-scrollbar-thumb {
-  @apply bg-primary/30 rounded-full;
-}
-pre::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary/50;
-}
-pre > code {
-  @apply font-mono text-sm text-gray-800 dark:text-gray-200 transition-colors;
-  font-feature-settings: "calt" 1;
-}
-
-/* Responsive images */
-.responsive-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-/* Overflow handling */
-.overflow-wrap-anywhere {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-/* Dark mode improvements for prose elements */
-.dark .prose strong,
-.dark .prose h1,
-.dark .prose h2,
-.dark .prose h3,
-.dark .prose h4,
-.dark .prose h5,
-.dark .prose h6 {
-  @apply text-white;
-}
-.dark .prose p,
-.dark .prose li,
-.dark .prose blockquote {
-  @apply text-gray-300;
-}
-
-/* Prism theme customization */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-  @apply text-gray-500 dark:text-gray-400;
-}
-.token.punctuation {
-  @apply text-gray-600 dark:text-gray-300;
-}
-.token.property,
-.token.tag,
-.token.constant,
-.token.symbol,
-.token.deleted {
-  @apply text-red-600 dark:text-red-300;
-}
-.token.boolean,
-.token.number {
-  @apply text-amber-600 dark:text-amber-300;
-}
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
-  @apply text-green-600 dark:text-green-300;
-}
-.token.operator,
-.token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string,
-.token.variable {
-  @apply text-blue-600 dark:text-blue-300;
-}
-.token.atrule,
-.token.attr-value,
-.token.function,
-.token.class-name {
-  @apply text-yellow-600 dark:text-yellow-200;
-}
-.token.keyword {
-  @apply text-pink-600 dark:text-pink-300;
-}
-.token.regex,
-.token.important {
-  @apply text-red-600 dark:text-red-400;
-}
-.token.important,
-.token.bold {
-  @apply font-bold;
-}
-.token.italic {
-  font-style: italic;
-}
-.token.entity {
-  cursor: help;
-}
-
-/* Code title styling */
-.rehype-code-title {
-  @apply px-5 py-2 font-mono text-sm font-bold text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 rounded-t-lg transition-colors;
-}
-.rehype-code-title + pre {
-  @apply mt-0 rounded-t-none;
-}
-.code-highlight {
-  @apply float-left min-w-full;
-}
-.code-line {
-  @apply block px-4 py-0.5;
-}
-.code-line.inserted {
-  @apply bg-green-100 dark:bg-green-800/50;
-}
-.code-line.deleted {
-  @apply bg-red-100 dark:bg-red-800/50;
-}
-.highlight-line {
-  @apply -mx-4 bg-gray-200 dark:bg-gray-700/50 border-l-4 border-primary;
-}
-.line-number::before {
-  @apply inline-block w-4 mr-2 text-right text-gray-500;
-  content: attr(line);
-}
-
-/* Mobile navigation improvements */
-@media (max-width: 640px) {
-  .mobile-nav-container {
-    @apply fixed top-0 left-0 w-full z-50 bg-light-bg dark:bg-dark-bg;
-  }
-  .mobile-center-text {
-    @apply text-center w-full absolute left-1/2 transform -translate-x-1/2;
+/* Utilities */
+@layer utilities {
+  /* Remove extra container padding on mobile */
+  @media (max-width: 768px) {
+    .container {
+      padding: 0;
+    }
   }
 }
 
-/* Show theme toggle if not inside a container that already displays toggles */
-button[aria-label="Toggle Dark Mode"] i {
-  display: inline-block !important;
-}
-
-/* Social and navigation icons */
-.social-icon i,
-.nav-icon i {
-  display: inline-block !important;
-}
-
-/* Consistent dark mode styles */
-.dark h1,
-.dark h2,
-.dark h3,
-.dark h4,
-.dark h5,
-.dark h6,
-.dark strong {
-  @apply text-white;
-}
-
-/* Typography for larger screens (default sizes similar to Qiita) */
-h1 {
-  @apply text-3xl sm:text-4xl md:text-4xl lg:text-5xl break-words;
-}
-h2 {
-  @apply text-2xl sm:text-3xl md:text-3xl lg:text-4xl break-words;
-}
-h3 {
-  @apply text-xl sm:text-2xl md:text-2xl lg:text-3xl break-words;
-}
-p,
-li,
-a,
-blockquote {
-  @apply break-words;
-}
-
-/* Responsive table improvements */
-table {
-  @apply min-w-full overflow-hidden;
-  display: block;
-  overflow-x: auto;
-}
-@media (min-width: 768px) {
-  table {
-    display: table;
-    overflow-x: initial;
-  }
-}
-
-/* Custom typography adjustments for mobile devices */
-@media (max-width: 640px) {
-  .prose {
-    font-size: 0.875rem; /* 14px */
-    line-height: 1.4;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-  /* Use slightly larger base fonts on mobile */
-  body, p, li, a {
-    font-size: 0.875rem; /* 14px */
-    line-height: 1.4;
-  }
-  /* Adjust headings */
-  h1 {
-    font-size: 2rem; /* 32px */
-  }
-  h2 {
-    font-size: 1.5rem; /* 24px */
-  }
-  h3 {
-    font-size: 1.25rem; /* 20px */
-  }
-  /* Reduce bullet list spacing */
-  ul, ol {
-    margin-left: 0.75rem;
-    padding-left: 1rem;
-  }
-  li {
-    margin-bottom: 0.5rem;
-  }
-}
+/* Existing Tailwind directives (if any) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

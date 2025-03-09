@@ -95,10 +95,10 @@ export const siteConfig = {
   comments: {
     provider: "giscus",
     giscusConfig: {
-      repo: "utechjapan/blog-comments",
-      repoId: "R_kgDOODVR4Q",
+      repo: "utechjapan/MainPortFolioSiteJP",
+      repoId: "R_kgDOOFRbFg",
       category: "General",
-      categoryId: "DIC_kwDOODVR4c4Cnkk9",
+      categoryId: "DIC_kwDOOFRbFs4CntuS",
     },
   },
 
