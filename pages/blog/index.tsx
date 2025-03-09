@@ -55,7 +55,7 @@ export default function BlogIndex({ posts, recentPosts, tags }: BlogIndexProps) 
         </div>
       </div>
 
-      {/* Updated container: horizontal padding removed (px-0 for all breakpoints) */}
+      {/* Use px-0 so there's almost no horizontal padding, for a Qiita-like edge */}
       <motion.div
         className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 w-full max-w-4xl mx-auto px-0"
         initial={{ opacity: 0 }}

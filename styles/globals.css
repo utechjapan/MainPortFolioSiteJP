@@ -20,17 +20,14 @@
     @apply bg-primary/30 text-gray-900 dark:text-white;
   }
 
-  /* Improve image rendering */
   img {
     @apply max-w-full h-auto;
   }
 
-  /* Fix any potential overflow issues */
   * {
     @apply box-border;
   }
 
-  /* Fix for bold text in dark mode */
   strong,
   b {
     @apply text-gray-900 dark:text-gray-100;
@@ -65,34 +62,29 @@
     @apply border border-primary text-primary hover:bg-primary hover:text-white;
   }
 
-  /* Utility class for theme transitions */
   .transition-theme {
     @apply transition-colors duration-300 ease-in-out;
   }
 
-  /* Responsive container for blog post content */
   .blog-content-container {
     @apply w-full mx-auto max-w-full overflow-x-hidden break-words;
   }
 
-  /* Make links more accessible */
   a:not(.no-underline) {
     @apply hover:underline;
   }
 }
 
-/* Padding for fixed mobile header */
+/* Mobile header fix for small screens */
 @media (max-width: 768px) {
   body {
     padding-top: 60px;
   }
 
-  /* Ensure smooth scrolling on mobile */
   html {
     scroll-behavior: smooth;
   }
 
-  /* Fixed positioning for mobile header */
   .fixed-mobile-header {
     position: fixed;
     top: 0;
@@ -104,7 +96,6 @@
     border-color: var(--tw-border-opacity-border);
   }
 
-  /* Adjust sidebar for mobile */
   aside[class*="fixed top-0"] {
     top: 60px !important;
     height: calc(100vh - 60px) !important;
@@ -112,12 +103,11 @@
   }
 }
 
-/* Improved top bar styles */
 .top-bar {
   @apply fixed top-0 left-0 right-0 z-50 bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme;
 }
 
-/* Code block styling */
+/* Code blocks */
 pre {
   @apply relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto my-6 transition-colors p-4;
   scrollbar-width: thin;
@@ -129,15 +119,12 @@ pre {
 pre::-webkit-scrollbar {
   @apply h-2;
 }
-
 pre::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
-
 pre::-webkit-scrollbar-thumb {
   @apply bg-primary/30 rounded-full;
 }
-
 pre::-webkit-scrollbar-thumb:hover {
   @apply bg-primary/50;
 }
@@ -147,7 +134,6 @@ pre > code {
   font-feature-settings: "calt" 1;
 }
 
-/* Responsive images */
 .responsive-img {
   max-width: 100%;
   height: auto;
@@ -155,13 +141,11 @@ pre > code {
   margin: 0 auto;
 }
 
-/* Overflow handling */
 .overflow-wrap-anywhere {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-/* Dark mode improvements for prose */
 .dark .prose strong,
 .dark .prose h1,
 .dark .prose h2,
@@ -185,11 +169,9 @@ pre > code {
 .token.cdata {
   @apply text-gray-500 dark:text-gray-400;
 }
-
 .token.punctuation {
   @apply text-gray-600 dark:text-gray-300;
 }
-
 .token.property,
 .token.tag,
 .token.constant,
@@ -197,12 +179,10 @@ pre > code {
 .token.deleted {
   @apply text-red-600 dark:text-red-300;
 }
-
 .token.boolean,
 .token.number {
   @apply text-amber-600 dark:text-amber-300;
 }
-
 .token.selector,
 .token.attr-name,
 .token.string,
@@ -211,7 +191,6 @@ pre > code {
 .token.inserted {
   @apply text-green-600 dark:text-green-300;
 }
-
 .token.operator,
 .token.entity,
 .token.url,
@@ -220,32 +199,26 @@ pre > code {
 .token.variable {
   @apply text-blue-600 dark:text-blue-300;
 }
-
 .token.atrule,
 .token.attr-value,
 .token.function,
 .token.class-name {
   @apply text-yellow-600 dark:text-yellow-200;
 }
-
 .token.keyword {
   @apply text-pink-600 dark:text-pink-300;
 }
-
 .token.regex,
 .token.important {
   @apply text-red-600 dark:text-red-400;
 }
-
 .token.important,
 .token.bold {
   @apply font-bold;
 }
-
 .token.italic {
   font-style: italic;
 }
-
 .token.entity {
   cursor: help;
 }
@@ -254,59 +227,45 @@ pre > code {
 .rehype-code-title {
   @apply px-5 py-2 font-mono text-sm font-bold text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 rounded-t-lg transition-colors;
 }
-
 .rehype-code-title + pre {
   @apply mt-0 rounded-t-none;
 }
-
 .code-highlight {
   @apply float-left min-w-full;
 }
-
 .code-line {
   @apply block px-4 py-0.5;
 }
-
 .code-line.inserted {
   @apply bg-green-100 dark:bg-green-800/50;
 }
-
 .code-line.deleted {
   @apply bg-red-100 dark:bg-red-800/50;
 }
-
 .highlight-line {
   @apply -mx-4 bg-gray-200 dark:bg-gray-700/50 border-l-4 border-primary;
 }
-
 .line-number::before {
   @apply inline-block w-4 mr-4 text-right text-gray-500;
   content: attr(line);
 }
 
-/* Improve mobile navigation */
 @media (max-width: 640px) {
   .mobile-nav-container {
     @apply fixed top-0 left-0 w-full z-50 bg-light-bg dark:bg-dark-bg;
   }
-
   .mobile-center-text {
     @apply text-center w-full absolute left-1/2 transform -translate-x-1/2;
   }
 }
 
-/* Special fix for theme toggle button */
 button[aria-label="Toggle Dark Mode"] i {
   display: inline-block !important;
 }
-
-/* Fix for social and navigation icons */
 .social-icon i,
 .nav-icon i {
   display: inline-block !important;
 }
-
-/* Ensure consistency in dark mode across components */
 .dark h1,
 .dark h2,
 .dark h3,
@@ -317,51 +276,26 @@ button[aria-label="Toggle Dark Mode"] i {
   @apply text-white;
 }
 
-/* Typography scale refinements */
+/* ------------- Overriding heading & text sizes for a Qiita-like experience ------------- */
+
+/* Make headings smaller overall */
 h1 {
-  @apply text-3xl sm:text-4xl md:text-5xl break-words;
+  @apply text-2xl sm:text-2xl md:text-3xl break-words;
 }
-
 h2 {
-  @apply text-2xl sm:text-3xl md:text-4xl break-words;
+  @apply text-xl sm:text-xl md:text-2xl break-words;
 }
-
 h3 {
-  @apply text-xl sm:text-2xl md:text-3xl break-words;
+  @apply text-lg sm:text-lg md:text-xl break-words;
 }
 
+/* Decrease body text slightly & keep line-height comfortable */
 p,
 li,
 a,
 blockquote {
-  @apply break-words;
+  @apply text-sm break-words leading-relaxed;
 }
 
-/* Responsive table improvements */
-table {
-  @apply min-w-full overflow-hidden;
-  display: block;
-  overflow-x: auto;
-}
-
-@media (min-width: 768px) {
-  table {
-    display: table;
-    overflow-x: initial;
-  }
-}
-
-/* Custom typography for mobile devices to improve readability */
-@media (max-width: 640px) {
-  .prose {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  /* Adjust general text size on mobile */
-  body, p, li, a, h1, h2, h3, h4, h5, h6 {
-    font-size: 0.9rem;
-  }
-}
+/* Remove extra side margins in the default tailwind container if needed */
+/* We rely on px-0 in the .tsx files for removing horizontal padding. */

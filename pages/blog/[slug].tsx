@@ -185,7 +185,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      {/* Updated container: horizontal padding removed for all breakpoints */}
+      {/* Minimal horizontal padding, no extra side margin on mobile */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -248,7 +248,7 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           <GiscusComments slug={slug} />
         </div>
 
-        {/* Floating share button appears on mobile */}
+        {/* Mobile-floating share button */}
         <FloatingShareButton />
       </motion.div>
     </Layout>
