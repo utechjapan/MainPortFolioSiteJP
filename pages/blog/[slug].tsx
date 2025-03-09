@@ -96,18 +96,21 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
       ),
       ul: (props: any) => (
         <ul
-          className="list-disc pl-5 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
+          className="list-disc pl-4 mb-2 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
           {...props}
         />
       ),
       ol: (props: any) => (
         <ol
-          className="list-decimal pl-5 mb-4 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
+          className="list-decimal pl-4 mb-2 text-base sm:text-lg text-gray-700 dark:text-gray-300 transition-colors break-words"
           {...props}
         />
       ),
       li: (props: any) => (
-        <li className="mb-2 break-words text-gray-700 dark:text-gray-300 transition-colors" {...props} />
+        <li
+          className="mb-1 break-words text-gray-700 dark:text-gray-300 transition-colors"
+          {...props}
+        />
       ),
       a: (props: any) => (
         <a
@@ -195,7 +198,9 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   return (
     <Layout recentPosts={recentPosts} tags={tags} toc={toc}>
       <Head>
-        <title>{frontMatter.title} | {siteConfig.title}</title>
+        <title>
+          {frontMatter.title} | {siteConfig.title}
+        </title>
         <meta
           name="description"
           content={
