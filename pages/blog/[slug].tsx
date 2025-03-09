@@ -35,11 +35,11 @@ interface BlogPostProps {
 export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
   const { frontMatter, source, slug, toc } = post;
 
-  // Create a GithubSlugger instance for generating fallback id attributes
+  // Create a GithubSlugger instance to generate fallback id attributes
   const slugger = useMemo(() => new GithubSlugger(), []);
   slugger.reset();
 
-  // Custom MDX components
+  // Custom MDX components: use props.id if provided (by rehype-slug), otherwise generate one.
   const components = useMemo(
     () => ({
       h1: (props: any) => {
@@ -185,11 +185,12 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
+      {/* Updated container: on mobile, no horizontal padding; on md and above, add padding */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-4 sm:px-0"
+        className="w-full max-w-4xl mx-auto px-0 md:px-4"
       >
         <div className="bg-light-card dark:bg-dark-card rounded-lg overflow-hidden mb-8 shadow-md dark:shadow-none transition-colors">
           {frontMatter.image && (
@@ -243,12 +244,12 @@ export default function BlogPost({ post, recentPosts, tags }: BlogPostProps) {
           </div>
         </div>
 
-        {/* Floating share button for mobile */}
-        <FloatingShareButton />
-
         <div className="bg-light-card dark:bg-dark-card rounded-lg p-4 sm:p-6 md:p-8 shadow-md dark:shadow-none transition-colors">
           <GiscusComments slug={slug} />
         </div>
+
+        {/* Floating share button appears on mobile */}
+        <FloatingShareButton />
       </motion.div>
     </Layout>
   );
@@ -286,7 +287,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .slice(0, 10)
     .map(([tag]) => tag);
 
-  // Serialize MDX content with rehypeSlug so headings have proper id attributes.
+  // Serialize MDX content with rehypeSlug so headings have id attributes.
   const mdxSource = await serialize(content, {
     mdxOptions: {
       rehypePlugins: [rehypeSlug, rehypeCodeTitles, [rehypePrism, { showLineNumbers: true }]],

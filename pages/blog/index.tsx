@@ -1,4 +1,3 @@
-// pages/blog/index.tsx
 import Head from "next/head";
 import Layout from "../../components/layout/Layout";
 import BlogCard from "../../components/blog/BlogCard";
@@ -56,9 +55,9 @@ export default function BlogIndex({ posts, recentPosts, tags }: BlogIndexProps) 
         </div>
       </div>
 
-      {/* Updated grid layout using auto-fit */}
+      {/* Updated container: on mobile, no horizontal padding; on md and above, add padding */}
       <motion.div
-        className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6"
+        className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 w-full max-w-4xl mx-auto px-0 md:px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
