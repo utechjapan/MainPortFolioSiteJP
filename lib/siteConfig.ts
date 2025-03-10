@@ -81,7 +81,7 @@ export const siteConfig = {
     },
     {
       name: "YouTube",
-      url: "https://www.youtube.com/channel/UCWlf8tLDjoS07y3yKqRVww",
+      url: "https://www.youtube.com/@UTech-Lab",
       icon: "fab fa-youtube",
     },
     {
