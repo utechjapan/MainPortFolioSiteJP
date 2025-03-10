@@ -5,9 +5,7 @@ import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
-import LanguageToggle from "../ui/LanguageToggle";
 import ThemeToggle from "../ui/ThemeToggle";
-
 interface SidebarProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
@@ -55,7 +53,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             </p>
             {/* New toggle section below the description */}
             <div className="flex justify-center space-x-2 mt-4">
-              <LanguageToggle />
               <ThemeToggle />
             </div>
           </div>
