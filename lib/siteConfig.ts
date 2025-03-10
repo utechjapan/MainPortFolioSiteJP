@@ -66,7 +66,7 @@ export const siteConfig = {
   socialLinks: [
     {
       name: "LinkedIn",
-      url: "https//www.linkedin.com/in/chikara-inohara",
+      url: "https://ph.linkedin.com/in/chikara-inohara-a26bb9143",
       icon: "fab fa-linkedin",
     },
     {
