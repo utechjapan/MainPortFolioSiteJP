@@ -2,7 +2,7 @@
 export const siteConfig = {
   // サイト情報
   title: "UTechLab",
-  description: "テックブログ＆ポートフォリオサイト",
+  description: "Tech Blogs ＆ Portfolio Site",
   siteUrl: "https://www.utechjapan.net",
 
   // 著者情報

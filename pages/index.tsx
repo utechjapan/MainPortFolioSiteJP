@@ -33,6 +33,23 @@ export default function Home({ posts = [], recentPosts = [], tags = [] }: HomePr
       </Head>
 
       <div className="space-y-16">
+        {/* Website Renewal Notice */}
+        <section className="mb-10">
+          <motion.div
+            className="bg-primary/10 border border-primary/20 dark:bg-primary/5 dark:border-primary/10 rounded-lg p-6 shadow-sm dark:shadow-none text-center"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-xl md:text-2xl font-bold mb-3 text-primary">
+              <i className="fas fa-tools mr-2"></i>サイトリニューアル中
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-0">
+              現在サイトをリニューアル中です。新しいコンテンツやデザインを順次追加していきますので、お楽しみに！
+            </p>
+          </motion.div>
+        </section>
+
         {/* Hero Section */}
         <section className="mb-10">
           <motion.div
@@ -46,7 +63,7 @@ export default function Home({ posts = [], recentPosts = [], tags = [] }: HomePr
                 Welcome to my Portfolio and Blog Site!
               </h1>
               <p className="text-base text-gray-700 dark:text-gray-300 mb-4">
-                最新の技術ガイド、チュートリアル、そして最先端のITインフラや開発に関するベストプラクティスを探索してください。
+                インフラエンジニアとして私が日々学んでいる知識や経験、自宅ラボでの検証結果を共有していきます。技術的な発見や役立つノウハウをお届けします！
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <Link
