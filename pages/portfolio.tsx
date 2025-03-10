@@ -209,28 +209,6 @@ export default function Portfolio() {
 
         <hr className="border-gray-300 dark:border-gray-700" />
 
-        {/* 履歴書セクション */}
-        <section className="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md dark:shadow-none transition-colors">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors mb-4">
-            履歴書
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 transition-colors mb-4">
-            詳細な経歴と職務内容については、以下の履歴書をご参照ください。
-          </p>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 transition-colors">
-            <li>
-              <a
-                href="/resume/resume_jp.pdf"
-                className="text-primary hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                職務経歴書（PDF形式）
-              </a>
-            </li>
-          </ul>
-        </section>
-
         <p className="text-gray-700 dark:text-gray-300 italic transition-colors">
           ポートフォリオをご覧いただきありがとうございます。ご質問やお仕事のご相談がございましたら、お気軽にSNSよりご連絡ください。
         </p>
