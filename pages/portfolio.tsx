@@ -203,15 +203,14 @@ export default function Portfolio() {
               <p className="text-gray-700 dark:text-gray-300 transition-colors">
                 <strong>実績:</strong> YouTubeやSNSを活用した情報発信によりフォロワー数が30%増加。オンライン経由での販売実績を大幅に向上させました。製品の技術的な特徴と実用例を分かりやすく伝えることで、専門知識がない顧客にも訴求力のあるコンテンツを制作しました。
               </p>
+              <p className="text-gray-700 dark:text-gray-300 italic transition-colors">
+          ポートフォリオをご覧いただきありがとうございます。ご質問やお仕事のご相談がございましたら、お気軽にSNSよりご連絡ください。
+        </p>
             </div>
           </div>
         </section>
 
         <hr className="border-gray-300 dark:border-gray-700" />
-
-        <p className="text-gray-700 dark:text-gray-300 italic transition-colors">
-          ポートフォリオをご覧いただきありがとうございます。ご質問やお仕事のご相談がございましたら、お気軽にSNSよりご連絡ください。
-        </p>
       </motion.div>
     </Layout>
   );
