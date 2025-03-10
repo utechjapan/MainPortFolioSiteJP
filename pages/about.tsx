@@ -12,7 +12,7 @@ export default function About() {
         <title>自己紹介 | {siteConfig.title}</title>
         <meta
           name="description"
-          content="井ノ原力のプロフィールとUTechLabの紹介。ITインフラ技術とネットワークの知見を発信しています。"
+          content="プロフィールとUTechLabの紹介。ITインフラ技術とネットワークの知見を発信しています。"
         />
       </Head>
 
@@ -43,7 +43,7 @@ export default function About() {
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
               <strong className="text-gray-900 dark:text-white">井ノ原 力</strong>
-              と申します。自治体向けネットワークとサーバーインフラの設計・構築・運用に携わるITエンジニアです。技術の探究と知識の共有を通じて、ITインフラの価値を高めることに情熱を持っています。
+              と申します。ネットワークとサーバーインフラの設計・構築・運用に携わるITエンジニアです。技術の探究と知識の共有を通じて、ITインフラの価値を高めることに情熱を持っています。
             </p>
             <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
               このUTechLabでは、日々の業務や自己学習を通じて得た知識、特にネットワーク技術、サーバー構築、監視システム、クラウドサービスなどに関する情報を発信していきます。実践的なチュートリアルやトラブルシューティングの経験共有を通じて、皆さんのITインフラ運用に役立つ情報をお届けします。

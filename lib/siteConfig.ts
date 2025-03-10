@@ -2,14 +2,14 @@
 export const siteConfig = {
   // サイト情報
   title: "UTechLab",
-  description: "井ノ原力のテックブログ＆ポートフォリオサイト",
+  description: "テックブログ＆ポートフォリオサイト",
   siteUrl: "https://www.utechjapan.net",
 
   // 著者情報
   author: {
     name: "井ノ原 力",
     avatar: "/images/profile.jpg",
-    bio: "自治体向けITインフラエンジニア | クラウド・ネットワーク技術探究者",
+    bio: "ITインフラエンジニア | クラウド・ネットワーク技術探究者",
   },
 
   // ナビゲーションリンク

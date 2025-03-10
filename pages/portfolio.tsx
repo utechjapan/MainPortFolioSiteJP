@@ -52,10 +52,10 @@ export default function Portfolio() {
   return (
     <Layout rightSidebar={false}>
       <Head>
-        <title>井ノ原力のポートフォリオ | {siteConfig.title}</title>
+        <title>ポートフォリオ | {siteConfig.title}</title>
         <meta
           name="description"
-          content="井ノ原力のITインフラ、ネットワーク、サーバー管理の職務経験と技術スキルのポートフォリオ"
+          content="ITインフラ、ネットワーク、サーバー管理の職務経験と技術スキルのポートフォリオ"
         />
       </Head>
 
@@ -65,20 +65,10 @@ export default function Portfolio() {
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto px-4 py-8 space-y-12"
       >
-        {/* 切替リンク */}
-        <div className="text-right">
-          <a
-            href="https://main-port-folio-site.vercel.app/"
-            className="text-primary hover:underline text-sm"
-          >
-            英語版に切り替え
-          </a>
-        </div>
-
         {/* ページヘッダー */}
         <header className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white transition-colors mb-4">
-            井ノ原力のポートフォリオ
+            ポートフォリオ
           </h1>
           <p className="text-gray-700 dark:text-gray-300 transition-colors">
             私の職務経験、技術スキル、そしてこれまで手がけたプロジェクトをご紹介します。
