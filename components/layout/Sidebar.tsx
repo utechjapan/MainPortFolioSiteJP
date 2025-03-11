@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { siteConfig } from "../../lib/siteConfig";
 import ThemeToggle from "../ui/ThemeToggle";
+
 interface SidebarProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
@@ -30,7 +31,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       }`}
     >
-      <div className="h-full flex flex-col justify-between py-8">
+      <div className="h-full flex flex-col justify-between py-8 md:py-8 pt-20 md:pt-8">
         <div className="px-6">
           {/* Profile section */}
           <div className="flex flex-col items-center mb-8">
@@ -41,6 +42,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   alt={siteConfig.author.name}
                   fill
                   className="object-cover"
+                  priority // Add priority to ensure profile image loads quickly
                 />
               </div>
             </Link>
@@ -65,7 +67,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   <Link
                     href={link.href}
                     className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                      router.pathname === link.href
+                      router.pathname === link.href || 
+                      (link.href !== "/" && router.pathname.startsWith(link.href))
                         ? "bg-primary text-white font-medium"
                         : "hover:bg-light-card dark:hover:bg-dark-card text-gray-700 dark:text-gray-300"
                     }`}
@@ -103,7 +106,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             ))}
           </div>
           <div className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">
-            &copy; 2025 UTechLab. All rights reserved.
+            &copy; {new Date().getFullYear()} UTechLab. All rights reserved.
           </div>
         </div>
       </div>
