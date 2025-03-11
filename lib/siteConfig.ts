@@ -12,7 +12,7 @@ export const siteConfig = {
     bio: "ITインフラエンジニア | クラウド・ネットワーク技術探究者",
   },
 
-  // ナビゲーションリンク – Added network lab link here:
+  // ナビゲーションリンク – note the added network lab link
   navLinks: [
     { href: "/", label: "ホーム", icon: "fas fa-home" },
     { href: "/about", label: "自己紹介", icon: "fas fa-user" },
@@ -65,34 +65,14 @@ export const siteConfig = {
 
   // ソーシャルリンク
   socialLinks: [
-    {
-      name: "LinkedIn",
-      url: "https://www.linkedin.com/in/chikara-inohara",
-      icon: "fab fa-linkedin",
-    },
-    {
-      name: "GitHub",
-      url: "https://github.com/utechjapan",
-      icon: "fab fa-github",
-    },
-    {
-      name: "Twitter",
-      url: "https://twitter.com/_utechlab",
-      icon: "fab fa-twitter",
-    },
-    {
-      name: "YouTube",
-      url: "https://www.youtube.com/@UTech-Lab",
-      icon: "fab fa-youtube",
-    },
-    {
-      name: "Blog",
-      url: "https://utechjapan.net",
-      icon: "fas fa-rss",
-    },
+    { name: "LinkedIn", url: "https://www.linkedin.com/in/chikara-inohara", icon: "fab fa-linkedin" },
+    { name: "GitHub", url: "https://github.com/utechjapan", icon: "fab fa-github" },
+    { name: "Twitter", url: "https://twitter.com/_utechlab", icon: "fab fa-twitter" },
+    { name: "YouTube", url: "https://www.youtube.com/@UTech-Lab", icon: "fab fa-youtube" },
+    { name: "Blog", url: "https://utechjapan.net", icon: "fas fa-rss" },
   ],
 
-  // Giscusコメント設定
+  // コメント設定, アナリティクス, ニュースレターなど
   comments: {
     provider: "giscus",
     giscusConfig: {
@@ -103,14 +83,7 @@ export const siteConfig = {
     },
   },
 
-  // アナリティクス
-  analytics: {
-    googleAnalyticsId: "G-M4CBBS8KGS",
-  },
+  analytics: { googleAnalyticsId: "G-M4CBBS8KGS" },
 
-  // ニュースレター
-  newsletter: {
-    provider: "mailchimp",
-    endpoint: "/api/subscribe",
-  },
+  newsletter: { provider: "mailchimp", endpoint: "/api/subscribe" },
 };

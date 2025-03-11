@@ -31,10 +31,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     >
       <div className="h-full flex flex-col justify-between py-8 md:py-8 pt-20 md:pt-8">
         <div className="px-6">
-          {/* Profile section */}
+          {/* Profile Section */}
           <div className="flex flex-col items-center mb-8">
-            <Link href="/" className="mb-4" onClick={() => setIsOpen(false)}>
-              <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-primary/50 hover:border-primary transition-colors duration-300">
+            <Link href="/" onClick={() => setIsOpen(false)}>
+              <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-primary/50 hover:border-primary transition-colors duration-300 mb-4">
                 <Image
                   src={siteConfig.author.avatar}
                   alt={siteConfig.author.name}
@@ -79,7 +79,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </nav>
         </div>
 
-        {/* Social links */}
+        {/* Social Links */}
         <div className="px-6">
           <div className="flex justify-center space-x-4">
             {siteConfig.socialLinks.map((social) => (
