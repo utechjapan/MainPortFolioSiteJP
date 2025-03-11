@@ -35,7 +35,7 @@ export default function Layout({
     <div className="min-h-screen flex flex-col bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-gray-300 transition-theme">
       <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
 
-      {/* Mobile Header – toggles removed so it only shows a menu toggle */}
+      {/* Mobile Header */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-light-bg dark:bg-dark-bg border-b border-gray-300 dark:border-gray-700 py-3 px-4 flex justify-between items-center transition-theme">
         <button
           className="p-2 rounded-md bg-primary/80 text-white hover:bg-primary transition-colors"

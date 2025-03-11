@@ -12,7 +12,7 @@ export const siteConfig = {
     bio: "ITインフラエンジニア | クラウド・ネットワーク技術探究者",
   },
 
-  // ナビゲーションリンク
+  // ナビゲーションリンク – Added network lab link here:
   navLinks: [
     { href: "/", label: "ホーム", icon: "fas fa-home" },
     { href: "/about", label: "自己紹介", icon: "fas fa-user" },
@@ -20,6 +20,7 @@ export const siteConfig = {
     { href: "/portfolio", label: "ポートフォリオ", icon: "fas fa-briefcase" },
     { href: "/search", label: "検索", icon: "fas fa-search" },
     { href: "/subscribe", label: "購読", icon: "fas fa-envelope" },
+    { href: "/network-lab", label: "ネットワークラボ", icon: "fas fa-network-wired" },
   ],
 
   // カテゴリー

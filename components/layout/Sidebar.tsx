@@ -21,9 +21,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   return (
     <aside
@@ -42,18 +40,16 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   alt={siteConfig.author.name}
                   fill
                   className="object-cover"
-                  priority // Add priority to ensure profile image loads quickly
+                  priority
                 />
               </div>
             </Link>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
               {siteConfig.title}
             </h1>
-            {/* Centered description */}
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 text-center">
               {siteConfig.description}
             </p>
-            {/* New toggle section below the description */}
             <div className="flex justify-center space-x-2 mt-4">
               <ThemeToggle />
             </div>
@@ -67,17 +63,14 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   <Link
                     href={link.href}
                     className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                      router.pathname === link.href || 
+                      router.pathname === link.href ||
                       (link.href !== "/" && router.pathname.startsWith(link.href))
                         ? "bg-primary text-white font-medium"
                         : "hover:bg-light-card dark:hover:bg-dark-card text-gray-700 dark:text-gray-300"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
-                    <i
-                      className={`${link.icon} fa-fw w-5 text-center mr-3`}
-                      aria-hidden="true"
-                    ></i>
+                    <i className={`${link.icon} fa-fw w-5 text-center mr-3`} aria-hidden="true"></i>
                     <span>{link.label}</span>
                   </Link>
                 </li>
@@ -98,10 +91,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
                 aria-label={social.name}
               >
-                <i
-                  className={`${social.icon} fa-fw text-xl`}
-                  aria-hidden="true"
-                ></i>
+                <i className={`${social.icon} fa-fw text-xl`} aria-hidden="true"></i>
               </a>
             ))}
           </div>
