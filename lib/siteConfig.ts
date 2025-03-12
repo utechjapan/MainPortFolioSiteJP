@@ -1,29 +1,29 @@
 // lib/siteConfig.ts
 export const siteConfig = {
-  // サイト情報
+  // Site information
   title: "UTechLab",
   description: "Tech Blogs ＆ Portfolio Site",
   siteUrl: "https://www.utechjapan.net",
 
-  // 著者情報
+  // Author information
   author: {
     name: "井ノ原 力",
     avatar: "/images/profile.jpg",
     bio: "ITインフラエンジニア | クラウド・ネットワーク技術探究者",
   },
 
-  // ナビゲーションリンク – note the added network lab link
+  // Navigation links - Updated order to put network-lab below blog
   navLinks: [
     { href: "/", label: "ホーム", icon: "fas fa-home" },
     { href: "/about", label: "自己紹介", icon: "fas fa-user" },
     { href: "/blog", label: "ブログ", icon: "fas fa-blog" },
+    { href: "/network-lab", label: "ネットワークラボ", icon: "fas fa-network-wired" },
     { href: "/portfolio", label: "ポートフォリオ", icon: "fas fa-briefcase" },
     { href: "/search", label: "検索", icon: "fas fa-search" },
     { href: "/subscribe", label: "購読", icon: "fas fa-envelope" },
-    { href: "/network-lab", label: "ネットワークラボ", icon: "fas fa-network-wired" },
   ],
 
-  // カテゴリー
+  // Categories
   categories: [
     {
       name: "ホームラボ",
@@ -63,7 +63,7 @@ export const siteConfig = {
     },
   ],
 
-  // ソーシャルリンク
+  // Social links
   socialLinks: [
     { name: "LinkedIn", url: "https://www.linkedin.com/in/chikara-inohara", icon: "fab fa-linkedin" },
     { name: "GitHub", url: "https://github.com/utechjapan", icon: "fab fa-github" },
@@ -72,7 +72,7 @@ export const siteConfig = {
     { name: "Blog", url: "https://utechjapan.net", icon: "fas fa-rss" },
   ],
 
-  // コメント設定, アナリティクス, ニュースレターなど
+  // Comments, analytics, newsletter, etc.
   comments: {
     provider: "giscus",
     giscusConfig: {
