@@ -956,3 +956,231 @@ import {
       .filter(conn => conn.sourceDeviceId === deviceId || conn.targetDeviceId === deviceId)
       .map(conn => (conn.sourceDeviceId === deviceId ? conn.targetDeviceId : conn.sourceDeviceId));
   };
+
+  /**
+ * Translate error messages to Japanese
+ */
+export const translateErrorMessage = (message: string): string => {
+  const translations: Record<string, string> = {
+    'No devices in the topology': 'トポロジーにデバイスがありません',
+    'No connections in the topology': 'トポロジーに接続がありません',
+    'Connection references non-existent source device': '存在しないソースデバイスを参照しています',
+    'Connection references non-existent target device': '存在しないターゲットデバイスを参照しています',
+    'Connection references non-existent source port': '存在しないソースポートを参照しています',
+    'Connection references non-existent target port': '存在しないターゲットポートを参照しています',
+    'IP address conflict': 'IPアドレスの競合',
+    'Source device has no IP address': 'ソースデバイスにIPアドレスがありません',
+    'Target device has no IP address': 'ターゲットデバイスにIPアドレスがありません',
+    'No path found between devices': 'デバイス間にパスが見つかりません',
+    'Invalid topology data format': '無効なトポロジーデータフォーマットです',
+    'One or both devices are powered off': 'いずれかまたは両方のデバイスの電源がオフです',
+    'PDF export failed': 'PDFエクスポートに失敗しました',
+    'CSV export failed': 'CSVエクスポートに失敗しました',
+    'This port is already connected': 'このポートは既に接続されています',
+    'is used by both': 'は両方で使用されています',
+    'Invalid subnet mask': '無効なサブネットマスクです',
+    'Failed to import': 'インポートに失敗しました',
+    // Add more translations as needed
+  };
+
+  // Return the translation if available, otherwise return the original
+  for (const [english, japanese] of Object.entries(translations)) {
+    if (message.includes(english)) {
+      return message.replace(english, japanese);
+    }
+  }
+  
+  return message;
+};
+
+/**
+ * Get predefined device templates
+ */
+export const getDeviceTemplates = (): DeviceTemplate[] => {
+  return [
+    // Basic templates
+    {
+      id: 'simple-router',
+      name: '基本ルーター',
+      type: 'router',
+      category: '基本デバイス',
+      icon: 'network-wired',
+      description: '基本的なルーター設定',
+      config: {
+        hostname: 'Router',
+        interfaces: [
+          { ipAddress: '192.168.1.1', subnetMask: '255.255.255.0' },
+          { ipAddress: '10.0.0.1', subnetMask: '255.255.255.0' },
+        ],
+        routes: [
+          { destination: '0.0.0.0/0', nextHop: '', metric: 1 }
+        ],
+        nat: true,
+      }
+    },
+    {
+      id: 'l2-switch',
+      name: 'L2スイッチ',
+      type: 'switch',
+      category: '基本デバイス',
+      icon: 'sitemap',
+      description: '基本的なL2スイッチ設定',
+      config: {
+        hostname: 'Switch',
+        vlans: [
+          { id: 1, name: 'デフォルト' },
+          { id: 10, name: 'VLAN10' },
+          { id: 20, name: 'VLAN20' },
+        ]
+      }
+    },
+    {
+      id: 'firewall',
+      name: 'ファイアウォール',
+      type: 'firewall',
+      category: '基本デバイス',
+      icon: 'shield-alt',
+      description: '基本的なファイアウォール設定',
+      config: {
+        hostname: 'Firewall',
+        interfaces: [
+          { ipAddress: '203.0.113.1', subnetMask: '255.255.255.0' },
+          { ipAddress: '192.168.1.1', subnetMask: '255.255.255.0' },
+        ],
+        nat: true,
+        firewallRules: [
+          {
+            id: 'rule1',
+            name: '外部アクセス許可',
+            sourceIp: '192.168.1.0/24',
+            destinationIp: 'any',
+            protocol: 'any',
+            action: 'allow',
+          }
+        ]
+      }
+    },
+    {
+      id: 'workstation',
+      name: 'ワークステーション',
+      type: 'workstation',
+      category: '基本デバイス',
+      icon: 'desktop',
+      description: '基本的なPC設定',
+      config: {
+        hostname: 'PC',
+        interfaces: [
+          { ipAddress: '192.168.1.100', subnetMask: '255.255.255.0' }
+        ],
+        gateway: '192.168.1.1',
+        dns: ['8.8.8.8', '1.1.1.1']
+      }
+    },
+    
+    // Template groups
+    {
+      id: 'small-office',
+      name: '小規模オフィスネットワーク',
+      type: 'router',
+      category: 'テンプレートグループ',
+      icon: 'building',
+      description: 'ルーター、スイッチ、サーバー、PCを含む小規模オフィス向けテンプレート',
+      // This is a template group - would be expanded to multiple devices when imported
+    },
+    {
+      id: 'vlan-network',
+      name: 'VLAN分離ネットワーク',
+      type: 'switch',
+      category: 'テンプレートグループ',
+      icon: 'project-diagram',
+      description: 'VLANで分離された複数のネットワークセグメント',
+      // This is a template group - would be expanded to multiple devices when imported
+    },
+    // Add more templates as needed
+  ];
+};
+
+/* 
+* Utility Function Additions
+* Add this to exportUtils.ts
+*/
+
+// CSV Export Function
+export const exportToCSV = (
+  devices: Device[],
+  connections: Connection[],
+  vlans: VlanDefinition[],
+  filename: string = 'network-config.csv'
+): boolean => {
+  try {
+    // Generate CSV content
+    let csvContent = "デバイス名,タイプ,ホスト名,IPアドレス,サブネットマスク,ゲートウェイ,VLAN,ポート\n";
+    
+    // Add device information
+    devices.forEach(device => {
+      let baseInfo = `"${device.name}","${device.type}","${device.config.hostname || ''}",`;
+      
+      if (device.config.interfaces && device.config.interfaces.length > 0) {
+        device.config.interfaces.forEach((iface, index) => {
+          let row = baseInfo;
+          row += `"${iface.ipAddress || ''}","${iface.subnetMask || ''}","${device.config.gateway || ''}",`;
+          
+          // Add VLAN info
+          const portVlans = device.ports
+            .filter(p => p.vlanId)
+            .map(p => `${p.name}:VLAN${p.vlanId}`)
+            .join('; ');
+          
+          row += `"${portVlans}",`;
+          
+          // Add port info
+          const ports = device.ports.map(p => p.name).join(', ');
+          row += `"${ports}"`;
+          
+          csvContent += row + "\n";
+        });
+      } else {
+        // Device without interfaces
+        csvContent += `${baseInfo}"","","","","${device.ports.map(p => p.name).join(', ')}"\n`;
+      }
+    });
+    
+    // Add VLAN information
+    csvContent += "\n\nVLAN ID,名前,色\n";
+    vlans.forEach(vlan => {
+      csvContent += `${vlan.id},"${vlan.name}","${vlan.color}"\n`;
+    });
+    
+    // Add connection information
+    csvContent += "\n\n接続元デバイス,接続元ポート,接続先デバイス,接続先ポート,ステータス,タイプ,帯域幅\n";
+    connections.forEach(conn => {
+      const sourceDevice = devices.find(d => d.id === conn.sourceDeviceId);
+      const targetDevice = devices.find(d => d.id === conn.targetDeviceId);
+      
+      if (sourceDevice && targetDevice) {
+        const sourcePort = sourceDevice.ports.find(p => p.id === conn.sourcePortId);
+        const targetPort = targetDevice.ports.find(p => p.id === conn.targetPortId);
+        
+        if (sourcePort && targetPort) {
+          csvContent += `"${sourceDevice.name}","${sourcePort.name}","${targetDevice.name}","${targetPort.name}","${conn.status}","${conn.type}","${conn.bandwidth || ''}"\n`;
+        }
+      }
+    });
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    return true;
+  } catch (error) {
+    console.error('Error exporting to CSV:', error);
+    return false;
+  }
+};

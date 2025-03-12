@@ -1,10 +1,9 @@
 // components/network-lab/NetworkTopologyDesigner.tsx
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Stage, Layer, Line } from 'react-konva';
+import { Stage, Layer, Line, Group, Text } from 'react-konva';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import useWindowSize from '../../hooks/useWindowSize';
 
 // Import components
@@ -22,6 +21,11 @@ import ManageVlansModal from './ManageVlansModal';
 import SimulationControls from './SimulationControls';
 import PacketVisualizer from './PacketVisualizer';
 import ConsolePanel from './ConsolePanel';
+import DiagramTypeSwitch from './DiagramTypeSwitch';
+import ConnectionPathEditor from './ConnectionPathEditor';
+import DeviceConfigModal from './DeviceConfigModal';
+import ImportTemplateModal from './ImportTemplateModal';
+import HelpModal from './HelpModal';
 
 // Import types and utils
 import {
@@ -34,6 +38,10 @@ import {
   SimulationState,
   VlanDefinition,
   PacketJourney,
+  DiagramType,
+  ConnectionPathPoint,
+  DeviceTemplate,
+  NetworkConfig,
 } from '../../types/networkTopology';
 import {
   generateDeviceId,
@@ -48,8 +56,10 @@ import {
   verifyNetworkConnectivity,
   pingDevices,
   getDefaultDeviceConfig,
+  translateErrorMessage,
+  getDeviceTemplates,
 } from '../../utils/networkUtils';
-import { getExportTopologyAsJSON, exportToPdf } from '../../utils/exportUtils';
+import { getExportTopologyAsJSON, exportToPdf, exportToCSV } from '../../utils/exportUtils';
 
 const NetworkTopologyDesigner: React.FC = () => {
   // Canvas state
@@ -62,8 +72,11 @@ const NetworkTopologyDesigner: React.FC = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [vlans, setVlans] = useState<VlanDefinition[]>([
-    { id: 1, name: 'Default', color: '#0077B6' }
+    { id: 1, name: 'デフォルト', color: '#0077B6' }
   ]);
+
+  // Diagram type (logical or physical)
+  const [diagramType, setDiagramType] = useState<DiagramType>('logical');
 
   // UI state
   const [drawingConnection, setDrawingConnection] = useState<{
@@ -78,6 +91,9 @@ const NetworkTopologyDesigner: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [showVlansModal, setShowVlansModal] = useState<boolean>(false);
   const [showConsole, setShowConsole] = useState<boolean>(false);
+  const [showHelpModal, setShowHelpModal] = useState<boolean>(false);
+  const [showDeviceConfigModal, setShowDeviceConfigModal] = useState<boolean>(false);
+  const [showImportTemplateModal, setShowImportTemplateModal] = useState<boolean>(false);
   const [confirmationDialog, setConfirmationDialog] = useState<{
     open: boolean;
     title: string;
@@ -90,8 +106,10 @@ const NetworkTopologyDesigner: React.FC = () => {
     onConfirm: () => {},
   });
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [deviceTemplates, setDeviceTemplates] = useState<DeviceTemplate[]>(getDeviceTemplates());
   const [grid, setGrid] = useState<boolean>(true);
   const [snapToGrid, setSnapToGrid] = useState<boolean>(true);
+  const [editingConnection, setEditingConnection] = useState<Connection | null>(null);
   const stageRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { width, height } = useWindowSize();
@@ -100,6 +118,7 @@ const NetworkTopologyDesigner: React.FC = () => {
   const [simulationState, setSimulationState] = useState<SimulationState>('stopped');
   const [packetJourneys, setPacketJourneys] = useState<PacketJourney[]>([]);
   const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
+  const [selectedDeviceForConfig, setSelectedDeviceForConfig] = useState<Device | null>(null);
 
   // Update viewport dimensions
   const viewportWidth = containerRef.current?.clientWidth || width - 320; // Adjust for sidebar
@@ -141,41 +160,65 @@ const NetworkTopologyDesigner: React.FC = () => {
   };
 
   // Handle device adding
-  const handleAddDevice = (type: DeviceType, x: number, y: number) => {
-    const deviceTypeInfo = getDeviceTypeInfo(type);
-    const id = generateDeviceId(type);
-    
-    // Adjust position to grid if snapToGrid is enabled
-    const adjustedX = snapToGrid ? Math.round(x / gridSize) * gridSize : x;
-    const adjustedY = snapToGrid ? Math.round(y / gridSize) * gridSize : y;
-    
-    const config = getDefaultDeviceConfig(type);
-    
-    const newDevice: Device = {
-      id,
-      type,
-      name: `${deviceTypeInfo.label} ${devices.filter(d => d.type === type).length + 1}`,
-      x: adjustedX,
-      y: adjustedY,
-      width: deviceTypeInfo.width,
-      height: deviceTypeInfo.height,
-      ports: deviceTypeInfo.defaultPorts.map((port, index) => ({
-        id: `${id}-port-${index}`,
-        name: port.name,
-        type: port.type,
-        isConnected: false,
-        vlanId: port.type === 'ethernet' ? 1 : undefined, // Assign default VLAN to ethernet ports
-      })),
-      status: 'off',
-      config,
-    };
+  const handleAddDevice = (type: DeviceType, x: number, y: number, template?: DeviceTemplate) => {
+    try {
+      const deviceTypeInfo = getDeviceTypeInfo(type);
+      const id = generateDeviceId(type);
+      
+      // Adjust position to grid if snapToGrid is enabled
+      const adjustedX = snapToGrid ? Math.round(x / gridSize) * gridSize : x;
+      const adjustedY = snapToGrid ? Math.round(y / gridSize) * gridSize : y;
+      
+      // Use template config if provided, otherwise get default
+      const config = template ? template.config : getDefaultDeviceConfig(type);
+      
+      const portCount = template?.portCount || deviceTypeInfo.defaultPorts.length;
+      
+      // Generate ports based on port count
+      const ports = Array(portCount).fill(null).map((_, index) => {
+        const basePort = deviceTypeInfo.defaultPorts[index % deviceTypeInfo.defaultPorts.length];
+        return {
+          id: `${id}-port-${index}`,
+          name: index < deviceTypeInfo.defaultPorts.length 
+            ? basePort.name 
+            : `${basePort.type}${index}`,
+          type: basePort.type,
+          isConnected: false,
+          vlanId: basePort.type === 'ethernet' ? 1 : undefined, // Assign default VLAN to ethernet ports
+        };
+      });
+      
+      const newDevice: Device = {
+        id,
+        type,
+        name: template ? template.name : `${deviceTypeInfo.label} ${devices.filter(d => d.type === type).length + 1}`,
+        x: adjustedX,
+        y: adjustedY,
+        width: deviceTypeInfo.width,
+        height: deviceTypeInfo.height,
+        ports,
+        status: 'off',
+        config,
+        zIndex: devices.length + 1,
+      };
 
-    setDevices([...devices, newDevice]);
-    setSelectedItem({ type: 'device', id });
-    addNotification({ 
-      type: 'success', 
-      message: `Added new ${deviceTypeInfo.label}` 
-    });
+      setDevices([...devices, newDevice]);
+      setSelectedItem({ type: 'device', id });
+      
+      addNotification({ 
+        type: 'success', 
+        message: `${deviceTypeInfo.label}を追加しました` 
+      });
+      
+      return newDevice;
+    } catch (error: any) {
+      console.error('Error adding device:', error);
+      addNotification({
+        type: 'error',
+        message: translateErrorMessage(error.message) || 'デバイスの追加に失敗しました'
+      });
+      return null;
+    }
   };
 
   // Handle device selection
@@ -200,8 +243,8 @@ const NetworkTopologyDesigner: React.FC = () => {
     if (connectedConnections.length > 0) {
       setConfirmationDialog({
         open: true,
-        title: 'Delete Device',
-        message: `This device has ${connectedConnections.length} connections. Deleting it will also remove these connections. Proceed?`,
+        title: 'デバイスを削除',
+        message: `このデバイスには${connectedConnections.length}個の接続があります。削除するとこれらの接続も削除されます。続行しますか？`,
         onConfirm: () => {
           // Delete device and its connections
           setConnections(connections.filter(
@@ -211,7 +254,7 @@ const NetworkTopologyDesigner: React.FC = () => {
           setSelectedItem(null);
           addNotification({ 
             type: 'info', 
-            message: 'Device and its connections deleted' 
+            message: 'デバイスと接続を削除しました' 
           });
         }
       });
@@ -221,9 +264,32 @@ const NetworkTopologyDesigner: React.FC = () => {
       setSelectedItem(null);
       addNotification({ 
         type: 'info', 
-        message: 'Device deleted' 
+        message: 'デバイスを削除しました' 
       });
     }
+  };
+
+  // Handle device configuration
+  const handleConfigureDevice = (device: Device) => {
+    setSelectedDeviceForConfig(device);
+    setShowDeviceConfigModal(true);
+  };
+
+  // Handle device configuration save
+  const handleSaveDeviceConfig = (device: Device, config: NetworkConfig) => {
+    const updatedDevice = {
+      ...device,
+      config,
+    };
+    
+    handleUpdateDevice(updatedDevice);
+    setShowDeviceConfigModal(false);
+    setSelectedDeviceForConfig(null);
+    
+    addNotification({
+      type: 'success',
+      message: `${device.name}の設定を更新しました`
+    });
   };
 
   // Handle connection creation
@@ -241,6 +307,17 @@ const NetworkTopologyDesigner: React.FC = () => {
         from: deviceId,
         fromPort: portId,
         points: [portPositions[portIndex].x, portPositions[portIndex].y, portPositions[portIndex].x, portPositions[portIndex].y],
+      });
+      
+      addNotification({
+        type: 'info',
+        message: '接続先のポートをクリックするか、ESCを押してキャンセルしてください',
+        duration: 3000,
+      });
+    } else if (port && port.isConnected) {
+      addNotification({
+        type: 'warning',
+        message: 'このポートは既に接続されています'
       });
     }
   };
@@ -294,7 +371,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     if (targetPort.isConnected) {
       addNotification({ 
         type: 'warning', 
-        message: 'This port is already connected. Please select an available port.',
+        message: 'このポートは既に接続されています。利用可能なポートを選択してください。',
       });
       setDrawingConnection(null);
       return;
@@ -313,7 +390,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     if (sourcePort.type !== targetPort.type) {
       addNotification({ 
         type: 'error', 
-        message: `Incompatible port types: ${sourcePort.type} and ${targetPort.type}` 
+        message: `互換性のないポートタイプ：${sourcePort.type}と${targetPort.type}を接続することはできません` 
       });
       setDrawingConnection(null);
       return;
@@ -321,6 +398,25 @@ const NetworkTopologyDesigner: React.FC = () => {
 
     // Create new connection
     const connectionId = generateConnectionId();
+    
+    // Calculate connection path points
+    const sourcePortPositions = calculatePortPositions(sourceDevice);
+    const targetPortPositions = calculatePortPositions(targetDevice);
+    
+    const sourcePos = sourcePortPositions[sourcePortIndex];
+    const targetPos = targetPortPositions[targetPortIndex];
+    
+    if (!sourcePos || !targetPos) {
+      setDrawingConnection(null);
+      return;
+    }
+    
+    // Default path points (straight line)
+    const pathPoints: ConnectionPathPoint[] = [
+      { x: sourcePos.x, y: sourcePos.y, type: 'endpoint' },
+      { x: targetPos.x, y: targetPos.y, type: 'endpoint' }
+    ];
+    
     const newConnection: Connection = {
       id: connectionId,
       sourceDeviceId: drawingConnection.from,
@@ -331,6 +427,7 @@ const NetworkTopologyDesigner: React.FC = () => {
       type: sourcePort.type,
       bandwidth: '1 Gbps',
       latency: 1, // 1ms default latency
+      pathPoints,
     };
     
     // Update port connection status
@@ -361,7 +458,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     
     addNotification({ 
       type: 'success', 
-      message: `Connection created between ${sourceDevice.name} and ${targetDevice.name}` 
+      message: `${sourceDevice.name}と${targetDevice.name}の間に接続を作成しました` 
     });
   };
 
@@ -419,7 +516,28 @@ const NetworkTopologyDesigner: React.FC = () => {
     
     addNotification({ 
       type: 'info', 
-      message: 'Connection deleted' 
+      message: '接続を削除しました' 
+    });
+  };
+
+  // Handle editing connection path
+  const handleEditConnectionPath = (connection: Connection) => {
+    setEditingConnection(connection);
+  };
+
+  // Handle save connection path
+  const handleSaveConnectionPath = (connection: Connection, pathPoints: ConnectionPathPoint[]) => {
+    const updatedConnection = {
+      ...connection,
+      pathPoints,
+    };
+    
+    handleUpdateConnection(updatedConnection);
+    setEditingConnection(null);
+    
+    addNotification({
+      type: 'success',
+      message: '接続パスを更新しました'
     });
   };
 
@@ -441,6 +559,11 @@ const NetworkTopologyDesigner: React.FC = () => {
     
     setDevices(updatedDevices);
     setShowVlansModal(false);
+    
+    addNotification({
+      type: 'success',
+      message: 'VLANを更新しました'
+    });
   };
 
   // Handle canvas click
@@ -448,6 +571,53 @@ const NetworkTopologyDesigner: React.FC = () => {
     // Deselect when clicking on empty canvas
     if (e.target === e.currentTarget || e.target.nodeType === 'Stage') {
       setSelectedItem(null);
+    }
+  };
+
+  // Handle importing templates
+  const handleImportTemplate = () => {
+    setShowImportTemplateModal(true);
+  };
+
+  // Handle importing template group
+  const handleImportTemplateGroup = (templates: DeviceTemplate[], position: Position) => {
+    try {
+      const createdDevices: Device[] = [];
+      const newConnections: Connection[] = [];
+      
+      // Create devices
+      for (const template of templates) {
+        const x = position.x + (template.relativePosition?.x || 0);
+        const y = position.y + (template.relativePosition?.y || 0);
+        
+        const device = handleAddDevice(template.type, x, y, template);
+        if (device) {
+          createdDevices.push(device);
+        }
+      }
+      
+      // Create connections if specified in template
+      if (templates.length > 1) {
+        // Logic to create connections between devices based on template definitions
+        // This would be implemented based on how your templates define connections
+      }
+      
+      if (newConnections.length > 0) {
+        setConnections([...connections, ...newConnections]);
+      }
+      
+      setShowImportTemplateModal(false);
+      
+      addNotification({
+        type: 'success',
+        message: `${templates.length}個のデバイステンプレートをインポートしました`
+      });
+    } catch (error: any) {
+      console.error('Error importing templates:', error);
+      addNotification({
+        type: 'error',
+        message: translateErrorMessage(error.message) || 'テンプレートのインポートに失敗しました'
+      });
     }
   };
 
@@ -459,7 +629,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     if (!validationResult.valid) {
       addNotification({
         type: 'error',
-        message: `Simulation error: ${validationResult.error}`,
+        message: `シミュレーションエラー: ${translateErrorMessage(validationResult.error || '')}`,
         duration: 7000,
       });
       return;
@@ -484,31 +654,31 @@ const NetworkTopologyDesigner: React.FC = () => {
     
     addNotification({
       type: 'success',
-      message: 'Network simulation started',
+      message: 'ネットワークシミュレーションを開始しました',
     });
     
-    addToConsole('==== SIMULATION STARTED ====');
-    addToConsole('Initializing network devices...');
+    addToConsole('==== シミュレーション開始 ====');
+    addToConsole('ネットワークデバイスを初期化しています...');
     poweredDevices.forEach(device => {
-      addToConsole(`Device ${device.name} (${device.id}) powered on`);
+      addToConsole(`デバイス ${device.name} (${device.id}) の電源をオンにしました`);
     });
-    addToConsole('All devices powered on successfully');
+    addToConsole('すべてのデバイスの電源がオンになりました');
     
     // Run the simulation algorithm
     try {
       const simulationResult = simulateNetwork(poweredDevices, activeConnections, vlans);
-      addToConsole('Network topology successfully initialized');
-      addToConsole(`Discovered ${simulationResult.routes.length} routes`);
+      addToConsole('ネットワークトポロジーが正常に初期化されました');
+      addToConsole(`${simulationResult.routes.length}個のルートを検出しました`);
       
       // Update devices with simulation results (IP addresses, etc)
       setDevices(simulationResult.devices);
-    } catch (error) {
+    } catch (error: any) {
       addNotification({
         type: 'error',
-        message: `Simulation error: ${(error as Error).message}`,
+        message: `シミュレーションエラー: ${translateErrorMessage(error.message)}`,
         duration: 7000,
       });
-      addToConsole(`ERROR: ${(error as Error).message}`);
+      addToConsole(`エラー: ${translateErrorMessage(error.message)}`);
       setSimulationState('stopped');
     }
   };
@@ -536,10 +706,10 @@ const NetworkTopologyDesigner: React.FC = () => {
     
     addNotification({
       type: 'info',
-      message: 'Network simulation stopped',
+      message: 'ネットワークシミュレーションを停止しました',
     });
     
-    addToConsole('==== SIMULATION STOPPED ====');
+    addToConsole('==== シミュレーション停止 ====');
   };
 
   // Handle ping test
@@ -547,7 +717,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     if (simulationState !== 'running') {
       addNotification({
         type: 'warning',
-        message: 'Start the simulation first to run ping tests',
+        message: 'Pingテストを実行するには、先にシミュレーションを開始してください',
       });
       return;
     }
@@ -558,7 +728,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     if (!sourceDevice || !targetDevice) {
       addNotification({
         type: 'error',
-        message: 'Source or target device not found',
+        message: '送信元または宛先デバイスが見つかりません',
       });
       return;
     }
@@ -572,23 +742,23 @@ const NetworkTopologyDesigner: React.FC = () => {
       setPacketJourneys([pingResult.journey]);
       
       if (pingResult.success) {
-        addToConsole(`Ping successful: ${pingResult.stats.sent} packets transmitted, ${pingResult.stats.received} received, ${pingResult.stats.latency}ms latency`);
+        addToConsole(`Ping成功: ${pingResult.stats.sent}パケット送信, ${pingResult.stats.received}パケット受信, ${pingResult.stats.latency}msレイテンシ`);
         addNotification({
           type: 'success',
-          message: `Ping successful: ${pingResult.stats.latency}ms latency`,
+          message: `Ping成功: ${pingResult.stats.latency}msレイテンシ`,
         });
       } else {
-        addToConsole(`Ping failed: ${pingResult.error}`);
+        addToConsole(`Ping失敗: ${translateErrorMessage(pingResult.error || '')}`);
         addNotification({
           type: 'error',
-          message: `Ping failed: ${pingResult.error}`,
+          message: `Ping失敗: ${translateErrorMessage(pingResult.error || '')}`,
         });
       }
-    } catch (error) {
-      addToConsole(`Ping error: ${(error as Error).message}`);
+    } catch (error: any) {
+      addToConsole(`Pingエラー: ${translateErrorMessage(error.message)}`);
       addNotification({
         type: 'error',
-        message: `Ping error: ${(error as Error).message}`,
+        message: `Pingエラー: ${translateErrorMessage(error.message)}`,
       });
     }
   };
@@ -601,7 +771,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     
     addNotification({
       type: 'success',
-      message: 'Topology exported to JSON',
+      message: 'トポロジーをJSONにエクスポートしました',
     });
   };
 
@@ -612,85 +782,61 @@ const NetworkTopologyDesigner: React.FC = () => {
       
       addNotification({
         type: 'info',
-        message: 'Generating PDF. Please wait...',
+        message: 'PDFを生成しています。お待ちください...',
       });
       
-      // Hide the UI elements that shouldn't be in the export
+      // Get the Konva stage
       const stage = stageRef.current.getStage();
       const dataUrl = stage.toDataURL({ pixelRatio: 2 });
       
-      // Create PDF document
-      const doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4',
-      });
+      // Export to PDF
+      const success = await exportToPdf(devices, connections, dataUrl, diagramType === 'logical' ? '論理構成図.pdf' : '物理構成図.pdf');
       
-      // Add title
-      doc.setFontSize(18);
-      doc.text('Network Topology Diagram', 14, 22);
-      
-      // Add date
-      doc.setFontSize(10);
-      doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30);
-      
-      // Add image
-      const imgWidth = doc.internal.pageSize.getWidth() - 28;
-      const imgHeight = (stage.height() * imgWidth) / stage.width();
-      doc.addImage(dataUrl, 'PNG', 14, 35, imgWidth, imgHeight);
-      
-      // Add device inventory
-      const deviceYPos = imgHeight + 45;
-      doc.setFontSize(14);
-      doc.text('Device Inventory', 14, deviceYPos);
-      
-      doc.setFontSize(10);
-      let yPos = deviceYPos + 10;
-      devices.forEach((device, index) => {
-        doc.text(`${index + 1}. ${device.name} (${device.type})`, 14, yPos);
-        yPos += 5;
-      });
-      
-      // Save PDF
-      doc.save('network-topology.pdf');
-      
-      addNotification({
-        type: 'success',
-        message: 'Topology exported to PDF',
-      });
-    } catch (error) {
+      if (success) {
+        addNotification({
+          type: 'success',
+          message: 'トポロジーをPDFにエクスポートしました',
+        });
+      } else {
+        throw new Error('PDFエクスポートに失敗しました');
+      }
+    } catch (error: any) {
       console.error('PDF export error:', error);
       addNotification({
         type: 'error',
-        message: `PDF export failed: ${(error as Error).message}`,
+        message: `PDFエクスポートに失敗しました: ${translateErrorMessage(error.message)}`,
       });
     }
   };
 
-  // Handle clear topology
-  const handleClearTopology = () => {
-    setConfirmationDialog({
-      open: true,
-      title: 'Clear Topology',
-      message: 'This will delete all devices and connections. Are you sure?',
-      onConfirm: () => {
-        setDevices([]);
-        setConnections([]);
-        setSelectedItem(null);
+  // Handle export to CSV
+  const handleExportToCSV = () => {
+    try {
+      const success = exportToCSV(devices, connections, vlans, diagramType === 'logical' ? '論理構成図_設定.csv' : '物理構成図_設定.csv');
+      
+      if (success) {
         addNotification({
-          type: 'info',
-          message: 'Topology cleared',
+          type: 'success',
+          message: 'ネットワーク設定をCSVにエクスポートしました',
         });
+      } else {
+        throw new Error('CSVエクスポートに失敗しました');
       }
-    });
+    } catch (error: any) {
+      console.error('CSV export error:', error);
+      addNotification({
+        type: 'error',
+        message: `CSVエクスポートに失敗しました: ${translateErrorMessage(error.message)}`,
+      });
+    }
   };
 
-  // Handle import topology
+  // Handle importing from JSON
   const handleImportTopology = (jsonData: string) => {
     try {
       const data = JSON.parse(jsonData);
       if (!data.devices || !data.connections) {
-        throw new Error('Invalid topology data format');
+        throw new Error('無効なトポロジーデータフォーマットです');
       }
       
       // Set devices and connections from imported data
@@ -704,14 +850,32 @@ const NetworkTopologyDesigner: React.FC = () => {
       
       addNotification({
         type: 'success',
-        message: `Imported topology with ${data.devices.length} devices and ${data.connections.length} connections`,
+        message: `${data.devices.length}個のデバイスと${data.connections.length}個の接続をインポートしました`,
       });
-    } catch (error) {
+    } catch (error: any) {
       addNotification({
         type: 'error',
-        message: `Import failed: ${(error as Error).message}`,
+        message: `インポートに失敗しました: ${translateErrorMessage(error.message)}`,
       });
     }
+  };
+
+  // Handle clear topology
+  const handleClearTopology = () => {
+    setConfirmationDialog({
+      open: true,
+      title: 'トポロジーをクリア',
+      message: 'これによりすべてのデバイスと接続が削除されます。続行しますか？',
+      onConfirm: () => {
+        setDevices([]);
+        setConnections([]);
+        setSelectedItem(null);
+        addNotification({
+          type: 'info',
+          message: 'トポロジーをクリアしました',
+        });
+      }
+    });
   };
 
   // Handle zoom
@@ -750,6 +914,16 @@ const NetworkTopologyDesigner: React.FC = () => {
   // Handle toggling snap to grid
   const handleToggleSnapToGrid = () => {
     setSnapToGrid(!snapToGrid);
+  };
+
+  // Handle diagram type change
+  const handleDiagramTypeChange = (type: DiagramType) => {
+    setDiagramType(type);
+    addNotification({
+      type: 'info',
+      message: type === 'logical' ? '論理構成図モードに切り替えました' : '物理構成図モードに切り替えました',
+      duration: 3000,
+    });
   };
 
   // Keyboard shortcuts
@@ -877,14 +1051,24 @@ const NetworkTopologyDesigner: React.FC = () => {
         strokeWidth = 3;
       }
       
-      // Calculate center point of the line for possible label
-      const centerX = (sourcePos.x + targetPos.x) / 2;
-      const centerY = (sourcePos.y + targetPos.y) / 2;
+      // Use custom path if defined, otherwise use straight line
+      const points = connection.pathPoints ? 
+        connection.pathPoints.flatMap(point => [point.x, point.y]) :
+        [sourcePos.x, sourcePos.y, targetPos.x, targetPos.y];
+      
+      // Get connection midpoint for label
+      const midPointIndex = Math.floor(points.length / 4);
+      const labelX = points[midPointIndex * 2];
+      const labelY = points[midPointIndex * 2 + 1];
+      
+      const connectionLabel = diagramType === 'logical' ? 
+        (connection.bandwidth || '') : 
+        `${sourceDevice.name} -> ${targetDevice.name}`;
       
       return (
         <React.Fragment key={connection.id}>
           <Line
-            points={[sourcePos.x, sourcePos.y, targetPos.x, targetPos.y]}
+            points={points}
             stroke={strokeColor}
             strokeWidth={strokeWidth}
             onClick={() => handleSelectConnection(connection.id)}
@@ -893,16 +1077,34 @@ const NetworkTopologyDesigner: React.FC = () => {
             shadowForStrokeEnabled={false}
             listening={true}
           />
-          {/* Connection type indicator (optional) */}
+          
+          {/* Connection type indicator for fiber */}
           {connection.type === 'fiber' && (
             <Line
-              points={[sourcePos.x, sourcePos.y, targetPos.x, targetPos.y]}
+              points={points}
               stroke={strokeColor}
               strokeWidth={strokeWidth}
               dash={[10, 5]}
               opacity={0.7}
               listening={false}
             />
+          )}
+          
+          {/* Connection label */}
+          {connectionLabel && (
+            <Group x={labelX} y={labelY}>
+              <Text
+                text={connectionLabel}
+                fontSize={12 / scale}
+                fill={strokeColor}
+                align="center"
+                verticalAlign="middle"
+                offsetX={-10}
+                offsetY={-10}
+                padding={4}
+                listening={false}
+              />
+            </Group>
           )}
         </React.Fragment>
       );
@@ -969,7 +1171,7 @@ const NetworkTopologyDesigner: React.FC = () => {
   // Initialize properties panel based on selected item
   const renderPropertiesPanel = () => {
     if (!selectedItem) {
-      return <div className="p-4 text-gray-500">No item selected</div>;
+      return <div className="p-4 text-gray-500">項目が選択されていません</div>;
     }
     
     if (selectedItem.type === 'device') {
@@ -983,9 +1185,11 @@ const NetworkTopologyDesigner: React.FC = () => {
           onUpdate={handleUpdateDevice}
           onDelete={() => handleDeleteDevice(device.id)}
           onStartConnection={handleStartConnection}
+          onConfigure={() => handleConfigureDevice(device)}
           simulationState={simulationState}
           devices={devices}
           onPingTest={handlePingTest}
+          diagramType={diagramType}
         />
       );
     }
@@ -1006,6 +1210,8 @@ const NetworkTopologyDesigner: React.FC = () => {
           targetDevice={targetDevice}
           onUpdate={handleUpdateConnection}
           onDelete={() => handleDeleteConnection(connection.id)}
+          onEditPath={() => handleEditConnectionPath(connection)}
+          diagramType={diagramType}
         />
       );
     }
@@ -1020,16 +1226,25 @@ const NetworkTopologyDesigner: React.FC = () => {
         onExport={() => setShowExportModal(true)}
         onClear={handleClearTopology}
         onImport={handleImportTopology}
+        onImportTemplate={handleImportTemplate}
         onManageVlans={() => setShowVlansModal(true)}
+        onHelp={() => setShowHelpModal(true)}
         simulationState={simulationState}
         onStartSimulation={handleStartSimulation}
         onStopSimulation={handleStopSimulation}
         onToggleConsole={() => setShowConsole(!showConsole)}
+        diagramType={diagramType}
+      />
+      
+      {/* Diagram Type Switcher */}
+      <DiagramTypeSwitch
+        diagramType={diagramType}
+        onChange={handleDiagramTypeChange}
       />
       
       <div className="flex flex-1 overflow-hidden">
         {/* Device library sidebar */}
-        <DeviceLibrary onAddDevice={handleAddDevice} />
+        <DeviceLibrary onAddDevice={handleAddDevice} diagramType={diagramType} />
         
         {/* Main canvas area */}
         <div 
@@ -1082,6 +1297,7 @@ const NetworkTopologyDesigner: React.FC = () => {
                   key={device.id}
                   device={device}
                   isSelected={selectedItem?.type === 'device' && selectedItem.id === device.id}
+                  diagramType={diagramType}
                   onSelect={() => handleSelectDevice(device.id)}
                   onMove={(newX, newY) => {
                     // Adjust position to grid if snapToGrid is enabled
@@ -1121,13 +1337,14 @@ const NetworkTopologyDesigner: React.FC = () => {
             scale={scale}
             position={position}
             simulationState={simulationState}
+            diagramType={diagramType}
           />
         </div>
         
         {/* Properties panel */}
         <div className="w-64 bg-white dark:bg-gray-800 overflow-y-auto border-l border-gray-300 dark:border-gray-700 flex flex-col">
           <div className="p-2 bg-gray-200 dark:bg-gray-700 font-semibold">
-            Properties
+            プロパティ
           </div>
           <div className="flex-1 overflow-y-auto">
             {renderPropertiesPanel()}
@@ -1150,6 +1367,8 @@ const NetworkTopologyDesigner: React.FC = () => {
         onClose={() => setShowExportModal(false)}
         onExportJson={handleExportToJson}
         onExportPdf={handleExportToPdf}
+        onExportCsv={handleExportToCSV}
+        diagramType={diagramType}
       />
       
       {/* VLAN Management Modal */}
@@ -1158,6 +1377,42 @@ const NetworkTopologyDesigner: React.FC = () => {
         onClose={() => setShowVlansModal(false)}
         vlans={vlans}
         onUpdate={handleVlansUpdate}
+      />
+      
+      {/* Device Configuration Modal */}
+      {selectedDeviceForConfig && (
+        <DeviceConfigModal
+          isOpen={showDeviceConfigModal}
+          onClose={() => setShowDeviceConfigModal(false)}
+          device={selectedDeviceForConfig}
+          onSave={handleSaveDeviceConfig}
+          diagramType={diagramType}
+        />
+      )}
+      
+      {/* Connection Path Editor */}
+      {editingConnection && (
+        <ConnectionPathEditor
+          isOpen={!!editingConnection}
+          connection={editingConnection}
+          devices={devices}
+          onClose={() => setEditingConnection(null)}
+          onSave={handleSaveConnectionPath}
+        />
+      )}
+      
+      {/* Import Template Modal */}
+      <ImportTemplateModal
+        isOpen={showImportTemplateModal}
+        onClose={() => setShowImportTemplateModal(false)}
+        templates={deviceTemplates}
+        onImport={handleImportTemplateGroup}
+      />
+      
+      {/* Help Modal */}
+      <HelpModal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
       />
       
       {/* Confirmation Dialog */}
@@ -1177,5 +1432,3 @@ const NetworkTopologyDesigner: React.FC = () => {
     </div>
   );
 };
-
-export default NetworkTopologyDesigner;

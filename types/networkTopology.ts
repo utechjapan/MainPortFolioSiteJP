@@ -1,10 +1,13 @@
 // types/networkTopology.ts
 
 // Device types
-export type DeviceType = 'router' | 'switch' | 'server' | 'workstation' | 'firewall';
+export type DeviceType = 'router' | 'switch' | 'server' | 'workstation' | 'firewall' | 'l2switch' | 'l3switch' | 'accesspoint';
 
 // Interface/port types
-export type PortType = 'ethernet' | 'fiber' | 'serial' | 'usb' | 'console';
+export type PortType = 'ethernet' | 'fiber' | 'serial' | 'usb' | 'console' | 'wireless';
+
+// Diagram types (logical or physical)
+export type DiagramType = 'logical' | 'physical';
 
 // Device port interface
 export interface Port {
@@ -13,6 +16,10 @@ export interface Port {
   type: PortType;
   isConnected: boolean;
   vlanId?: number;
+  speed?: string;
+  duplex?: 'half' | 'full' | 'auto';
+  mode?: 'access' | 'trunk' | 'hybrid';
+  description?: string;
 }
 
 // Network interface (like eth0, etc.)
@@ -22,6 +29,7 @@ export interface NetworkInterface {
   macAddress?: string;
   gateway?: string;
   dns?: string[];
+  dhcpEnabled?: boolean;
 }
 
 // Routing table entry
@@ -30,6 +38,16 @@ export interface Route {
   nextHop: string;
   metric: number;
   interface?: string;
+  administrative_distance?: number;
+}
+
+// VLAN configuration for devices
+export interface VlanConfig {
+  id: number;
+  name: string;
+  interfaces?: string[];
+  ipAddress?: string;
+  subnetMask?: string;
 }
 
 // Firewall rule
@@ -42,19 +60,21 @@ export interface FirewallRule {
   sourcePort?: string;
   destinationPort?: string;
   action: 'allow' | 'deny';
+  enabled?: boolean;
+  logging?: boolean;
 }
 
 // Device configuration object
-export interface DeviceConfig {
+export interface NetworkConfig {
   hostname?: string;
   interfaces?: NetworkInterface[];
   routes?: Route[];
   firewallRules?: FirewallRule[];
   gateway?: string;
   dns?: string[];
-  vlan?: string; // For switches
-  dhcp?: boolean;
   nat?: boolean;
+  dhcp?: boolean;
+  vlans?: VlanConfig[];
   [key: string]: any; // Allow for additional device-specific configuration
 }
 
@@ -75,9 +95,21 @@ export interface Device {
   height: number;
   ports: Port[];
   status: 'on' | 'off' | 'error' | 'warning';
-  config: DeviceConfig;
+  config: NetworkConfig;
   zIndex: number;
   isDragging?: boolean;
+  description?: string;
+  manufacturer?: string;
+  model?: string;
+  serialNumber?: string;
+  icon?: string;
+}
+
+// Connection path point
+export interface ConnectionPathPoint {
+  x: number;
+  y: number;
+  type: 'endpoint' | 'control';
 }
 
 // Connection between devices
@@ -91,6 +123,11 @@ export interface Connection {
   type: PortType;
   bandwidth?: string;
   latency?: number;
+  pathPoints?: ConnectionPathPoint[];
+  label?: string;
+  isEncrypted?: boolean;
+  protocol?: string;
+  description?: string;
 }
 
 // Network area/location
@@ -103,6 +140,7 @@ export interface Location {
   height: number;
   color: string;
   devices: string[];
+  description?: string;
 }
 
 // VLAN definition
@@ -110,10 +148,29 @@ export interface VlanDefinition {
   id: number;
   name: string;
   color: string;
+  description?: string;
+}
+
+// Device template for quick insertion
+export interface DeviceTemplate {
+  id: string;
+  name: string;
+  type: DeviceType;
+  config: NetworkConfig;
+  description?: string;
+  category?: string;
+  icon?: string;
+  portCount?: number;
+  relativePosition?: Position; // Used for template groups
+  connections?: {
+    sourceId: string;
+    targetId: string;
+    type: PortType;
+  }[];
 }
 
 // Types of items that can be selected
-export type SelectionType = 'device' | 'connection';
+export type SelectionType = 'device' | 'connection' | 'location';
 
 // Simulation states
 export type SimulationState = 'running' | 'stopped' | 'paused';
