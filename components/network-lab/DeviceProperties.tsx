@@ -24,17 +24,6 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
   onStartConnection,
   onPingTest,
 }) => {
-
-const DeviceProperties: React.FC<DevicePropertiesProps> = ({
-  device,
-  vlans,
-  devices,
-  simulationState,
-  onUpdate,
-  onDelete,
-  onStartConnection,
-  onPingTest,
-}) => {
   const [activeTab, setActiveTab] = useState<'general' | 'network' | 'ports'>('general');
   const deviceTypeInfo = getDeviceTypeInfo(device.type);
   const [targetDeviceId, setTargetDeviceId] = useState<string>('');
