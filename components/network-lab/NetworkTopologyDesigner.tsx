@@ -642,7 +642,7 @@ const NetworkTopologyDesigner: React.FC = () => {
     // Initialize connections
     const activeConnections = connections.map(conn => ({
       ...conn,
-      status: 'active'
+      status: 'active' as 'active' // Explicitly cast to the allowed literal type
     }));
     
     setConnections(activeConnections.map(connection => ({
