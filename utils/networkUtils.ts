@@ -284,7 +284,7 @@ export const calculatePortPositions = (device: Device): PortPosition[] => {
     const consolePortIndices = ports
         .map((port, index) => port.type === 'console' ? index : -1)
         .filter(index => index !== -1);
-    const fiberPortIndices = ports
+    let fiberPortIndices = ports
         .map((port, index) => port.type === 'fiber' ? index : -1)
         .filter(index => index !== -1);
     let ethernetPortIndices = ports
