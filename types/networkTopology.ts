@@ -78,6 +78,8 @@ export interface NetworkConfig {
   [key: string]: any; // Allow for additional device-specific configuration
 }
 
+export type DeviceConfig = NetworkConfig;
+
 // Position coordinates
 export interface Position {
   x: number;
