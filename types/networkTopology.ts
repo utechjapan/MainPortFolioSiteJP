@@ -158,7 +158,7 @@ export interface DeviceTemplate {
   id: string;
   name: string;
   type: DeviceType;
-  config: NetworkConfig;
+  config?: NetworkConfig; // updated to optional to support template groups
   description?: string;
   category?: string;
   icon?: string;
