@@ -1,6 +1,6 @@
 // components/network-lab/MobileTopologyViewer.tsx
 import React, { useState, useEffect } from 'react';
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer, Rect, Line } from 'react-konva';
 import { saveAs } from 'file-saver';
 
 // Import types and custom components
