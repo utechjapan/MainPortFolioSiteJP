@@ -1,10 +1,9 @@
-// components/network-lab/TopologyNode.tsx
 import React from 'react';
 import { Group, Rect, Text, Circle } from 'react-konva';
 import { Device, VlanDefinition, DiagramType } from '../../types/networkTopology';
 import { getDeviceTypeInfo, calculatePortPositions } from '../../utils/networkUtils';
 
-interface TopologyNodeProps {
+export interface TopologyNodeProps {
   device: Device;
   isSelected: boolean;
   onSelect: () => void;
@@ -12,6 +11,7 @@ interface TopologyNodeProps {
   onPortClick: (portId: string) => void;
   vlans: VlanDefinition[];
   diagramType: DiagramType;
+  onDragEnd?: (e: any) => void; // ✅ Added for external drag handler
 }
 
 const TopologyNode: React.FC<TopologyNodeProps> = ({
@@ -22,6 +22,7 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
   onPortClick,
   vlans,
   diagramType,
+  onDragEnd,
 }) => {
   const deviceTypeInfo = getDeviceTypeInfo(device.type);
   const portPositions = calculatePortPositions(device);
@@ -29,6 +30,11 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
   // Handle drag end
   const handleDragEnd = (e: any) => {
     onMove(e.target.x(), e.target.y());
+
+    // ✅ Optional external drag handler
+    if (onDragEnd) {
+      onDragEnd(e);
+    }
   };
 
   return (
@@ -49,16 +55,31 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
         cornerRadius={4}
       />
 
-      {/* Device icon and name */}
-      {/* ...existing device icon and name rendering removed for simplicity... */}
+      {/* Device name */}
+      <Text
+        text={device.name}
+        fontSize={14}
+        fill="#000"
+        x={5}
+        y={device.height + 5}
+      />
 
-      {/* Port rendering with reliable positioning */}
-      {/* ...existing ports rendering removed for simplicity... */}
+      {/* Port rendering (simplified) */}
+      {portPositions.map((pos, index) => (
+        <Circle
+          key={index}
+          x={pos.x}
+          y={pos.y}
+          radius={4}
+          fill="#555"
+          onClick={() => onPortClick(pos.portId)}
+        />
+      ))}
     </Group>
   );
 };
 
-// Helper function to get device icon character
+// Optional: device type icons (not currently used but you might want this later)
 function getDeviceIcon(type: string): string {
   switch (type) {
     case 'router':
