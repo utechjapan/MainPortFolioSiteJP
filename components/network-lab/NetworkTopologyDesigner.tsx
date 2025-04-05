@@ -685,18 +685,18 @@ const NetworkTopologyDesigner: React.FC = () => {
   const handleStopSimulation = () => {
     setSimulationState('stopped');
     
-    // Reset device status
+    // Reset device status with explicit literal cast
     const resetDevices = devices.map(device => ({
       ...device,
-      status: 'off'
+      status: 'off' as 'off'
     }));
     
     setDevices(resetDevices);
     
-    // Reset connections
+    // Reset connections with explicit literal cast
     const resetConnections = connections.map(conn => ({
       ...conn,
-      status: 'inactive'
+      status: 'inactive' as 'inactive'
     }));
     
     setConnections(resetConnections);
