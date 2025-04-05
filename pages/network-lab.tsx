@@ -1,32 +1,49 @@
 // pages/network-lab.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import Layout from '../components/layout/Layout';
 import { siteConfig } from '../lib/siteConfig';
+import useWindowSize from '../hooks/useWindowSize';
 
-// Dynamically import the network topology designer (no SSR)
+// Separate components for mobile and desktop
 const NetworkTopologyDesigner = dynamic(
   () => import('../components/network-lab/NetworkTopologyDesigner'),
   {
     ssr: false,
-    loading: () => <Loading />,
+    loading: () => <Loading message="ネットワークデザイナー読み込み中" />,
   }
 );
 
-// Loading component
-const Loading = () => (
-  <div className="w-full h-full min-h-[600px] flex flex-col items-center justify-center bg-white dark:bg-gray-900 rounded-lg p-6 shadow">
+const MobileTopologyViewer = dynamic(
+  () => import('../components/network-lab/MobileTopologyViewer'),
+  {
+    ssr: false,
+    loading: () => <Loading message="ビューア読み込み中" />,
+  }
+);
+
+// Enhanced loading component
+const Loading = ({ message = "読み込み中" }) => (
+  <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center bg-white dark:bg-gray-900 rounded-lg p-6 shadow">
     <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mb-4"></div>
-    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">ネットワークデザイナー読み込み中</h3>
+    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{message}</h3>
     <p className="text-gray-500 dark:text-gray-400 text-center max-w-md">
-      ネットワークトポロジーデザイナーを初期化しています。少々お待ちください...
+      少々お待ちください...
     </p>
   </div>
 );
 
 const NetworkLab: React.FC = () => {
+  const { width } = useWindowSize();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Determine if on mobile device based on screen width
+  useEffect(() => {
+    setIsMobile(width < 768);
+  }, [width]);
+
   return (
     <Layout rightSidebar={false}>
       <Head>
@@ -41,9 +58,9 @@ const NetworkLab: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-4"
+        className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-4 px-4 sm:px-6"
       >
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto">
           <div className="flex flex-col">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -51,13 +68,24 @@ const NetworkLab: React.FC = () => {
               </h1>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 この対話型ツールを使用して、ネットワークトポロジーを作成、テスト、視覚化します。
-                ネットワークをデザインし、デバイスを構成して、接続性をテストできます。
+                {isMobile ? (
+                  <span className="block mt-2 text-yellow-500 font-medium">
+                    <i className="fas fa-info-circle mr-1"></i>
+                    モバイルデバイスでは閲覧モードのみ利用可能です。フルエディタはPCからアクセスしてください。
+                  </span>
+                ) : (
+                  <span>ネットワークをデザインし、デバイスを構成して、接続性をテストできます。</span>
+                )}
               </p>
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden mb-6">
-              <div className="h-[calc(100vh-200px)] min-h-[600px]">
-                <NetworkTopologyDesigner />
+              <div className="h-[calc(100vh-200px)] min-h-[500px]">
+                {isMobile ? (
+                  <MobileTopologyViewer />
+                ) : (
+                  <NetworkTopologyDesigner />
+                )}
               </div>
             </div>
 
@@ -94,14 +122,18 @@ const NetworkLab: React.FC = () => {
                     JSONとしてエクスポートするか、ドキュメント用にPDFとしてエクスポートします。
                   </li>
                 </ul>
-                <h3>使い方:</h3>
-                <ol>
-                  <li>左のツールバーからデバイスをキャンバスにドラッグします。</li>
-                  <li>ポートをクリックして別のデバイスのポートをクリックすることでデバイスを接続します。</li>
-                  <li>右側のパネルを使用してIPアドレスなどのデバイスプロパティを設定します。</li>
-                  <li>上部ツールバーのVLAN管理ツールを使用してVLANを管理します。</li>
-                  <li>シミュレーションを開始してネットワーク構成をテストします。</li>
-                </ol>
+                {!isMobile && (
+                  <>
+                    <h3>使い方:</h3>
+                    <ol>
+                      <li>左のツールバーからデバイスをキャンバスにドラッグします。</li>
+                      <li>ポートをクリックして別のデバイスのポートにドラッグすることでデバイスを接続します。</li>
+                      <li>右側のパネルを使用してIPアドレスなどのデバイスプロパティを設定します。</li>
+                      <li>上部ツールバーのVLAN管理ツールを使用してVLANを管理します。</li>
+                      <li>シミュレーションを開始してネットワーク構成をテストします。</li>
+                    </ol>
+                  </>
+                )}
                 <p>
                   このツールは、アクセスしやすく使いやすい状態を維持しながら、現実的なネットワークシミュレーション体験を
                   提供するように設計されています。ネットワーク認定資格の勉強をしている場合でも、ネットワーク展開を
