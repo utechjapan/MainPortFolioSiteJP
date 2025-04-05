@@ -8,7 +8,7 @@ import {
     Port,
     PacketJourney,
     PingResult,
-    DeviceConfig,
+    // DeviceConfig, // Removed as it is not exported
     Route,
   } from '../types/networkTopology';
   
