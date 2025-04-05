@@ -1,7 +1,7 @@
 // components/network-lab/TopologyNode.tsx
 import React from 'react';
-import { Group, Rect, Text, Circle, Image } from 'react-konva';
-import { Device, VlanDefinition } from '../../types/networkTopology';
+import { Group, Rect, Text, Circle } from 'react-konva';
+import { Device, VlanDefinition, DiagramType } from '../../types/networkTopology';
 import { getDeviceTypeInfo, calculatePortPositions } from '../../utils/networkUtils';
 
 interface TopologyNodeProps {
@@ -11,6 +11,7 @@ interface TopologyNodeProps {
   onMove: (x: number, y: number) => void;
   onPortClick: (portId: string) => void;
   vlans: VlanDefinition[];
+  diagramType: DiagramType;
 }
 
 const TopologyNode: React.FC<TopologyNodeProps> = ({
@@ -20,6 +21,7 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
   onMove,
   onPortClick,
   vlans,
+  diagramType,
 }) => {
   const deviceTypeInfo = getDeviceTypeInfo(device.type);
   const portPositions = calculatePortPositions(device);
@@ -33,16 +35,20 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
   // Get IP addresses for label (if available)
   const ipAddressLabel = device.config.interfaces?.[0]?.ipAddress || '';
   
+  // Handle drag end
+  const handleDragEnd = (e: any) => {
+    onMove(e.target.x(), e.target.y());
+  };
+
   return (
     <Group
       x={device.x}
       y={device.y}
       draggable
       onDragStart={onSelect}
-      onDragEnd={(e) => {
-        onMove(e.target.x(), e.target.y());
-      }}
+      onDragEnd={handleDragEnd}
       onClick={onSelect}
+      onTap={onSelect}
     >
       {/* Background */}
       <Rect
@@ -62,9 +68,9 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
       <Text
         x={device.width / 2}
         y={device.height / 2 - 10}
-        text={deviceTypeInfo.icon || '⬛'}
+        text={getDeviceIcon(device.type)}
         fontSize={24}
-        fontFamily="FontAwesome"
+        fontStyle="normal"
         fill={deviceTypeInfo.iconColor || '#333'}
         align="center"
         verticalAlign="middle"
@@ -82,9 +88,9 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
       {/* Device name */}
       <Text
         x={0}
-        y={device.height - 30}
+        y={device.height - 25}
         text={device.name}
-        fontSize={12}
+        fontSize={11}
         fontFamily="Arial"
         fill="#333"
         align="center"
@@ -95,9 +101,9 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
       {ipAddressLabel && (
         <Text
           x={0}
-          y={device.height - 15}
+          y={device.height - 12}
           text={ipAddressLabel}
-          fontSize={10}
+          fontSize={9}
           fontFamily="monospace"
           fill="#666"
           align="center"
@@ -133,7 +139,7 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
             }}
           >
             <Circle
-              radius={6}
+              radius={5}
               fill={portFill}
               stroke={portStroke}
               strokeWidth={1}
@@ -155,5 +161,29 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
     </Group>
   );
 };
+
+// Helper function to get device icon character
+function getDeviceIcon(type: string): string {
+  switch (type) {
+    case 'router':
+      return '🌐';
+    case 'switch':
+      return '🔄';
+    case 'server':
+      return '🖥️';
+    case 'workstation':
+      return '💻';
+    case 'firewall':
+      return '🔒';
+    case 'l2switch':
+      return '🔀';
+    case 'l3switch':
+      return '🔃';
+    case 'accesspoint':
+      return '📶';
+    default:
+      return '📦';
+  }
+}
 
 export default TopologyNode;
