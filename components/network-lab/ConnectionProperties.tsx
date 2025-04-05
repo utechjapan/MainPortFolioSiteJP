@@ -8,6 +8,7 @@ interface ConnectionPropertiesProps {
   targetDevice: Device;
   onUpdate: (updatedConnection: Connection) => void;
   onDelete: () => void;
+  onEditPath: (connection: Connection) => void;
 }
 
 const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
@@ -16,6 +17,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
   targetDevice,
   onUpdate,
   onDelete,
+  onEditPath,
 }) => {
   // Find the port objects
   const sourcePort = sourceDevice.ports.find(p => p.id === connection.sourcePortId);
@@ -52,10 +54,10 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
     <div className="p-4">
       <div className="mb-4">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-          Connection Details
+          接続詳細
         </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          {connection.type} connection
+          {connection.type} 接続
         </p>
       </div>
 
@@ -63,7 +65,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
         {/* Connection endpoints */}
         <div className="border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-3">
           <div>
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Source</div>
+            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">ソース</div>
             <div className="flex items-center mt-1">
               <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
               <span className="font-medium">{sourceDevice.name}</span>
@@ -73,7 +75,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
           </div>
 
           <div>
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Target</div>
+            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">ターゲット</div>
             <div className="flex items-center mt-1">
               <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
               <span className="font-medium">{targetDevice.name}</span>
@@ -87,7 +89,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
         <div>
           <div className="flex items-center">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 w-1/3">
-              Type
+              タイプ
             </label>
             <div className="mt-1 text-sm text-gray-900 dark:text-gray-100 capitalize">
               {connection.type}
@@ -98,7 +100,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
         <div>
           <div className="flex items-center">
             <label htmlFor="bandwidth" className="block text-sm font-medium text-gray-700 dark:text-gray-300 w-1/3">
-              Bandwidth
+              帯域幅
             </label>
             <select
               id="bandwidth"
@@ -117,7 +119,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
         <div>
           <div className="flex items-center">
             <label htmlFor="latency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 w-1/3">
-              Latency (ms)
+              遅延 (ms)
             </label>
             <input
               type="number"
@@ -133,7 +135,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
         <div>
           <div className="flex items-center">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 w-1/3">
-              Status
+              ステータス
             </label>
             <div className="mt-1 flex space-x-2">
               <button
@@ -144,7 +146,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
-                Active
+                有効
               </button>
               <button
                 onClick={() => handleStatusChange('inactive')}
@@ -154,7 +156,7 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
-                Inactive
+                無効
               </button>
               <button
                 onClick={() => handleStatusChange('error')}
@@ -164,10 +166,20 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
-                Error
+                エラー
               </button>
             </div>
           </div>
+        </div>
+        
+        <div>
+          <button
+            onClick={() => onEditPath(connection)}
+            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full justify-center"
+          >
+            <i className="fas fa-pen mr-2"></i>
+            接続経路の編集
+          </button>
         </div>
 
         {/* Actions */}
@@ -176,7 +188,8 @@ const ConnectionProperties: React.FC<ConnectionPropertiesProps> = ({
             onClick={onDelete}
             className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
-            Delete Connection
+            <i className="fas fa-trash mr-2"></i>
+            接続を削除
           </button>
         </div>
       </div>

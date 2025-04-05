@@ -26,7 +26,7 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
   const targetDevice = devices.find(d => d.id === connection.targetDeviceId);
   
   useEffect(() => {
-    if (!sourceDevice || !targetDevice) return;
+    if (!isOpen || !sourceDevice || !targetDevice) return;
     
     // Initialize path points from connection or create default
     if (connection.pathPoints && connection.pathPoints.length > 0) {
@@ -50,7 +50,7 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
         ]);
       }
     }
-  }, [connection, sourceDevice, targetDevice]);
+  }, [isOpen, connection, sourceDevice, targetDevice]);
   
   if (!isOpen || !sourceDevice || !targetDevice) return null;
   
@@ -106,7 +106,6 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
     
     // Create path data
     const points = pathPoints.map(p => `${p.x},${p.y}`).join(' ');
-    const svgPath = `M ${points}`;
     
     return (
       <svg width="100%" height="300" className="border border-gray-300 dark:border-gray-700 rounded-md">
@@ -212,9 +211,35 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
                       onClick={handleAddPoint}
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
+                      <i className="fas fa-plus mr-2"></i>
                       ポイントを追加
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              type="button"
+              onClick={handleSave}
+              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+            >
+              保存
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ConnectionPathEditor;

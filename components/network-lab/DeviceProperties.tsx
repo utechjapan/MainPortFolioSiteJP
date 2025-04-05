@@ -12,6 +12,7 @@ interface DevicePropertiesProps {
   onDelete: () => void;
   onStartConnection: (deviceId: string, portId: string) => void;
   onPingTest: (sourceId: string, targetId: string) => void;
+  onConfigureDevice: (device: Device) => void;
 }
 
 const DeviceProperties: React.FC<DevicePropertiesProps> = ({
@@ -23,6 +24,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
   onDelete,
   onStartConnection,
   onPingTest,
+  onConfigureDevice,
 }) => {
   const [activeTab, setActiveTab] = useState<'general' | 'network' | 'ports'>('general');
   const deviceTypeInfo = getDeviceTypeInfo(device.type);
@@ -36,71 +38,6 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
     });
   };
   
-  // Handle IP address change
-  const handleIpAddressChange = (interfaceIndex: number, value: string) => {
-    const updatedInterfaces = [...(device.config.interfaces || [])];
-    
-    if (!updatedInterfaces[interfaceIndex]) {
-      updatedInterfaces[interfaceIndex] = { ipAddress: '', subnetMask: '' };
-    }
-    
-    updatedInterfaces[interfaceIndex] = {
-      ...updatedInterfaces[interfaceIndex],
-      ipAddress: value,
-    };
-    
-    onUpdate({
-      ...device,
-      config: {
-        ...device.config,
-        interfaces: updatedInterfaces,
-      },
-    });
-  };
-  
-  // Handle subnet mask change
-  const handleSubnetMaskChange = (interfaceIndex: number, value: string) => {
-    const updatedInterfaces = [...(device.config.interfaces || [])];
-    
-    if (!updatedInterfaces[interfaceIndex]) {
-      updatedInterfaces[interfaceIndex] = { ipAddress: '', subnetMask: '' };
-    }
-    
-    updatedInterfaces[interfaceIndex] = {
-      ...updatedInterfaces[interfaceIndex],
-      subnetMask: value,
-    };
-    
-    onUpdate({
-      ...device,
-      config: {
-        ...device.config,
-        interfaces: updatedInterfaces,
-      },
-    });
-  };
-  
-  // Handle gateway change
-  const handleGatewayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate({
-      ...device,
-      config: {
-        ...device.config,
-        gateway: e.target.value,
-      },
-    });
-  };
-  
-  // Handle VLAN assignment
-  const handleVlanChange = (portId: string, vlanId: number) => {
-    onUpdate({
-      ...device,
-      ports: device.ports.map(port => 
-        port.id === portId ? { ...port, vlanId } : port
-      ),
-    });
-  };
-  
   // Render tabs content
   const renderTabContent = () => {
     switch (activeTab) {
@@ -109,7 +46,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Device Type
+                デバイスタイプ
               </label>
               <div className="mt-1 text-gray-900 dark:text-gray-100">
                 {deviceTypeInfo.label || device.type}
@@ -118,7 +55,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
             
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Device Name
+                デバイス名
               </label>
               <input
                 type="text"
@@ -130,7 +67,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
             
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Status
+                ステータス
               </label>
               <div className="mt-1 flex items-center">
                 <div
@@ -144,28 +81,38 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
               </div>
             </div>
             
+            {/* Advanced Configuration Button */}
+            <button
+              onClick={() => onConfigureDevice(device)}
+              className="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <i className="fas fa-cog mr-2"></i>
+              詳細設定
+            </button>
+            
             {/* Actions section */}
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Actions
+                アクション
               </label>
               <div className="flex flex-col space-y-2">
                 <button
                   onClick={onDelete}
                   className="inline-flex items-center px-3 py-2 border border-transparent text-xs leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
-                  Delete Device
+                  <i className="fas fa-trash mr-2"></i>
+                  デバイス削除
                 </button>
                 
                 {simulationState === 'running' && (
-                  <div className="space-y-2">
+                  <div className="space-y-2 mt-2">
                     <div className="flex items-center space-x-2">
                       <select
                         value={targetDeviceId}
                         onChange={(e) => setTargetDeviceId(e.target.value)}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
                       >
-                        <option value="">Select target device...</option>
+                        <option value="">対象デバイスを選択</option>
                         {devices
                           .filter(d => d.id !== device.id)
                           .map(d => (
@@ -183,6 +130,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
                         disabled={!targetDeviceId}
                         className="inline-flex items-center px-3 py-2 border border-transparent text-xs leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
                       >
+                        <i className="fas fa-satellite-dish mr-2"></i>
                         Ping
                       </button>
                     </div>
@@ -196,83 +144,82 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
       case 'network':
         return (
           <div className="space-y-4">
-            {/* IP Configuration (device type specific) */}
-            {['router', 'server', 'workstation'].includes(device.type) && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    IP Address
-                  </label>
-                  <input
-                    type="text"
-                    value={device.config.interfaces?.[0]?.ipAddress || ''}
-                    onChange={(e) => handleIpAddressChange(0, e.target.value)}
-                    placeholder="192.168.1.1"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Subnet Mask
-                  </label>
-                  <input
-                    type="text"
-                    value={device.config.interfaces?.[0]?.subnetMask || ''}
-                    onChange={(e) => handleSubnetMaskChange(0, e.target.value)}
-                    placeholder="255.255.255.0"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                  />
-                </div>
-                
-                {['workstation', 'server'].includes(device.type) && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Default Gateway
-                    </label>
-                    <input
-                      type="text"
-                      value={device.config.gateway || ''}
-                      onChange={handleGatewayChange}
-                      placeholder="192.168.1.1"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                    />
+            {/* IP Configuration (readonly summary view) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                ネットワーク設定
+              </label>
+              
+              <div className="mt-2 border border-gray-300 dark:border-gray-700 rounded-md p-3">
+                {device.config.interfaces && device.config.interfaces.length > 0 ? (
+                  <div className="space-y-2">
+                    {device.config.interfaces.map((iface, idx) => (
+                      <div key={idx} className="flex flex-wrap gap-2 text-sm">
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                          IP:
+                        </span>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {iface.ipAddress || '未設定'}
+                          {iface.subnetMask ? ` / ${iface.subnetMask}` : ''}
+                        </span>
+                      </div>
+                    ))}
+                    
+                    {device.config.gateway && (
+                      <div className="flex flex-wrap gap-2 text-sm">
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                          Gateway:
+                        </span>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {device.config.gateway}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {device.config.dhcp !== undefined && (
+                      <div className="flex flex-wrap gap-2 text-sm">
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                          DHCP:
+                        </span>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {device.config.dhcp ? '有効' : '無効'}
+                        </span>
+                      </div>
+                    )}
                   </div>
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    詳細設定ボタンからネットワーク設定を行ってください
+                  </p>
                 )}
-              </>
-            )}
+              </div>
+            </div>
             
-            {/* Additional network settings based on device type */}
+            {/* Routing info for routers */}
             {device.type === 'router' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Routing
+                  ルーティング情報
                 </label>
-                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <div className="mt-2 border border-gray-300 dark:border-gray-700 rounded-md p-3">
                   {device.config.routes && device.config.routes.length > 0 ? (
-                    <div className="space-y-2">
+                    <div className="space-y-2 text-sm">
                       {device.config.routes.map((route, idx) => (
-                        <div key={idx} className="border border-gray-200 dark:border-gray-700 p-2 rounded">
-                          <div>Destination: {route.destination}</div>
-                          <div>Next Hop: {route.nextHop}</div>
-                          <div>Metric: {route.metric}</div>
+                        <div key={idx} className="flex flex-wrap gap-2">
+                          <span className="font-medium text-gray-700 dark:text-gray-300">
+                            宛先:
+                          </span>
+                          <span className="text-gray-600 dark:text-gray-400">
+                            {route.destination || '0.0.0.0/0'} → {route.nextHop || 'Direct'}
+                          </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <span>No routes configured</span>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      ルーティング情報がありません
+                    </p>
                   )}
-                </div>
-              </div>
-            )}
-            
-            {device.type === 'switch' && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  VLAN Configuration
-                </label>
-                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Use the Ports tab to configure VLANs for each port.
                 </div>
               </div>
             )}
@@ -283,7 +230,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
         return (
           <div className="space-y-2">
             <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-              Click on a port to start a connection
+              ポートをクリックして接続を開始します
             </div>
             {device.ports.map((port) => (
               <div
@@ -293,32 +240,22 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
                 <div>
                   <div className="font-medium">{port.name}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {port.type} | {port.isConnected ? 'Connected' : 'Available'}
+                    {port.type} | {port.isConnected ? '接続済み' : '利用可能'}
+                    {port.vlanId && ` | VLAN${port.vlanId}`}
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  {/* VLAN selector (for switches and router ports) */}
-                  {['switch', 'router'].includes(device.type) && port.type === 'ethernet' && (
-                    <select
-                      value={port.vlanId || ''}
-                      onChange={(e) => handleVlanChange(port.id, parseInt(e.target.value) || 1)}
-                      className="block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-xs"
-                    >
-                      <option value="">No VLAN</option>
-                      {vlans.map((vlan) => (
-                        <option key={vlan.id} value={vlan.id}>
-                          VLAN {vlan.id}: {vlan.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                  
                   <button
                     onClick={() => onStartConnection(device.id, port.id)}
                     disabled={port.isConnected}
-                    className="inline-flex items-center p-1 border border-gray-300 shadow-sm text-xs leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`inline-flex items-center p-1 border shadow-sm text-xs leading-4 font-medium rounded-md
+                      ${port.isConnected
+                        ? 'border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-gray-500'
+                        : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700'
+                      }`}
                   >
-                    Connect
+                    <i className="fas fa-plug mr-1"></i>
+                    接続
                   </button>
                 </div>
               </div>
@@ -350,7 +287,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
             }`}
             onClick={() => setActiveTab('general')}
           >
-            General
+            一般
           </button>
           <button
             className={`py-2 px-1 text-sm font-medium border-b-2 ${
@@ -360,7 +297,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
             }`}
             onClick={() => setActiveTab('network')}
           >
-            Network
+            ネットワーク
           </button>
           <button
             className={`py-2 px-1 text-sm font-medium border-b-2 ${
@@ -370,7 +307,7 @@ const DeviceProperties: React.FC<DevicePropertiesProps> = ({
             }`}
             onClick={() => setActiveTab('ports')}
           >
-            Ports
+            ポート
           </button>
         </nav>
       </div>

@@ -1,6 +1,6 @@
 // components/network-lab/PacketVisualizer.tsx
 import React, { useEffect, useState } from 'react';
-import { Circle, Arrow } from 'react-konva';
+import { Circle } from 'react-konva';
 import { PacketJourney, Device, Connection } from '../../types/networkTopology';
 import { calculatePortPositions } from '../../utils/networkUtils';
 
@@ -8,12 +8,14 @@ interface PacketVisualizerProps {
   journeys: PacketJourney[];
   devices: Device[];
   connections: Connection[];
+  scale: number;
 }
 
 const PacketVisualizer: React.FC<PacketVisualizerProps> = ({
   journeys,
   devices,
   connections,
+  scale,
 }) => {
   const [packets, setPackets] = useState<Array<{
     id: string;
@@ -101,8 +103,8 @@ const PacketVisualizer: React.FC<PacketVisualizerProps> = ({
         if (sourcePortIndex === -1 || targetPortIndex === -1) return;
         
         // Get positions
-        const sourcePos = sourcePortPositions[sourcePortIndex] || { x: sourceDevice.x, y: sourceDevice.y };
-        const targetPos = targetPortPositions[targetPortIndex] || { x: targetDevice.x, y: targetDevice.y };
+        const sourcePos = sourcePortPositions[sourcePortIndex] || { x: sourceDevice.x + sourceDevice.width/2, y: sourceDevice.y + sourceDevice.height/2 };
+        const targetPos = targetPortPositions[targetPortIndex] || { x: targetDevice.x + targetDevice.width/2, y: targetDevice.y + targetDevice.height/2 };
         
         // Create a packet with a delay based on step index
         newPackets.push({
@@ -123,15 +125,13 @@ const PacketVisualizer: React.FC<PacketVisualizerProps> = ({
     setPackets(newPackets);
     
     let startTime: number | null = null;
-    let lastStepTime: number | null = null;
-    const animationDuration = 1500; // 1.5 seconds for a full journey
-    const stepInterval = 300; // 300ms between starting each step
+    const animationDuration = 1000; // 1 second for a full journey
+    const stepInterval = 200; // 200ms between starting each step
     
     // Animation function
     const animate = (timestamp: number) => {
       if (startTime === null) {
         startTime = timestamp;
-        lastStepTime = timestamp;
       }
       
       const elapsedSinceStart = timestamp - startTime;
@@ -204,10 +204,10 @@ const PacketVisualizer: React.FC<PacketVisualizerProps> = ({
           key={packet.id}
           x={packet.x}
           y={packet.y}
-          radius={5}
+          radius={6 / scale} // Adjust size based on zoom level
           fill={packet.color}
           shadowColor={packet.color}
-          shadowBlur={10}
+          shadowBlur={10 / scale}
           shadowOpacity={0.5}
           perfectDrawEnabled={false}
           listening={false}
