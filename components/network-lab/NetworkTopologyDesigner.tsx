@@ -1277,6 +1277,45 @@ const NetworkTopologyDesigner: React.FC = () => {
     />
   );
 
+  function handleMoveDevice(id: string, x: number, y: number): void {
+    setDevices((prevDevices) =>
+      prevDevices.map((device) =>
+        device.id === id
+          ? {
+              ...device,
+              x: snapToGrid ? Math.round(x / gridSize) * gridSize : x,
+              y: snapToGrid ? Math.round(y / gridSize) * gridSize : y,
+            }
+          : device
+      )
+    );
+  }
+
+  function handleDragEnd(e: any, device: Device): void {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const pointerPosition = stage.getPointerPosition();
+    if (!pointerPosition) return;
+
+    // Adjust for stage position and scale
+    const adjustedX = (pointerPosition.x - position.x) / scale;
+    const adjustedY = (pointerPosition.y - position.y) / scale;
+
+    // Update the device's position
+    setDevices((prevDevices) =>
+      prevDevices.map((d) =>
+        d.id === device.id
+          ? {
+              ...d,
+              x: snapToGrid ? Math.round(adjustedX / gridSize) * gridSize : adjustedX,
+              y: snapToGrid ? Math.round(adjustedY / gridSize) * gridSize : adjustedY,
+            }
+          : d
+      )
+    );
+  }
+
   return (
     <div className="h-full flex" ref={containerRef}>
       {/* Device Library */}
@@ -1351,21 +1390,23 @@ const NetworkTopologyDesigner: React.FC = () => {
             {/* Devices */}
             {devices.map(device => (
               <TopologyNode
-                key={device.id}
-                device={device}
-                isSelected={selectedItem?.type === 'device' && selectedItem.id === device.id}
-                onSelect={() => handleSelectDevice(device.id)}
-                onDragEnd={(e: any) => handleDragEnd(e, device)}
-                onPortClick={(portId) => {
-                  if (drawingConnection) {
-                    handleEndConnection(device.id, portId);
-                  } else {
-                    handleStartConnection(device.id, portId);
-                  }
-                }}
-                vlans={vlans}
-                diagramType={diagramType}
-              />
+              key={device.id}
+              device={device}
+              isSelected={selectedItem?.type === 'device' && selectedItem.id === device.id}
+              onSelect={() => handleSelectDevice(device.id)}
+              onMove={(x, y) => handleMoveDevice(device.id, x, y)} // ✅ added this line
+              onDragEnd={(e: any) => handleDragEnd(e, device)}
+              onPortClick={(portId) => {
+                if (drawingConnection) {
+                  handleEndConnection(device.id, portId);
+                } else {
+                  handleStartConnection(device.id, portId);
+                }
+              }}
+              vlans={vlans}
+              diagramType={diagramType}
+            />
+            
             ))}
             
             {/* Packet journey visualization */}
