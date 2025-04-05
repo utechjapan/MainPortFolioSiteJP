@@ -72,7 +72,7 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
           y={pos.y}
           radius={4}
           fill="#555"
-          onClick={() => onPortClick(pos.portId)}
+          onClick={() => onPortClick(device.ports[index].id)}
         />
       ))}
     </Group>
