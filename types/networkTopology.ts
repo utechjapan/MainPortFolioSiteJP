@@ -217,3 +217,14 @@ export interface PingResult {
   };
   journey: PacketJourney;
 }
+
+// Drag
+export interface TopologyNodeProps {
+  device: Device;
+  isSelected: boolean;
+  onSelect: () => void;
+  onPortClick: (portId: string) => void;
+  onDragEnd?: (e: any) => void; // Add this line
+  vlans: VlanDefinition[];
+  diagramType: DiagramType;
+}
