@@ -634,9 +634,8 @@ const NetworkTopologyDesigner: React.FC = () => {
     // Power on all devices
     const poweredDevices = devices.map(device => ({
       ...device,
-      status: 'on'
+      status: 'on' as 'on' // Explicitly cast to the allowed literal type
     }));
-    
     setDevices(poweredDevices);
     setSimulationState('running');
     
@@ -646,7 +645,10 @@ const NetworkTopologyDesigner: React.FC = () => {
       status: 'active'
     }));
     
-    setConnections(activeConnections);
+    setConnections(activeConnections.map(connection => ({
+      ...connection,
+      status: 'active', // Ensure the status is a valid literal type
+    })));
     
     addNotification({
       type: 'success',
