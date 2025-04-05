@@ -80,7 +80,7 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
   };
 
   return (
-    <div className="fixed z-50 inset-0 overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         {/* Background overlay */}
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
@@ -98,11 +98,11 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
               </div>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                  Manage VLANs
+                  VLAN管理
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Create, edit, or delete VLAN definitions that can be assigned to switch ports.
+                    VLANの作成、編集、削除を行います。スイッチポートに割り当てられるVLANを管理します。
                   </p>
                 </div>
               </div>
@@ -112,7 +112,7 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
               {/* Existing VLANs */}
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Current VLANs
+                  現在のVLAN一覧
                 </h4>
                 <div className="overflow-y-auto max-h-64 border border-gray-300 dark:border-gray-700 rounded-md">
                   <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
@@ -122,13 +122,13 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
                           ID
                         </th>
                         <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Name
+                          名前
                         </th>
                         <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Color
+                          色
                         </th>
                         <th scope="col" className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Actions
+                          操作
                         </th>
                       </tr>
                     </thead>
@@ -166,10 +166,10 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
                             >
                               {vlan.id === 1 ? (
                                 <span className="text-gray-400 dark:text-gray-600" title="Default VLAN cannot be deleted">
-                                  Delete
+                                  削除
                                 </span>
                               ) : (
-                                <span>Delete</span>
+                                <span>削除</span>
                               )}
                             </button>
                           </td>
@@ -183,14 +183,14 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
               {/* Add new VLAN */}
               <div>
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Add New VLAN
+                  新規VLAN追加
                 </h4>
                 <div className="flex space-x-2">
                   <input
                     type="text"
                     value={newVlanName}
                     onChange={(e) => setNewVlanName(e.target.value)}
-                    placeholder="VLAN Name"
+                    placeholder="VLAN名"
                     className="flex-grow rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                   <div className="flex items-center space-x-1">
@@ -206,7 +206,7 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
                     disabled={!newVlanName.trim()}
                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
-                    Add VLAN
+                    VLAN追加
                   </button>
                 </div>
               </div>
@@ -219,14 +219,14 @@ const ManageVlansModal: React.FC<ManageVlansModalProps> = ({
               onClick={handleSave}
               className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
             >
-              Save Changes
+              変更を保存
             </button>
             <button
               type="button"
               onClick={onClose}
               className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
             >
-              Cancel
+              キャンセル
             </button>
           </div>
         </div>

@@ -6,6 +6,7 @@ interface ExportModalProps {
   onClose: () => void;
   onExportJson: () => void;
   onExportPdf: () => void;
+  onExportCsv?: () => void; // Optional CSV export
 }
 
 const ExportModal: React.FC<ExportModalProps> = ({
@@ -13,6 +14,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
   onClose,
   onExportJson,
   onExportPdf,
+  onExportCsv,
 }) => {
   if (!isOpen) return null;
 
@@ -36,11 +38,11 @@ const ExportModal: React.FC<ExportModalProps> = ({
               </div>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                  Export Network Topology
+                  エクスポート設定
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Choose how you would like to export your network topology
+                    ネットワークトポロジーをエクスポートする形式を選択してください
                   </p>
                 </div>
               </div>
@@ -54,16 +56,16 @@ const ExportModal: React.FC<ExportModalProps> = ({
                   </svg>
                 </div>
                 <h3 className="text-center text-base font-medium text-gray-900 dark:text-white">
-                  JSON File
+                  JSONファイル
                 </h3>
                 <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
-                  Export as JSON for importing back later
+                  後で読み込み可能なJSONファイルとしてエクスポート
                 </p>
                 <button
                   onClick={onExportJson}
                   className="mt-4 w-full inline-flex justify-center items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-800 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-900 dark:text-blue-100 dark:hover:bg-blue-800"
                 >
-                  Export JSON
+                  JSONで保存
                 </button>
               </div>
               
@@ -74,18 +76,40 @@ const ExportModal: React.FC<ExportModalProps> = ({
                   </svg>
                 </div>
                 <h3 className="text-center text-base font-medium text-gray-900 dark:text-white">
-                  PDF Document
+                  PDFドキュメント
                 </h3>
                 <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
-                  Export as PDF for documentation
+                  ドキュメント化のためにPDFとしてエクスポート
                 </p>
                 <button
                   onClick={onExportPdf}
                   className="mt-4 w-full inline-flex justify-center items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-800 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:bg-red-900 dark:text-red-100 dark:hover:bg-red-800"
                 >
-                  Export PDF
+                  PDFで保存
                 </button>
               </div>
+              
+              {onExportCsv && (
+                <div className="sm:col-span-2 relative rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm hover:shadow">
+                  <div className="flex items-center justify-center h-12 w-12 mx-auto rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-center text-base font-medium text-gray-900 dark:text-white">
+                    CSV設定ファイル
+                  </h3>
+                  <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                    デバイスと設定の詳細をCSVとしてエクスポート
+                  </p>
+                  <button
+                    onClick={onExportCsv}
+                    className="mt-4 w-full inline-flex justify-center items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-green-800 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:bg-green-900 dark:text-green-100 dark:hover:bg-green-800"
+                  >
+                    CSVで保存
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           
@@ -93,9 +117,9 @@ const ExportModal: React.FC<ExportModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-700"
+              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
             >
-              Cancel
+              キャンセル
             </button>
           </div>
         </div>

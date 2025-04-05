@@ -6,19 +6,22 @@ import { motion } from 'framer-motion';
 import Layout from '../components/layout/Layout';
 import { siteConfig } from '../lib/siteConfig';
 
-// Dynamically import the main network topology designer (no SSR)
+// Dynamically import the network topology designer (no SSR)
 const NetworkTopologyDesigner = dynamic(
   () => import('../components/network-lab/NetworkTopologyDesigner'),
-  { ssr: false, loading: () => <Loading /> }
+  {
+    ssr: false,
+    loading: () => <Loading />,
+  }
 );
 
 // Loading component
 const Loading = () => (
   <div className="w-full h-full min-h-[600px] flex flex-col items-center justify-center bg-white dark:bg-gray-900 rounded-lg p-6 shadow">
     <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mb-4"></div>
-    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Loading Network Designer</h3>
+    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">ネットワークデザイナー読み込み中</h3>
     <p className="text-gray-500 dark:text-gray-400 text-center max-w-md">
-      Initializing the network topology designer. This may take a moment...
+      ネットワークトポロジーデザイナーを初期化しています。少々お待ちください...
     </p>
   </div>
 );
@@ -27,10 +30,10 @@ const NetworkLab: React.FC = () => {
   return (
     <Layout rightSidebar={false}>
       <Head>
-        <title>Network Lab | {siteConfig.title}</title>
+        <title>ネットワークラボ | {siteConfig.title}</title>
         <meta
           name="description"
-          content="Interactive network topology designer for creating and testing virtual network configurations."
+          content="仮想ネットワーク構成を作成・テストするための対話型ネットワークトポロジーデザイナー。"
         />
       </Head>
 
@@ -44,11 +47,11 @@ const NetworkLab: React.FC = () => {
           <div className="flex flex-col">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Network Topology Designer
+                ネットワークトポロジーデザイナー
               </h1>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Create, test, and visualize network topologies with this interactive tool.
-                Design your network, configure devices, and test connectivity.
+                この対話型ツールを使用して、ネットワークトポロジーを作成、テスト、視覚化します。
+                ネットワークをデザインし、デバイスを構成して、接続性をテストできます。
               </p>
             </div>
 
@@ -60,51 +63,50 @@ const NetworkLab: React.FC = () => {
 
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden p-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                About the Network Lab
+                ネットワークラボについて
               </h2>
               <div className="prose dark:prose-invert max-w-none">
                 <p>
-                  The Network Topology Designer is a powerful tool for creating and testing virtual
-                  network configurations. It allows network engineers, IT professionals, and students
-                  to design network topologies, configure devices, and test connectivity between
-                  network components.
+                  ネットワークトポロジーデザイナーは、仮想ネットワーク構成を作成およびテストするための強力なツールです。
+                  ネットワークエンジニア、IT専門家、学生がネットワークトポロジーを設計し、デバイスを構成し、
+                  ネットワークコンポーネント間の接続をテストするのに役立ちます。
                 </p>
-                <h3>Key Features:</h3>
+                <h3>主な機能:</h3>
                 <ul>
                   <li>
-                    <strong>Visual Network Design:</strong> Drag and drop devices, create connections,
-                    and organize your network visually.
+                    <strong>視覚的なネットワーク設計:</strong> デバイスをドラッグ＆ドロップし、接続を作成し、
+                    ネットワークを視覚的に整理します。
                   </li>
                   <li>
-                    <strong>Device Configuration:</strong> Configure IP addresses, VLANs, routing
-                    tables, and more for each device.
+                    <strong>デバイス構成:</strong> 各デバイスのIPアドレス、VLAN、ルーティングテーブルなどを
+                    構成します。
                   </li>
                   <li>
-                    <strong>Network Simulation:</strong> Test connectivity between devices with ping
-                    tests and view packet journeys.
+                    <strong>ネットワークシミュレーション:</strong> pingテストでデバイス間の接続をテストし、
+                    パケットの経路を表示します。
                   </li>
                   <li>
-                    <strong>VLAN Support:</strong> Create and manage VLANs, assign ports to VLANs,
-                    and visualize VLAN segmentation.
+                    <strong>VLANサポート:</strong> VLANの作成と管理、ポートへのVLAN割り当て、
+                    VLAN分離の視覚化を行います。
                   </li>
                   <li>
-                    <strong>Export Options:</strong> Export your network topology as JSON for later
-                    import, or as PDF for documentation.
+                    <strong>エクスポートオプション:</strong> 後でインポートするためにネットワークトポロジーを
+                    JSONとしてエクスポートするか、ドキュメント用にPDFとしてエクスポートします。
                   </li>
                 </ul>
-                <h3>Getting Started:</h3>
+                <h3>使い方:</h3>
                 <ol>
-                  <li>Add devices from the left toolbar by dragging them onto the canvas.</li>
-                  <li>Connect devices by clicking on a port and then clicking on another device's port.</li>
-                  <li>Configure device properties like IP addresses using the right panel.</li>
-                  <li>Manage VLANs using the VLAN management tool in the top toolbar.</li>
-                  <li>Start the simulation to test your network configuration.</li>
+                  <li>左のツールバーからデバイスをキャンバスにドラッグします。</li>
+                  <li>ポートをクリックして別のデバイスのポートをクリックすることでデバイスを接続します。</li>
+                  <li>右側のパネルを使用してIPアドレスなどのデバイスプロパティを設定します。</li>
+                  <li>上部ツールバーのVLAN管理ツールを使用してVLANを管理します。</li>
+                  <li>シミュレーションを開始してネットワーク構成をテストします。</li>
                 </ol>
                 <p>
-                  This tool is designed to provide a realistic network simulation experience while
-                  remaining accessible and easy to use. Whether you're studying for networking
-                  certifications, planning a network deployment, or just experimenting with network
-                  concepts, the Network Topology Designer can help you visualize and test your ideas.
+                  このツールは、アクセスしやすく使いやすい状態を維持しながら、現実的なネットワークシミュレーション体験を
+                  提供するように設計されています。ネットワーク認定資格の勉強をしている場合でも、ネットワーク展開を
+                  計画している場合でも、単にネットワークの概念を実験している場合でも、ネットワークトポロジーデザイナーは
+                  アイデアを視覚化してテストするのに役立ちます。
                 </p>
               </div>
             </div>

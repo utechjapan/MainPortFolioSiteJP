@@ -26,7 +26,7 @@ export const exportToPdf = async (
   connections: Connection[],
   dataUrl: string,
   filename: string = 'network-topology.pdf'
-) => {
+): Promise<boolean> => {
   try {
     // Create PDF document
     const doc = new jsPDF({
@@ -37,11 +37,11 @@ export const exportToPdf = async (
     
     // Set title
     doc.setFontSize(18);
-    doc.text('Network Topology Diagram', 14, 22);
+    doc.text('ネットワークトポロジー図', 14, 22);
     
     // Add date
     doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30);
+    doc.text(`生成日時: ${new Date().toLocaleString()}`, 14, 30);
     
     // Add topology image
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -56,7 +56,7 @@ export const exportToPdf = async (
     const deviceYPos = imageHeight + 50;
     
     doc.setFontSize(14);
-    doc.text('Device Inventory', 14, deviceYPos);
+    doc.text('デバイス一覧', 14, deviceYPos);
     
     doc.setFontSize(10);
     let y = deviceYPos + 10;
@@ -89,7 +89,7 @@ export const exportToPdf = async (
         device.config.interfaces.forEach((iface, ifaceIndex) => {
           if (iface.ipAddress) {
             y += 5;
-            doc.text(`IP: ${iface.ipAddress}${iface.subnetMask ? '/' + iface.subnetMask : ''}`, x + 5, y);
+            doc.text(`IP: ${iface.ipAddress}${iface.subnetMask ? '/' + subnetMaskToCidr(iface.subnetMask) : ''}`, x + 5, y);
           }
         });
       }
@@ -105,7 +105,7 @@ export const exportToPdf = async (
     }
     
     doc.setFontSize(14);
-    doc.text('Connection Inventory', 14, y);
+    doc.text('接続一覧', 14, y);
     
     doc.setFontSize(10);
     y += 10;
@@ -142,6 +142,113 @@ export const exportToPdf = async (
     return true;
   } catch (error) {
     console.error('Error exporting to PDF:', error);
+    return false;
+  }
+};
+
+// Helper function: convert subnet mask to CIDR notation
+const subnetMaskToCidr = (subnetMask: string): number => {
+  try {
+    // Split the subnet mask into its octets
+    const octets = subnetMask.split('.').map(octet => parseInt(octet, 10));
+    
+    // Check if the subnet mask is valid
+    if (octets.length !== 4 || octets.some(octet => isNaN(octet) || octet < 0 || octet > 255)) {
+      throw new Error('Invalid subnet mask');
+    }
+    
+    // Convert each octet to binary and count the number of 1s
+    let count = 0;
+    for (const octet of octets) {
+      // Convert to binary string
+      const binary = octet.toString(2);
+      // Count the number of 1s
+      count += binary.split('').filter(bit => bit === '1').length;
+    }
+    
+    return count;
+  } catch (error) {
+    console.error('Error converting subnet mask to CIDR:', error);
+    return 24; // Default to /24 if there's an error
+  }
+};
+
+// Export network configuration to CSV
+export const exportToCSV = (
+  devices: Device[],
+  connections: Connection[],
+  vlans: VlanDefinition[],
+  filename: string = 'network-config.csv'
+): boolean => {
+  try {
+    // Generate CSV content
+    let csvContent = "デバイス名,タイプ,ホスト名,IPアドレス,サブネットマスク,ゲートウェイ,VLAN,ポート\n";
+    
+    // Add device information
+    devices.forEach(device => {
+      let baseInfo = `"${device.name}","${device.type}","${device.config.hostname || ''}",`;
+      
+      if (device.config.interfaces && device.config.interfaces.length > 0) {
+        device.config.interfaces.forEach((iface, index) => {
+          let row = baseInfo;
+          row += `"${iface.ipAddress || ''}","${iface.subnetMask || ''}","${device.config.gateway || ''}",`;
+          
+          // Add VLAN info
+          const portVlans = device.ports
+            .filter(p => p.vlanId)
+            .map(p => `${p.name}:VLAN${p.vlanId}`)
+            .join('; ');
+          
+          row += `"${portVlans}",`;
+          
+          // Add port info
+          const ports = device.ports.map(p => p.name).join(', ');
+          row += `"${ports}"`;
+          
+          csvContent += row + "\n";
+        });
+      } else {
+        // Device without interfaces
+        csvContent += `${baseInfo}"","","","","${device.ports.map(p => p.name).join(', ')}"\n`;
+      }
+    });
+    
+    // Add VLAN information
+    csvContent += "\n\nVLAN ID,名前,色\n";
+    vlans.forEach(vlan => {
+      csvContent += `${vlan.id},"${vlan.name}","${vlan.color}"\n`;
+    });
+    
+    // Add connection information
+    csvContent += "\n\n接続元デバイス,接続元ポート,接続先デバイス,接続先ポート,ステータス,タイプ,帯域幅\n";
+    connections.forEach(conn => {
+      const sourceDevice = devices.find(d => d.id === conn.sourceDeviceId);
+      const targetDevice = devices.find(d => d.id === conn.targetDeviceId);
+      
+      if (sourceDevice && targetDevice) {
+        const sourcePort = sourceDevice.ports.find(p => p.id === conn.sourcePortId);
+        const targetPort = targetDevice.ports.find(p => p.id === conn.targetPortId);
+        
+        if (sourcePort && targetPort) {
+          csvContent += `"${sourceDevice.name}","${sourcePort.name}","${targetDevice.name}","${targetPort.name}","${conn.status}","${conn.type}","${conn.bandwidth || ''}"\n`;
+        }
+      }
+    });
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    return true;
+  } catch (error) {
+    console.error('Error exporting to CSV:', error);
     return false;
   }
 };
