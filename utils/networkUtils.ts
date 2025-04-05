@@ -218,123 +218,180 @@ export const calculatePortPositions = (device: Device): PortPosition[] => {
     
     if (!ports || ports.length === 0) return positions;
     
-    // Distribute ports evenly around the device
     const numPorts = ports.length;
     
-    // Decide how many ports on each side based on the total number
+    // Determine port distribution based on device dimensions and type
     let portsPerSide: { top: number; right: number; bottom: number; left: number };
     
-    if (numPorts <= 4) {
-        // 1-4 ports: 1 on each side
+    if (width > height * 1.5) {
+        // Wide device: more ports on top and bottom.
+        const topBottom = Math.ceil(numPorts * 0.4);
+        const sides = Math.floor(numPorts * 0.2);
         portsPerSide = {
-            top: Math.min(1, numPorts),
-            right: Math.min(1, numPorts - 1),
-            bottom: Math.min(1, numPorts - 2),
-            left: Math.min(1, numPorts - 3),
+            top: Math.ceil(topBottom / 2),
+            bottom: Math.floor(topBottom / 2),
+            left: Math.ceil(sides / 2),
+            right: Math.floor(sides / 2),
         };
-    } else if (numPorts <= 8) {
-        // 5-8 ports: 2 on each side
+    } else if (height > width * 1.5) {
+        // Tall device: more ports on left and right.
+        const leftRight = Math.ceil(numPorts * 0.4);
+        const topBottom = Math.floor(numPorts * 0.2);
         portsPerSide = {
-            top: Math.min(2, numPorts),
-            right: Math.min(2, numPorts - 2),
-            bottom: Math.min(2, numPorts - 4),
-            left: Math.min(2, numPorts - 6),
+            left: Math.ceil(leftRight / 2),
+            right: Math.floor(leftRight / 2),
+            top: Math.ceil(topBottom / 2),
+            bottom: Math.floor(topBottom / 2),
+        };
+    } else if (device.type === 'switch' || device.type === 'l2switch' || device.type === 'l3switch') {
+        // For switches, focus on top and bottom.
+        portsPerSide = {
+            top: Math.ceil(numPorts * 0.4),
+            bottom: Math.ceil(numPorts * 0.4),
+            left: Math.ceil(numPorts * 0.1),
+            right: Math.floor(numPorts * 0.1),
+        };
+    } else if (device.type === 'router' || device.type === 'firewall') {
+        // For routers and firewalls, distribute evenly on all sides.
+        portsPerSide = {
+            top: Math.ceil(numPorts * 0.25),
+            right: Math.ceil(numPorts * 0.25),
+            bottom: Math.ceil(numPorts * 0.25),
+            left: Math.floor(numPorts * 0.25),
         };
     } else {
-        // More than 8 ports: distribute evenly
         const perSide = Math.ceil(numPorts / 4);
         portsPerSide = {
-            top: Math.min(perSide, numPorts),
-            right: Math.min(perSide, numPorts - portsPerSide.top),
-            bottom: Math.min(perSide, numPorts - portsPerSide.top - portsPerSide.right),
-            left: Math.min(perSide, numPorts - portsPerSide.top - portsPerSide.right - portsPerSide.bottom),
+            top: perSide,
+            right: perSide,
+            bottom: perSide,
+            left: perSide,
         };
     }
     
-    let portIndex = 0;
-
-    // Top side - Special case for console port
+    // Ensure the total assigned does not exceed numPorts.
+    let totalAssigned = portsPerSide.top + portsPerSide.right + portsPerSide.bottom + portsPerSide.left;
+    while (totalAssigned > numPorts) {
+        const maxSide = Math.max(portsPerSide.top, portsPerSide.right, portsPerSide.bottom, portsPerSide.left);
+        if (maxSide === portsPerSide.top) portsPerSide.top--;
+        else if (maxSide === portsPerSide.right) portsPerSide.right--;
+        else if (maxSide === portsPerSide.bottom) portsPerSide.bottom--;
+        else portsPerSide.left--;
+        totalAssigned = portsPerSide.top + portsPerSide.right + portsPerSide.bottom + portsPerSide.left;
+    }
+    
+    // Group ports by type
+    const consolePortIndices = ports
+        .map((port, index) => port.type === 'console' ? index : -1)
+        .filter(index => index !== -1);
+    const fiberPortIndices = ports
+        .map((port, index) => port.type === 'fiber' ? index : -1)
+        .filter(index => index !== -1);
+    let ethernetPortIndices = ports
+        .map((port, index) => port.type === 'ethernet' ? index : -1)
+        .filter(index => index !== -1);
+    let otherPortIndices = ports
+        .map((port, index) => (port.type !== 'console' && port.type !== 'fiber' && port.type !== 'ethernet') ? index : -1)
+        .filter(index => index !== -1);
+    
+    // Top side assignment: assign console ports first, then fill with others.
     if (portsPerSide.top > 0) {
-        const consolePortIndex = ports.findIndex(port => port.type === 'console');
-        
-        if (consolePortIndex !== -1 && consolePortIndex < portsPerSide.top) {
-            // Put console port in the center top
-            positions[consolePortIndex] = {
-                x: x + width / 2,
+        let assigned = 0;
+        const topPorts: number[] = [];
+        for (let i = 0; i < consolePortIndices.length && assigned < portsPerSide.top; i++) {
+            topPorts.push(consolePortIndices[i]);
+            assigned++;
+        }
+        const remainingIndices = [...ethernetPortIndices, ...fiberPortIndices, ...otherPortIndices];
+        for (let i = 0; i < remainingIndices.length && assigned < portsPerSide.top; i++) {
+            const idx = remainingIndices[i];
+            if (!topPorts.includes(idx)) {
+                topPorts.push(idx);
+                assigned++;
+                ethernetPortIndices = ethernetPortIndices.filter(id => id !== idx);
+                fiberPortIndices = fiberPortIndices.filter(id => id !== idx);
+                otherPortIndices = otherPortIndices.filter(id => id !== idx);
+            }
+        }
+        const spacing = width / (topPorts.length + 1);
+        for (let i = 0; i < topPorts.length; i++) {
+            positions[topPorts[i]] = {
+                x: x + (i + 1) * spacing,
                 y: y,
                 side: 'top',
             };
-            
-            // Skip the console port index when placing the rest
-            const remainingTopPorts = portsPerSide.top - 1;
-            if (remainingTopPorts > 0) {
-                const spacing = width / (remainingTopPorts + 1);
-                
-                for (let i = 0; i < portsPerSide.top; i++) {
-                    if (portIndex !== consolePortIndex) {
-                        positions[portIndex] = {
-                            x: x + (i + 1) * spacing,
-                            y: y,
-                            side: 'top',
-                        };
-                    }
-                    portIndex++;
-                }
-            }
-        } else {
-            // Normal distribution
-            const spacing = width / (portsPerSide.top + 1);
-            
-            for (let i = 0; i < portsPerSide.top; i++) {
-                positions[portIndex] = {
-                    x: x + (i + 1) * spacing,
-                    y: y,
-                    side: 'top',
-                };
-                portIndex++;
-            }
         }
     }
     
-    // Right side
+    // Right side assignment.
     if (portsPerSide.right > 0) {
-        const spacing = height / (portsPerSide.right + 1);
-        
-        for (let i = 0; i < portsPerSide.right; i++) {
-            positions[portIndex] = {
+        const rightIndices: number[] = [];
+        let assigned = 0;
+        const remainingIndices = [...ethernetPortIndices, ...fiberPortIndices, ...otherPortIndices];
+        for (let i = 0; i < remainingIndices.length && assigned < portsPerSide.right; i++) {
+            const idx = remainingIndices[i];
+            if (!rightIndices.includes(idx)) {
+                rightIndices.push(idx);
+                assigned++;
+                ethernetPortIndices = ethernetPortIndices.filter(id => id !== idx);
+                fiberPortIndices = fiberPortIndices.filter(id => id !== idx);
+                otherPortIndices = otherPortIndices.filter(id => id !== idx);
+            }
+        }
+        const spacing = height / (rightIndices.length + 1);
+        for (let i = 0; i < rightIndices.length; i++) {
+            positions[rightIndices[i]] = {
                 x: x + width,
                 y: y + (i + 1) * spacing,
                 side: 'right',
             };
-            portIndex++;
         }
     }
     
-    // Bottom side
+    // Bottom side assignment.
     if (portsPerSide.bottom > 0) {
-        const spacing = width / (portsPerSide.bottom + 1);
-        
-        for (let i = 0; i < portsPerSide.bottom; i++) {
-            positions[portIndex] = {
+        const bottomIndices: number[] = [];
+        let assigned = 0;
+        const remainingIndices = [...ethernetPortIndices, ...fiberPortIndices, ...otherPortIndices];
+        for (let i = 0; i < remainingIndices.length && assigned < portsPerSide.bottom; i++) {
+            const idx = remainingIndices[i];
+            if (!bottomIndices.includes(idx)) {
+                bottomIndices.push(idx);
+                assigned++;
+                ethernetPortIndices = ethernetPortIndices.filter(id => id !== idx);
+                fiberPortIndices = fiberPortIndices.filter(id => id !== idx);
+                otherPortIndices = otherPortIndices.filter(id => id !== idx);
+            }
+        }
+        const spacing = width / (bottomIndices.length + 1);
+        for (let i = 0; i < bottomIndices.length; i++) {
+            positions[bottomIndices[i]] = {
                 x: x + width - (i + 1) * spacing,
                 y: y + height,
                 side: 'bottom',
             };
-            portIndex++;
         }
     }
     
-    // Left side
+    // Left side assignment.
     if (portsPerSide.left > 0) {
-        const spacing = height / (portsPerSide.left + 1);
-        
-        for (let i = 0; i < portsPerSide.left; i++) {
-            positions[portIndex] = {
+        const leftIndices: number[] = [];
+        let assigned = 0;
+        const remainingIndices = [...ethernetPortIndices, ...fiberPortIndices, ...otherPortIndices];
+        for (let i = 0; i < remainingIndices.length && assigned < portsPerSide.left; i++) {
+            const idx = remainingIndices[i];
+            if (!leftIndices.includes(idx)) {
+                leftIndices.push(idx);
+                assigned++;
+            }
+        }
+        const spacing = height / (leftIndices.length + 1);
+        for (let i = 0; i < leftIndices.length; i++) {
+            positions[leftIndices[i]] = {
                 x: x,
                 y: y + height - (i + 1) * spacing,
                 side: 'left',
             };
-            portIndex++;
         }
     }
     

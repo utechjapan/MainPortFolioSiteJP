@@ -20,6 +20,8 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
 }) => {
   const [pathPoints, setPathPoints] = useState<ConnectionPathPoint[]>([]);
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
+  const [svgWidth, setSvgWidth] = useState(600);
+  const [svgHeight, setSvgHeight] = useState(300);
   
   // Calculate endpoint positions
   const sourceDevice = devices.find(d => d.id === connection.sourceDeviceId);
@@ -27,6 +29,15 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
   
   useEffect(() => {
     if (!isOpen || !sourceDevice || !targetDevice) return;
+    
+    // Determine appropriate SVG dimensions based on device positions
+    const minX = Math.min(sourceDevice.x, targetDevice.x) - 50;
+    const minY = Math.min(sourceDevice.y, targetDevice.y) - 50;
+    const maxX = Math.max(sourceDevice.x + sourceDevice.width, targetDevice.x + targetDevice.width) + 50;
+    const maxY = Math.max(sourceDevice.y + sourceDevice.height, targetDevice.y + targetDevice.height) + 50;
+    
+    setSvgWidth(Math.max(600, maxX - minX));
+    setSvgHeight(Math.max(300, maxY - minY));
     
     // Initialize path points from connection or create default
     if (connection.pathPoints && connection.pathPoints.length > 0) {
@@ -43,9 +54,13 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
       const targetPos = targetPortPositions[targetPortIndex];
       
       if (sourcePos && targetPos) {
-        // Create a straight line with start and end points
+        // Create a line with midpoint for easy bending
+        const midX = (sourcePos.x + targetPos.x) / 2;
+        const midY = (sourcePos.y + targetPos.y) / 2;
+        
         setPathPoints([
           { x: sourcePos.x, y: sourcePos.y, type: 'endpoint' },
+          { x: midX, y: midY, type: 'control' },
           { x: targetPos.x, y: targetPos.y, type: 'endpoint' }
         ]);
       }
@@ -58,24 +73,39 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
   const handleAddPoint = () => {
     if (pathPoints.length < 2) return;
     
-    // Add a point in the middle of the path
-    const midIndex = Math.floor(pathPoints.length / 2);
-    const prevPoint = pathPoints[midIndex - 1];
-    const nextPoint = pathPoints[midIndex];
+    // Find best segment to add a point
+    let longestSegmentIndex = 0;
+    let longestSegmentLength = 0;
+    
+    for (let i = 0; i < pathPoints.length - 1; i++) {
+      const p1 = pathPoints[i];
+      const p2 = pathPoints[i + 1];
+      const length = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+      
+      if (length > longestSegmentLength) {
+        longestSegmentLength = length;
+        longestSegmentIndex = i;
+      }
+    }
+    
+    // Add point in the middle of longest segment
+    const p1 = pathPoints[longestSegmentIndex];
+    const p2 = pathPoints[longestSegmentIndex + 1];
     
     const newPoint: ConnectionPathPoint = {
-      x: (prevPoint.x + nextPoint.x) / 2,
-      y: (prevPoint.y + nextPoint.y) / 2,
+      x: (p1.x + p2.x) / 2,
+      y: (p1.y + p2.y) / 2,
       type: 'control'
     };
     
     const newPoints = [
-      ...pathPoints.slice(0, midIndex),
+      ...pathPoints.slice(0, longestSegmentIndex + 1),
       newPoint,
-      ...pathPoints.slice(midIndex)
+      ...pathPoints.slice(longestSegmentIndex + 1)
     ];
     
     setPathPoints(newPoints);
+    setSelectedPointIndex(longestSegmentIndex + 1);
   };
   
   // Remove a control point
@@ -95,55 +125,38 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
     setPathPoints(newPoints);
   };
   
+  // Handle drag point
+  const handlePointDrag = (index: number, e: React.MouseEvent<SVGCircleElement>) => {
+    if (e.buttons !== 1) return; // Only process left button drag
+    
+    const svg = e.currentTarget.closest('svg');
+    if (!svg) return;
+    
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    handleUpdatePoint(index, x, y);
+  };
+  
   // Handle save
   const handleSave = () => {
     onSave(connection, pathPoints);
   };
   
-  // Generate SVG preview
-  const generateSvgPreview = () => {
-    if (pathPoints.length < 2) return null;
+  // Generate SVG path data from points
+  const generatePathData = () => {
+    if (pathPoints.length < 2) return '';
     
-    // Create path data
-    const points = pathPoints.map(p => `${p.x},${p.y}`).join(' ');
+    // Move to the first point
+    let pathData = `M ${pathPoints[0].x},${pathPoints[0].y}`;
     
-    return (
-      <svg width="100%" height="300" className="border border-gray-300 dark:border-gray-700 rounded-md">
-        {/* Draw the path */}
-        <polyline 
-          points={points}
-          fill="none"
-          stroke="#2196F3"
-          strokeWidth="2"
-        />
-        
-        {/* Draw control points */}
-        {pathPoints.map((point, index) => (
-          <g key={index}>
-            <circle
-              cx={point.x}
-              cy={point.y}
-              r={selectedPointIndex === index ? 8 : 6}
-              fill={point.type === 'endpoint' ? '#F44336' : '#2196F3'}
-              stroke="#fff"
-              strokeWidth="2"
-              onClick={() => setSelectedPointIndex(index)}
-              style={{ cursor: 'pointer' }}
-            />
-            {selectedPointIndex === index && (
-              <text
-                x={point.x + 10}
-                y={point.y - 10}
-                fontSize="12"
-                fill="#333"
-              >
-                {point.type === 'endpoint' ? 'エンドポイント' : 'コントロールポイント'}
-              </text>
-            )}
-          </g>
-        ))}
-      </svg>
-    );
+    // Add lines or curves to subsequent points
+    for (let i = 1; i < pathPoints.length; i++) {
+      pathData += ` L ${pathPoints[i].x},${pathPoints[i].y}`;
+    }
+    
+    return pathData;
   };
   
   return (
@@ -155,7 +168,7 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
           <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
@@ -164,12 +177,124 @@ const ConnectionPathEditor: React.FC<ConnectionPathEditorProps> = ({
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    接続の経路を編集します。ポイントを追加して、接続線の形を調整できます。
+                    接続の経路を編集します。ポイントを追加・移動してベジェ曲線を作成できます。
                   </p>
                 </div>
                 
-                <div className="mt-4">
-                  {generateSvgPreview()}
+                <div className="mt-4 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
+                  <svg 
+                    width={svgWidth} 
+                    height={svgHeight} 
+                    className="bg-gray-100 dark:bg-gray-900 w-full"
+                    viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    {/* Grid for reference */}
+                    {Array.from({ length: Math.ceil(svgWidth / 20) }).map((_, i) => (
+                      <line
+                        key={`v-${i}`}
+                        x1={i * 20}
+                        y1={0}
+                        x2={i * 20}
+                        y2={svgHeight}
+                        stroke="#ddd"
+                        strokeWidth="1"
+                        strokeDasharray="2,2"
+                      />
+                    ))}
+                    {Array.from({ length: Math.ceil(svgHeight / 20) }).map((_, i) => (
+                      <line
+                        key={`h-${i}`}
+                        x1={0}
+                        y1={i * 20}
+                        x2={svgWidth}
+                        y2={i * 20}
+                        stroke="#ddd"
+                        strokeWidth="1"
+                        strokeDasharray="2,2"
+                      />
+                    ))}
+                    
+                    {/* Source device representation */}
+                    <rect
+                      x={sourceDevice.x}
+                      y={sourceDevice.y}
+                      width={sourceDevice.width}
+                      height={sourceDevice.height}
+                      fill="#E6F0FF"
+                      stroke="#2563EB"
+                      strokeWidth="1"
+                      rx="4"
+                    />
+                    <text
+                      x={sourceDevice.x + sourceDevice.width / 2}
+                      y={sourceDevice.y + sourceDevice.height / 2}
+                      textAnchor="middle"
+                      alignmentBaseline="middle"
+                      fontSize="12"
+                      fill="#2563EB"
+                    >
+                      {sourceDevice.name}
+                    </text>
+                    
+                    {/* Target device representation */}
+                    <rect
+                      x={targetDevice.x}
+                      y={targetDevice.y}
+                      width={targetDevice.width}
+                      height={targetDevice.height}
+                      fill="#ECFDF5"
+                      stroke="#059669"
+                      strokeWidth="1"
+                      rx="4"
+                    />
+                    <text
+                      x={targetDevice.x + targetDevice.width / 2}
+                      y={targetDevice.y + targetDevice.height / 2}
+                      textAnchor="middle"
+                      alignmentBaseline="middle"
+                      fontSize="12"
+                      fill="#059669"
+                    >
+                      {targetDevice.name}
+                    </text>
+                    
+                    {/* Draw the path */}
+                    <path 
+                      d={generatePathData()}
+                      fill="none"
+                      stroke="#2196F3"
+                      strokeWidth="2"
+                    />
+                    
+                    {/* Draw control points */}
+                    {pathPoints.map((point, index) => (
+                      <g key={index}>
+                        <circle
+                          cx={point.x}
+                          cy={point.y}
+                          r={selectedPointIndex === index ? 8 : 6}
+                          fill={point.type === 'endpoint' ? '#F44336' : '#2196F3'}
+                          stroke="#fff"
+                          strokeWidth="2"
+                          cursor="move"
+                          onClick={() => setSelectedPointIndex(index)}
+                          onMouseDown={() => setSelectedPointIndex(index)}
+                          onMouseMove={(e) => selectedPointIndex === index && handlePointDrag(index, e)}
+                        />
+                        {selectedPointIndex === index && (
+                          <text
+                            x={point.x + 10}
+                            y={point.y - 10}
+                            fontSize="12"
+                            fill="#333"
+                          >
+                            {point.type === 'endpoint' ? 'エンドポイント' : 'コントロールポイント'}
+                          </text>
+                        )}
+                      </g>
+                    ))}
+                  </svg>
                 </div>
                 
                 <div className="mt-4">

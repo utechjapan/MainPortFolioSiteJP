@@ -38,7 +38,7 @@ const Loading = ({ message = "読み込み中" }) => (
 const NetworkLab: React.FC = () => {
   const { width } = useWindowSize();
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Determine if on mobile device based on screen width
   useEffect(() => {
     setIsMobile(width < 768);

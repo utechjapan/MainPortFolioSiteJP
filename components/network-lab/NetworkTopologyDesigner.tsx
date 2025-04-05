@@ -1,6 +1,6 @@
 // components/network-lab/NetworkTopologyDesigner.tsx
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Stage, Layer, Line, Group, Text } from 'react-konva';
+import { Stage, Layer, Line, Group, Text, Path } from 'react-konva';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { saveAs } from 'file-saver';
 import useWindowSize from '../../hooks/useWindowSize';
@@ -1007,7 +1007,7 @@ const NetworkTopologyDesigner: React.FC = () => {
       
       if (!sourcePos || !targetPos) return null;
       
-      // Determine connection color based on status and selection
+      // Determine styling/color
       let strokeColor = '#666';
       let strokeWidth = 1;
       const isSelected = selectedItem?.type === 'connection' && selectedItem.id === connection.id;
@@ -1023,7 +1023,6 @@ const NetworkTopologyDesigner: React.FC = () => {
         strokeWidth = 2;
       }
       
-      // Determine if this connection is part of a packet journey
       const isInActiveJourney = packetJourneys.some(journey => 
         journey.path.some(step => 
           (step.sourceDeviceId === connection.sourceDeviceId && step.targetDeviceId === connection.targetDeviceId) ||
@@ -1036,37 +1035,37 @@ const NetworkTopologyDesigner: React.FC = () => {
         strokeWidth = 3;
       }
       
-      // Use custom path if defined, otherwise use straight line
-      const points = connection.pathPoints ? 
-        connection.pathPoints.flatMap(point => [point.x, point.y]) :
-        [sourcePos.x, sourcePos.y, targetPos.x, targetPos.y];
+      // Build curved path using connection.pathPoints if available; otherwise fallback to straight line
+      let pathData = '';
+      if (connection.pathPoints && connection.pathPoints.length >= 2) {
+        const start = connection.pathPoints[0];
+        const end = connection.pathPoints[connection.pathPoints.length - 1];
+        const cpX = (start.x + end.x) / 2;
+        const cpY = (start.y + end.y) / 2;
+        pathData = `M ${start.x} ${start.y} Q ${cpX} ${cpY} ${end.x} ${end.y}`;
+      } else {
+        pathData = `M ${sourcePos.x} ${sourcePos.y} L ${targetPos.x} ${targetPos.y}`;
+      }
       
-      // Get connection midpoint for label
-      const midPointIndex = Math.floor(points.length / 4);
-      const labelX = points[midPointIndex * 2];
-      const labelY = points[midPointIndex * 2 + 1];
-      
-      const connectionLabel = diagramType === 'logical' ? 
-        (connection.bandwidth || '') : 
-        `${sourceDevice.name} -> ${targetDevice.name}`;
+      const connectionLabel = diagramType === 'logical'
+        ? (connection.bandwidth || '')
+        : `${sourceDevice.name} -> ${targetDevice.name}`;
       
       return (
         <React.Fragment key={connection.id}>
-          <Line
-            points={points}
+          <Path
+            data={pathData}
             stroke={strokeColor}
             strokeWidth={strokeWidth}
             onClick={() => handleSelectConnection(connection.id)}
-            hitStrokeWidth={10} // Make it easier to click
             perfectDrawEnabled={false}
             shadowForStrokeEnabled={false}
             listening={true}
           />
-          
-          {/* Connection type indicator for fiber */}
+          {/* For fiber connections, add a dashed path as an indicator */}
           {connection.type === 'fiber' && (
-            <Line
-              points={points}
+            <Path
+              data={pathData}
               stroke={strokeColor}
               strokeWidth={strokeWidth}
               dash={[10, 5]}
@@ -1074,10 +1073,9 @@ const NetworkTopologyDesigner: React.FC = () => {
               listening={false}
             />
           )}
-          
           {/* Connection label */}
           {connectionLabel && (
-            <Group x={labelX} y={labelY}>
+            <Group x={(sourcePos.x + targetPos.x) / 2} y={(sourcePos.y + targetPos.y) / 2}>
               <Text
                 text={connectionLabel}
                 fontSize={12 / scale}
@@ -1357,10 +1355,7 @@ const NetworkTopologyDesigner: React.FC = () => {
                 device={device}
                 isSelected={selectedItem?.type === 'device' && selectedItem.id === device.id}
                 onSelect={() => handleSelectDevice(device.id)}
-                onMove={(x, y) => {
-                  const updatedDevice = { ...device, x, y };
-                  handleUpdateDevice(updatedDevice);
-                }}
+                onDragEnd={(e: any) => handleDragEnd(e, device)}
                 onPortClick={(portId) => {
                   if (drawingConnection) {
                     handleEndConnection(device.id, portId);
