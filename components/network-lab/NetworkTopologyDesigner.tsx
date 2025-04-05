@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Stage, Layer, Line, Group, Text } from 'react-konva';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { saveAs } from 'file-saver';
-import { jsPDF } from 'jspdf';
 import useWindowSize from '../../hooks/useWindowSize';
 
 // Import components
@@ -1172,6 +1171,7 @@ const NetworkTopologyDesigner: React.FC = () => {
           onDelete={() => handleDeleteDevice(device.id)}
           onStartConnection={handleStartConnection}
           onPingTest={handlePingTest}
+          onConfigureDevice={handleConfigureDevice}
         />
       );
     }
@@ -1192,9 +1192,225 @@ const NetworkTopologyDesigner: React.FC = () => {
           targetDevice={targetDevice}
           onUpdate={handleUpdateConnection}
           onDelete={() => handleDeleteConnection(connection.id)}
+          onEditPath={handleEditConnectionPath}
         />
       );
     }
     
     return null;
   };
+  
+  // Display modals for various functions
+  const showExportModalDialog = showExportModal && (
+    <ExportModal
+      isOpen={showExportModal}
+      onClose={() => setShowExportModal(false)}
+      onExportJson={handleExportToJson}
+      onExportPdf={handleExportToPdf}
+      onExportCsv={handleExportToCSV}
+    />
+  );
+
+  const showVlansModalDialog = showVlansModal && (
+    <ManageVlansModal
+      isOpen={showVlansModal}
+      onClose={() => setShowVlansModal(false)}
+      vlans={vlans}
+      onUpdate={handleVlansUpdate}
+    />
+  );
+
+  const showConsolePanel = showConsole && (
+    <ConsolePanel
+      output={consoleOutput}
+      onClose={() => setShowConsole(false)}
+      onClear={clearConsole}
+    />
+  );
+
+  const showDeviceConfigModalDialog = showDeviceConfigModal && selectedDeviceForConfig && (
+    <DeviceConfigModal
+      isOpen={showDeviceConfigModal}
+      device={selectedDeviceForConfig}
+      onClose={() => setShowDeviceConfigModal(false)}
+      onSave={handleSaveDeviceConfig}
+      diagramType={diagramType}
+    />
+  );
+
+  const showConnectionPathEditor = editingConnection && (
+    <ConnectionPathEditor
+      isOpen={!!editingConnection}
+      connection={editingConnection}
+      devices={devices}
+      onClose={() => setEditingConnection(null)}
+      onSave={handleSaveConnectionPath}
+    />
+  );
+
+  const showImportTemplateModalDialog = showImportTemplateModal && (
+    <ImportTemplateModal
+      isOpen={showImportTemplateModal}
+      templates={deviceTemplates}
+      onClose={() => setShowImportTemplateModal(false)}
+      onImport={handleImportTemplateGroup}
+    />
+  );
+
+  const showHelpModalDialog = showHelpModal && (
+    <HelpModal
+      isOpen={showHelpModal}
+      onClose={() => setShowHelpModal(false)}
+    />
+  );
+
+  const showConfirmationDialog = confirmationDialog.open && (
+    <ConfirmationDialog
+      isOpen={confirmationDialog.open}
+      title={confirmationDialog.title}
+      message={confirmationDialog.message}
+      onConfirm={() => {
+        confirmationDialog.onConfirm();
+        setConfirmationDialog(prev => ({ ...prev, open: false }));
+      }}
+      onCancel={() => setConfirmationDialog(prev => ({ ...prev, open: false }))}
+    />
+  );
+
+  return (
+    <div className="h-full flex" ref={containerRef}>
+      {/* Device Library */}
+      <DeviceLibrary onAddDevice={handleAddDevice} diagramType={diagramType} />
+      
+      {/* Main canvas */}
+      <div className="relative flex-1 bg-gray-100 dark:bg-gray-800 overflow-hidden">
+        {/* Diagram type switch */}
+        <DiagramTypeSwitch diagramType={diagramType} onChange={handleDiagramTypeChange} />
+        
+        {/* Toolbar */}
+        <Toolbar
+          onExport={() => setShowExportModal(true)}
+          onClear={handleClearTopology}
+          onImport={handleImportTopology}
+          onImportTemplate={handleImportTemplate}
+          onManageVlans={() => setShowVlansModal(true)}
+          onHelp={() => setShowHelpModal(true)}
+          simulationState={simulationState}
+          onStartSimulation={handleStartSimulation}
+          onStopSimulation={handleStopSimulation}
+          onToggleConsole={() => setShowConsole(!showConsole)}
+        />
+        
+        {/* Canvas controls */}
+        <TopologyControls
+          scale={scale}
+          onZoomIn={() => handleZoom(scale + 0.1)}
+          onZoomOut={() => handleZoom(scale - 0.1)}
+          onZoomReset={() => handleZoom(1)}
+          onCenterView={handleCenterView}
+          onToggleGrid={handleToggleGrid}
+          grid={grid}
+          onToggleSnapToGrid={handleToggleSnapToGrid}
+          snapToGrid={snapToGrid}
+        />
+        
+        {/* Status bar */}
+        <StatusBar
+          deviceCount={devices.length}
+          connectionCount={connections.length}
+          scale={scale}
+          position={position}
+          simulationState={simulationState}
+          diagramType={diagramType}
+        />
+        
+        {/* Stage */}
+        <Stage
+          width={viewportWidth}
+          height={viewportHeight}
+          scaleX={scale}
+          scaleY={scale}
+          x={position.x}
+          y={position.y}
+          ref={stageRef}
+          onClick={handleCanvasClick}
+          onMouseDown={handleStageMouseDown}
+          onMouseMove={handleStageMouseMove}
+          onMouseUp={handleStageMouseUp}
+        >
+          <Layer>
+            {/* Grid */}
+            {grid && renderGrid()}
+            
+            {/* Connections */}
+            {renderConnections()}
+            
+            {/* Active drawing connection */}
+            {drawingConnection && renderDrawingConnection()}
+            
+            {/* Devices */}
+            {devices.map(device => (
+              <TopologyNode
+                key={device.id}
+                device={device}
+                isSelected={selectedItem?.type === 'device' && selectedItem.id === device.id}
+                onSelect={() => handleSelectDevice(device.id)}
+                onMove={(x, y) => {
+                  const updatedDevice = { ...device, x, y };
+                  handleUpdateDevice(updatedDevice);
+                }}
+                onPortClick={(portId) => {
+                  if (drawingConnection) {
+                    handleEndConnection(device.id, portId);
+                  } else {
+                    handleStartConnection(device.id, portId);
+                  }
+                }}
+                vlans={vlans}
+                diagramType={diagramType}
+              />
+            ))}
+            
+            {/* Packet journey visualization */}
+            {simulationState === 'running' && (
+              <PacketVisualizer
+                journeys={packetJourneys}
+                devices={devices}
+                connections={connections}
+                scale={scale}
+              />
+            )}
+          </Layer>
+        </Stage>
+        
+        {/* Simulation controls */}
+        <SimulationControls
+          simulationState={simulationState}
+          onStartSimulation={handleStartSimulation}
+          onStopSimulation={handleStopSimulation}
+          onToggleConsole={() => setShowConsole(!showConsole)}
+        />
+        
+        {/* Right properties panel */}
+        <div className="absolute top-20 right-4 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-auto h-[calc(100vh-160px)] z-10">
+          {renderPropertiesPanel()}
+        </div>
+        
+        {/* Notification system */}
+        <NotificationSystem notifications={notifications} />
+        
+        {/* Modals */}
+        {showExportModalDialog}
+        {showVlansModalDialog}
+        {showConsolePanel}
+        {showDeviceConfigModalDialog}
+        {showConnectionPathEditor}
+        {showImportTemplateModalDialog}
+        {showHelpModalDialog}
+        {showConfirmationDialog}
+      </div>
+    </div>
+  );
+};
+
+export default NetworkTopologyDesigner;

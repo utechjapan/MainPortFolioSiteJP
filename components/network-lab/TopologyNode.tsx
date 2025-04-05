@@ -75,6 +75,7 @@ const TopologyNode: React.FC<TopologyNodeProps> = ({
         align="center"
         verticalAlign="middle"
         width={device.width}
+        offsetX={device.width / 2}
       />
 
       {/* Status indicator */}
